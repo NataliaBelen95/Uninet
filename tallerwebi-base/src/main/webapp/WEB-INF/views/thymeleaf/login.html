@@ -17,7 +17,7 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">UNLAM</a>
+    <a class="navbar-brand" href="#">UniNet</a>
 </nav>
 
 <main role="main" class="container">
@@ -25,7 +25,7 @@
     <div class = "container">
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
             <form action="#" th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
-                <h3 class="form-signin-heading">Taller Web I</h3>
+                <h3 class="form-signin-heading">Ingreso</h3>
                 <hr class="colorgraph"><br>
 
                 <input th:field="*{email}" id="email" type="email" class="form-control" required/>
