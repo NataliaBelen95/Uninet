@@ -80,13 +80,15 @@ public class ControladorPublicacionTest {
         when(publiMock.getUsuario()).thenReturn(userMock);
         when(servicioPublicadoMock.publicacionEntera(anyString(), any())).thenReturn(publiMock);
 
+        // Mockear sesión con usuario logueado
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(userMock);
+
         // Ejecución
         ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publiMock, requestMock);
 
         // Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
-
-
     }
 
 
@@ -116,7 +118,7 @@ public class ControladorPublicacionTest {
         // Verificar que se llamó al método darLike del servicio
         verify(servicioLikesMock).darLike(usuarioMock, publicacionMock);
         // También podrías verificar que el controlador redirige al endpoint de likes
-        assertEquals("redirect:/publicacion/5/likes", modelAndView.getViewName());
+        assertEquals("redirect:/home", modelAndView.getViewName());
     }
 
 

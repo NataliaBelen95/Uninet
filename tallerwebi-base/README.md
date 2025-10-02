@@ -73,7 +73,7 @@ $ mvn clean jetty:run
 ### Iniciar el servidor
 ```shell
 # Opción 1
-$ mvn clean jetty:run
+$
 
 # Opción 2 -- ver seccion 10 docker-compose
 $ docker-compose up --build

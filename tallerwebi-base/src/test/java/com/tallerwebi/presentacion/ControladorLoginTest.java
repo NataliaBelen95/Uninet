@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 
 
-@Transactional
+
 public class ControladorLoginTest {
 
 	private ControladorLogin controladorLogin;
@@ -36,25 +36,25 @@ public class ControladorLoginTest {
 
 
 	@BeforeEach
-
     public void init(){
         servicioLoginMemoria = new ServicioLoginMemoria();
         datosLoginMock = new DatosLogin("dami@unlam.com", "123");
+
         usuarioMock = mock(Usuario.class);
         when(usuarioMock.getEmail()).thenReturn("dami@unlam.com");
+        when(usuarioMock.getPassword()).thenReturn("123"); // extra seguridad
+
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
-        servicioLoginMock = mock(ServicioLogin.class);
+        when(requestMock.getSession()).thenReturn(sessionMock); // <-- agregado global
 
+        servicioLoginMock = mock(ServicioLogin.class);
 
         // Mocks para ControladorRegistro
         servicioUsuarioMock = mock(RepositorioUsuarioImpl.class);
         servicioLoginImplMock = mock(ServicioLoginImpl.class);
 
-
-        // También inicializá el controladorLogin si no lo hiciste
         controladorLogin = new ControladorLogin(servicioLoginMock);
-
 
     }
 
@@ -73,7 +73,7 @@ public class ControladorLoginTest {
 		verify(sessionMock, times(0)).setAttribute("ROL", "ADMIN");
         verify(sessionMock, never()).setAttribute(eq("usuarioLogueado"), any());
 	}
-	
+
 	@Test
 	public void loginConUsuarioYPasswordCorrectosDeberiaLLevarAHome(){
 		// preparacion
@@ -82,10 +82,10 @@ public class ControladorLoginTest {
 
 		when(requestMock.getSession()).thenReturn(sessionMock);
 		when(servicioLoginMock.consultarUsuario(anyString(), anyString())).thenReturn(usuarioEncontradoMock);
-		
+
 		// ejecucion
 		ModelAndView modelAndView = controladorLogin.validarLogin(datosLoginMock, requestMock);
-		
+
 		// validacion
 		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
 		verify(sessionMock, times(1)).setAttribute("ROL", usuarioEncontradoMock.getRol());
