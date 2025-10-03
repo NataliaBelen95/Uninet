@@ -23,6 +23,7 @@ public class ControladorMiPerfil {
         datosUsuario.setApellido(usuario.getApellido());
         datosUsuario.setCarrera(usuario.getCarrera());
 
+
         ModelMap model = new ModelMap();
         model.addAttribute("usuario", datosUsuario);
 

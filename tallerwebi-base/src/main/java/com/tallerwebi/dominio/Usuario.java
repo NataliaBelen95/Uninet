@@ -10,6 +10,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
     private String rol;
@@ -49,8 +50,8 @@ public class Usuario {
 
 
     /*relacion con carrera*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carrera_id") // FK en tabla Usuario
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "carrera_id")
     private Carrera carrera;
 
 

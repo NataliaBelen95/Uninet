@@ -47,19 +47,22 @@ public class ControladorLogin {
 
         Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
         if (usuarioBuscado != null) {
-            // guardás el rol por separado
-            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
+            // Crear DTO para guardar en sesión
+            DatosUsuario datosUsuario = new DatosUsuario();
+            datosUsuario.setNombre(usuarioBuscado.getNombre());
+            datosUsuario.setApellido(usuarioBuscado.getApellido());
+            datosUsuario.setCarrera(usuarioBuscado.getCarrera());
 
-            // y también guardás el objeto usuario entero //*agregado*//
-            request.getSession().setAttribute("usuarioLogueado", usuarioBuscado);
+
+            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
+            request.getSession().setAttribute("usuarioLogueado", datosUsuario);
 
             return new ModelAndView("redirect:/home");
         } else {
             model.put("error", "Usuario o clave incorrecta");
+            return new ModelAndView("login", model);
         }
-        return new ModelAndView("login", model);
     }
-
 
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {

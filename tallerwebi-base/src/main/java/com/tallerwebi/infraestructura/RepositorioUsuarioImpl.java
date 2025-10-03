@@ -22,11 +22,17 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     @Override
     public Usuario buscarUsuario(String email, String password) {
 
-        final Session session = sessionFactory.getCurrentSession();
-        return (Usuario) session.createCriteria(Usuario.class)
+        Session session = sessionFactory.getCurrentSession();
+
+        Usuario usuario = (Usuario) session.createCriteria(Usuario.class)
                 .add(Restrictions.eq("email", email))
-                .add(Restrictions.eq("password", password))
+                .setMaxResults(1) // asegura que solo devuelva 1
                 .uniqueResult();
+
+        if (usuario != null && usuario.getPassword().equals(password)) {
+            return usuario;
+        }
+        return null;
     }
 
     @Override

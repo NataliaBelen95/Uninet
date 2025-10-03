@@ -32,37 +32,25 @@ public class ControladorHome {
         ModelMap model = new ModelMap();
         HttpSession session = request.getSession();
 
-        // Obtener usuario logueado de la sesión
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        System.out.println("ID de sesión: " + session.getId());
-        System.out.println("Usuario en sesión en /home: " + (usuario != null ? usuario.getEmail() : "NULL"));
-
-        if (usuario != null) {
-            // Crear DTO
-            DatosUsuario datosUsuario = new DatosUsuario();
-            datosUsuario.setNombre(usuario.getNombre());
-            datosUsuario.setApellido(usuario.getApellido());
-            datosUsuario.setCarrera(usuario.getCarrera());
-
-            model.addAttribute("usuario", datosUsuario);
-
-            //  formulario vacío para publicar
-            model.addAttribute("publicacion", new Publicacion());
-
-
-            List<Publicacion> publicaciones = servicioPublicado.findAll();
-            Map<Long, Integer> likesPorPublicacion = new HashMap<>();
-
-            for (Publicacion p : publicaciones) {
-                likesPorPublicacion.put(p.getId(),servicioLike.contarLikes(p));
-            }
-
-            model.addAttribute("publicaciones", publicaciones);
-            model.addAttribute("likesPorPublicacion", likesPorPublicacion);
-
-            return new ModelAndView("home", model);
-        } else {
+        // Obtener usuario logueado de la sesión (DTO)
+        DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
+        if (usuario == null) {
             return new ModelAndView("redirect:/login");
         }
+
+        model.addAttribute("usuario", usuario);
+
+        // Publicaciones y likes
+        List<Publicacion> publicaciones = servicioPublicado.findAll();
+        Map<Long, Integer> likesPorPublicacion = new HashMap<>();
+        for (Publicacion p : publicaciones) {
+            likesPorPublicacion.put(p.getId(), servicioLike.contarLikes(p));
+        }
+
+        model.addAttribute("publicaciones", publicaciones);
+        model.addAttribute("likesPorPublicacion", likesPorPublicacion);
+
+        return new ModelAndView("home", model);
     }
-}
+    }
+
