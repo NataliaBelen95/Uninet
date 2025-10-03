@@ -42,7 +42,7 @@ public class ControladorHome {
             DatosUsuario datosUsuario = new DatosUsuario();
             datosUsuario.setNombre(usuario.getNombre());
             datosUsuario.setApellido(usuario.getApellido());
-            datosUsuario.setCarreras(usuario.getCarreras());
+            datosUsuario.setCarrera(usuario.getCarrera());
 
             model.addAttribute("usuario", datosUsuario);
 

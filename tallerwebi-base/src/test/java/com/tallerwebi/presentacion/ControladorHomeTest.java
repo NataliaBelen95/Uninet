@@ -42,7 +42,9 @@ public class ControladorHomeTest {
         usuarioLogueado = new Usuario();
         usuarioLogueado.setNombre("Ana");
         usuarioLogueado.setApellido("Perez");
-        usuarioLogueado.setCarreras(List.of(new Carrera()));
+        Carrera c1 = new Carrera();
+        c1.setNombre("Carrera prueba");
+        usuarioLogueado.setCarrera(c1);
 
         // Simular sesión
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(usuarioLogueado);
@@ -76,8 +78,8 @@ public class ControladorHomeTest {
         assertNotNull(datosUsuario);
         assertEquals("Ana", datosUsuario.getNombre());
         assertEquals("Perez", datosUsuario.getApellido());
-        assertNotNull(datosUsuario.getCarreras());
-        assertFalse(datosUsuario.getCarreras().isEmpty());
+        assertEquals("Carrera prueba", datosUsuario.getCarrera());
+
 
         // Verificar publicaciones
         List<Publicacion> publicaciones = (List<Publicacion>) model.get("publicaciones");

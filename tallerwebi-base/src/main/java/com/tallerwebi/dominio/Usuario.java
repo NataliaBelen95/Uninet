@@ -49,13 +49,9 @@ public class Usuario {
 
 
     /*relacion con carrera*/
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "usuario_carrera",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "carrera_id")
-    )
-    private List<Carrera> carreras = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "carrera_id") // FK en tabla Usuario
+    private Carrera carrera;
 
 
 
@@ -120,12 +116,12 @@ public class Usuario {
         return dni;
   }
 
-  public void setCarreras(List<Carrera> carreras) {
-        this.carreras = carreras;
+  public void setCarrera(Carrera carrera) {
+        this.carrera = carrera;
   }
 
-  public List<Carrera> getCarreras() {
-        return carreras;
+  public Carrera getCarrera() {
+        return carrera;
   }
 
     public void darLike(Like like) {

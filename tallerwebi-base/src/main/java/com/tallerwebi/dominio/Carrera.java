@@ -22,7 +22,7 @@ public class Carrera {
     private List<Materia> materias = new ArrayList<>();
 
 
-    @ManyToMany(mappedBy = "carreras")
+    @OneToMany(mappedBy = "carrera")
     private List<Usuario> usuarios= new ArrayList<>();
 
     public Long getId() {

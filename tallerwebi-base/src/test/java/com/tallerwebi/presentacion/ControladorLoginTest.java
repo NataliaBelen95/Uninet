@@ -27,17 +27,17 @@ public class ControladorLoginTest {
 	private HttpServletRequest requestMock;
 	private HttpSession sessionMock;
 	private ServicioLogin servicioLoginMock;
-
+    private RepositorioUsuario repositorioUsuarioMock;
 
 
     private ServicioLoginImpl servicioLoginImplMock;
     private RepositorioUsuarioImpl servicioUsuarioMock;
-    private ServicioLoginMemoria  servicioLoginMemoria;
+
 
 
 	@BeforeEach
     public void init(){
-        servicioLoginMemoria = new ServicioLoginMemoria();
+
         datosLoginMock = new DatosLogin("dami@unlam.com", "123");
 
         usuarioMock = mock(Usuario.class);
@@ -49,12 +49,13 @@ public class ControladorLoginTest {
         when(requestMock.getSession()).thenReturn(sessionMock); // <-- agregado global
 
         servicioLoginMock = mock(ServicioLogin.class);
+        repositorioUsuarioMock = mock(RepositorioUsuario.class);
 
         // Mocks para ControladorRegistro
         servicioUsuarioMock = mock(RepositorioUsuarioImpl.class);
         servicioLoginImplMock = mock(ServicioLoginImpl.class);
 
-        controladorLogin = new ControladorLogin(servicioLoginMock);
+        controladorLogin = new ControladorLogin(servicioLoginMock, repositorioUsuarioMock);
 
     }
 

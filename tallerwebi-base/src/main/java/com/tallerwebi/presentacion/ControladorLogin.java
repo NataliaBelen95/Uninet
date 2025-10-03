@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
+    private RepositorioUsuario repositorioUsuario;
 
     /* hacer un controlador Home y ordenar Luego ***/
     @Autowired
@@ -27,8 +28,9 @@ public class ControladorLogin {
           /******     ***/
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin) {
+    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario) {
         this.servicioLogin = servicioLogin;
+        this.repositorioUsuario = repositorioUsuario;
     }
 
     @RequestMapping("/login")
@@ -65,7 +67,7 @@ public class ControladorLogin {
 
         try {
             // Asignar las carreras al usuario directamente
-            servicioLogin.asignarCarrerasPorNombre(usuario, usuario.getCarrerasNombres());
+            repositorioUsuario.setearCarreraAUsuario(usuario, usuario.getCarrera());
 
             // Registrar usuario
             servicioLogin.registrar(usuario);

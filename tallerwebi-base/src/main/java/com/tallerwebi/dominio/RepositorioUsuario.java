@@ -10,7 +10,6 @@ public interface RepositorioUsuario {
     void guardar(Usuario usuario);
     Usuario buscar(String email);
     void modificar(Usuario usuario);
+    void setearCarreraAUsuario(Usuario usuario, Carrera carrera);
 
-
-    Carrera buscarCarreraPorNombre(String nombre);
 }

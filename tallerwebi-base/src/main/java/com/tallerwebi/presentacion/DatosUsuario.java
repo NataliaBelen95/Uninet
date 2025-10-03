@@ -8,7 +8,8 @@ public class DatosUsuario {
 
     private String nombre;
     private String apellido;
-    private List<Carrera> carreras;
+    private Carrera carrera;
+
 
 
     public String getNombre() {
@@ -27,13 +28,13 @@ public class DatosUsuario {
         this.apellido= apellido;
     }
 
-    public List<Carrera> getCarreras() {
-        return carreras;
+    public Carrera getCarrera() {
+        return carrera;
     }
 
 
-    public void setCarreras(List<Carrera> carreras) {
-        this.carreras = carreras;
+    public void setCarrera(Carrera carrera) {
+        this.carrera = carrera;
     }
 }
 

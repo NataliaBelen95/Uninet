@@ -47,11 +47,11 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public Carrera buscarCarreraPorNombre(String nombre) {
-        final Session session = sessionFactory.getCurrentSession();
-        return (Carrera) session.createCriteria(Carrera.class)
-                .add(Restrictions.eq("nombre", nombre))
-                .uniqueResult();
+    public void setearCarreraAUsuario(Usuario usuario, Carrera carrera) {
+       usuario.setCarrera(carrera);
+
     }
+
+
 
 }

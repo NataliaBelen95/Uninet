@@ -27,6 +27,7 @@ public class ControladorPublicacionTest {
     private ControladorPublicacion controladorPublicacion;
     private ServicioPublicado servicioPublicadoMock;
     private ServicioLike servicioLikesMock;
+    private RepositorioUsuario repositorioUsuarioMock;
 
     @BeforeEach
     public void init() {
@@ -38,7 +39,7 @@ public class ControladorPublicacionTest {
 
         servicioLikesMock = mock(ServicioLike.class);
         servicioLoginMock = mock(ServicioLogin.class);
-        controladorLogin = new ControladorLogin(servicioLoginMock);
+        controladorLogin = new ControladorLogin(servicioLoginMock, repositorioUsuarioMock);
 
 
         publicMock = mock(Publicacion.class);
