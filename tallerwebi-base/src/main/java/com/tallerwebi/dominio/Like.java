@@ -3,6 +3,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "Likes")
 public class Like {
 
     @Id
