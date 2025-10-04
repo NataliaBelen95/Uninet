@@ -15,116 +15,78 @@ import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+
 public class ControladorPublicacionTest {
 
-    private ControladorLogin controladorLogin;
-    private Usuario usuarioMock;
-    private DatosLogin datosLoginMock;
-    private HttpServletRequest requestMock;
-    private HttpSession sessionMock;
-    private ServicioLogin servicioLoginMock;
-    private Publicacion publicMock;
     private ControladorPublicacion controladorPublicacion;
     private ServicioPublicado servicioPublicadoMock;
     private ServicioLike servicioLikesMock;
-    private RepositorioUsuario repositorioUsuarioMock;
+    private ServicioLogin servicioLoginMock;
+    private HttpServletRequest requestMock;
+    private HttpSession sessionMock;
+    private Usuario usuarioMock;
+    private DatosUsuario datosUsuarioMock;
+    private ServicioUsuario servicioUsuarioMock;
 
     @BeforeEach
     public void init() {
-        datosLoginMock = new DatosLogin("dami@unlam.com", "123");
-        usuarioMock = mock(Usuario.class);
-        when(usuarioMock.getEmail()).thenReturn("dami@unlam.com");
+        servicioPublicadoMock = mock(ServicioPublicado.class);
+        servicioLikesMock = mock(ServicioLike.class);
+        servicioUsuarioMock = mock(ServicioUsuario.class);
+
+        controladorPublicacion = new ControladorPublicacion(
+                servicioPublicadoMock,
+                servicioLikesMock,
+                servicioUsuarioMock
+        );
+
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
 
-        servicioLikesMock = mock(ServicioLike.class);
-        servicioLoginMock = mock(ServicioLogin.class);
-        controladorLogin = new ControladorLogin(servicioLoginMock, repositorioUsuarioMock);
+        usuarioMock = mock(Usuario.class);
+        when(usuarioMock.getId()).thenReturn(42L);
 
+        datosUsuarioMock = mock(DatosUsuario.class);
+        when(datosUsuarioMock.getId()).thenReturn(42L);
 
-        publicMock = mock(Publicacion.class);
-        when(publicMock.getDescripcion()).thenReturn("Lo que se me cante");
-
-        servicioPublicadoMock = mock(ServicioPublicado.class);
-        controladorPublicacion = new ControladorPublicacion(servicioPublicadoMock, servicioLikesMock);
-
-
-
-
-    }
-
-    @Test
-    public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida { /*cambio a Home porque es donde se va a ver*/
-        // preparacion
-        Publicacion publicacionMock = mock(Publicacion.class);
-
-
-        // Mockear sesión para que el controlador obtenga el usuario
         when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(usuarioMock);
-
-        // ejecucion
-        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publicacionMock,  requestMock);
-
-        // validacion
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
+        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
     }
 
-
-    /*que se muestre en nuevo-publicacion */
     @Test
-    public void queSeRedirijaAlHomeDespuesDePublicar() throws Exception {
+    public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
         // Preparación
-        Publicacion publiMock = mock(Publicacion.class);
-        Usuario userMock = mock(Usuario.class);
-        when(publiMock.getDescripcion()).thenReturn("Hola mundo");
-        when(publiMock.getUsuario()).thenReturn(userMock);
-        when(servicioPublicadoMock.publicacionEntera(anyString(), any())).thenReturn(publiMock);
-
-        // Mockear sesión con usuario logueado
-        when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(userMock);
+        Publicacion publicacionMock = mock(Publicacion.class);
+        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
 
         // Ejecución
-        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publiMock, requestMock);
+        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publicacionMock, requestMock);
 
         // Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
+        verify(publicacionMock).setUsuario(usuarioMock);
+        verify(servicioPublicadoMock).realizar(publicacionMock);
     }
-
 
     @Test
     public void poderDarLikeAUnaPublicacionYQueSeRefleje() {
-        // Mocks
-        Usuario usuarioMock = mock(Usuario.class);
         Publicacion publicacionMock = mock(Publicacion.class);
-        HttpServletRequest requestMock = mock(HttpServletRequest.class);
-        HttpSession sessionMock = mock(HttpSession.class);
+        when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
 
-        //Simular usuario logueado
+        // Datos del usuario en sesión
+        when(datosUsuarioMock.getId()).thenReturn(42L);
         when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(usuarioMock);
+        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
 
+        // Mock del servicio por id (mismo id que la sesión)
+        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
 
-        // Simular servicio Publis
-        when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
-
-
-        // Simular servicio de publicaciones
-        when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
-
-        // Ejecutar
+        // Ejecución
         ModelAndView modelAndView = controladorPublicacion.darLike(5L, requestMock);
 
-        // Verificar que se llamó al método darLike del servicio
+        // Validación
         verify(servicioLikesMock).darLike(usuarioMock, publicacionMock);
-        // También podrías verificar que el controlador redirige al endpoint de likes
         assertEquals("redirect:/home", modelAndView.getViewName());
     }
-
-
-
-
-
 
 }

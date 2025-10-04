@@ -7,6 +7,8 @@ public class DatosUsuario {
     private String nombre;
     private String apellido;
     private Carrera carrera; // ahora pasamos la entidad completa
+    private String email;
+    private Long id ;
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -16,4 +18,10 @@ public class DatosUsuario {
 
     public Carrera getCarrera() { return carrera; }
     public void setCarrera(Carrera carrera) { this.carrera = carrera; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id ;}
 }

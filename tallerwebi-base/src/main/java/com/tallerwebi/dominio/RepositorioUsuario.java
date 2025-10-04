@@ -11,5 +11,5 @@ public interface RepositorioUsuario {
     Usuario buscar(String email);
     void modificar(Usuario usuario);
     void setearCarreraAUsuario(Usuario usuario, Carrera carrera);
-
+    Usuario buscarPorId(long id);
 }

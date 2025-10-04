@@ -28,9 +28,6 @@ public class ControladorLoginTest {
 	private HttpSession sessionMock;
 	private ServicioLogin servicioLoginMock;
     private RepositorioUsuario repositorioUsuarioMock;
-
-
-    private ServicioLoginImpl servicioLoginImplMock;
     private RepositorioUsuarioImpl servicioUsuarioMock;
 
 
@@ -53,7 +50,7 @@ public class ControladorLoginTest {
 
         // Mocks para ControladorRegistro
         servicioUsuarioMock = mock(RepositorioUsuarioImpl.class);
-        servicioLoginImplMock = mock(ServicioLoginImpl.class);
+
 
         controladorLogin = new ControladorLogin(servicioLoginMock, repositorioUsuarioMock);
 

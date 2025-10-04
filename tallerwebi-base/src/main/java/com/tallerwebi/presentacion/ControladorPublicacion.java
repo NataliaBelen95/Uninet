@@ -14,67 +14,41 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class ControladorPublicacion {
 
-    private ServicioPublicado servicioPublicado;
-    private ServicioLike servicioLike;
+    private final ServicioPublicado servicioPublicado;
+    private final ServicioLike servicioLike;
+    private final ServicioUsuario servicioUsuario;
 
     @Autowired
-    public ControladorPublicacion(ServicioPublicado servicioPublicado, ServicioLike servicioLike) {
+    public ControladorPublicacion(ServicioPublicado servicioPublicado,
+                                  ServicioLike servicioLike,
+                                  ServicioUsuario servicioUsuario) {
         this.servicioPublicado = servicioPublicado;
         this.servicioLike = servicioLike;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @RequestMapping(path = "/publicaciones", method = RequestMethod.POST)
     public ModelAndView agregarPublicacion(@ModelAttribute("publicacion") Publicacion publicacion,
                                            HttpServletRequest request) throws PublicacionFallida {
-        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
-        if (usuario != null) {
-            publicacion.setUsuario(usuario); // asociar el usuario
+        if (datosUsuario != null) {
+            Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId()); // ✅ usa ServicioLogin
+            publicacion.setUsuario(usuario);
+            servicioPublicado.realizar(publicacion);
         }
 
-        servicioPublicado.realizar(publicacion);
-
-        return new ModelAndView("redirect:/home"); // vuelve al home
-    }
-//
-//    @RequestMapping(path = "/nuevo-publicacion", method = RequestMethod.GET)
-//    public ModelAndView mostrarPublicacion(HttpServletRequest request) {
-//        ModelMap model = new ModelMap();
-//
-//        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-//        if (usuario != null) {
-//            DatosUsuario datosUsuario = new DatosUsuario();
-//            datosUsuario.setNombre(usuario.getNombre());
-//            datosUsuario.setApellido(usuario.getApellido());
-//            datosUsuario.setCarreras(usuario.getCarreras());
-//
-//            model.addAttribute("usuario", datosUsuario);
-//        } else {
-//            return new ModelAndView("redirect:/login");
-//        }
-//
-//        model.put("publicacion", new Publicacion());
-//        model.put("publicaciones", servicioPublicado.findAll()); // opcional si querés mostrar publicaciones
-//
-//        return new ModelAndView("home", model);
-//    }
-@RequestMapping(path = "/publicacion/darLike", method = RequestMethod.POST)
-public ModelAndView darLike(@RequestParam Long id, HttpServletRequest request) {
-    Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-
-    if (usuario == null) {
-        // Redirigir al login si no hay usuario
-        return new ModelAndView("redirect:/login");
+        return new ModelAndView("redirect:/home");
     }
 
-    Publicacion publicacion = servicioPublicado.obtenerPublicacionPorId(id);
-    if (publicacion != null) {
-        servicioLike.darLike(usuario, publicacion);
-        System.out.println("Like de usuario " + usuario.getEmail() + " a publicación " + publicacion.getId());
+    @RequestMapping("/darLike/{id}")
+    public ModelAndView darLike(@PathVariable Long id, HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos != null) {
+            Usuario usuario = servicioUsuario.buscarPorId(datos.getId()) ;//
+            Publicacion publicacion = servicioPublicado.obtenerPublicacionPorId(id);
+            servicioLike.darLike(usuario, publicacion);
+        }
+        return new ModelAndView("redirect:/home");
     }
-
-    // Redirect para evitar repost del form
-    return new ModelAndView("redirect:/home");
-}
-
 }

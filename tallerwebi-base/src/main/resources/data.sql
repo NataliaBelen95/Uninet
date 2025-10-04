@@ -31,3 +31,5 @@ INSERT INTO Usuario(id, email, password, rol, activo, nombre, apellido, carrera_
 VALUES (NULL, 'test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez', 1);
 INSERT INTO Usuario(id, email, password, rol, activo, nombre, apellido, carrera_id)
 VALUES (NULL, 'admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 3);
+
+SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;

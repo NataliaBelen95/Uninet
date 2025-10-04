@@ -20,11 +20,12 @@ import java.util.stream.Collectors;
 public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
-    private RepositorioUsuario repositorioUsuario;
+
 
     /* hacer un controlador Home y ordenar Luego ***/
     @Autowired
-    private ServicioPublicado servicioPublicado;
+
+    private RepositorioUsuario repositorioUsuario;
           /******     ***/
 
     @Autowired
@@ -51,11 +52,13 @@ public class ControladorLogin {
             DatosUsuario datosUsuario = new DatosUsuario();
             datosUsuario.setNombre(usuarioBuscado.getNombre());
             datosUsuario.setApellido(usuarioBuscado.getApellido());
+            datosUsuario.setEmail(usuarioBuscado.getEmail());
             datosUsuario.setCarrera(usuarioBuscado.getCarrera());
+            datosUsuario.setId(usuarioBuscado.getId());
 
 
-            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
             request.getSession().setAttribute("usuarioLogueado", datosUsuario);
+            request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
 
             return new ModelAndView("redirect:/home");
         } else {

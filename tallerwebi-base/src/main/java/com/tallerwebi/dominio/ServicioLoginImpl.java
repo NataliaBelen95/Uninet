@@ -30,7 +30,9 @@ public class ServicioLoginImpl implements ServicioLogin {
         }
         repositorioUsuario.guardar(usuario);
     }
-
-
+    @Transactional
+    public Usuario buscarPorEmail(String email) {
+        return repositorioUsuario.buscar(email);
+    }
 
 }
