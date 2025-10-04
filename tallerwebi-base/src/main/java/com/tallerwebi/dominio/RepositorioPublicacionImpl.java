@@ -14,11 +14,7 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
     @Override
     public Publicacion publicacion(String descripcion, Usuario usuario) throws UsuarioExistente {
         Publicacion p = new Publicacion();
-       /* if (buscarPublicacionExistente(p) != null) {  // CREA P VACIO
-            throw new UsuarioExistente();
-        }
-        publicaciones.add(p);
-        return p; */
+
         p.setDescripcion(descripcion);
         p.setUsuario(usuario);
 

@@ -26,12 +26,14 @@ public class ControladorLogin {
     @Autowired
 
     private RepositorioUsuario repositorioUsuario;
+    private ServicioCarrera servicioCarrera;
           /******     ***/
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario) {
+    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario, ServicioCarrera servicioCarrera) {
         this.servicioLogin = servicioLogin;
         this.repositorioUsuario = repositorioUsuario;
+        this.servicioCarrera = servicioCarrera;
     }
 
     @RequestMapping("/login")
@@ -94,122 +96,14 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
         model.put("usuario", new Usuario());
 
+        // Traer todas las carreras desde la base
 
-
-        List<Carrera> todasLasCarreras = new ArrayList<>();
-
-        // Carrera 1
-        Carrera c1 = new Carrera();
-        c1.setNombre("Licenciatura en Administración");
-
-        Materia m1 = new Materia();
-        m1.setNombre("Contabilidad");
-        m1.setCodigo("ADM101");
-        m1.setComision("A");
-
-        Materia m2 = new Materia();
-        m2.setNombre("Economía");
-        m2.setCodigo("ADM102");
-        m2.setComision("A");
-
-        Materia m3 = new Materia();
-        m3.setNombre("Matemática");
-        m3.setCodigo("ADM103");
-        m3.setComision("B");
-
-        c1.setMaterias(Arrays.asList(m1, m2, m3));
-        todasLasCarreras.add(c1);
-
-        // Carrera 2
-        Carrera c2 = new Carrera();
-        c2.setNombre("Licenciatura en Comercio Internacional");
-
-        Materia m4 = new Materia();
-        m4.setNombre("Comercio Exterior");
-        m4.setCodigo("COM101");
-        m4.setComision("A");
-
-        Materia m5 = new Materia();
-        m5.setNombre("Marketing");
-        m5.setCodigo("COM102");
-        m5.setComision("A");
-
-        Materia m6 = new Materia();
-        m6.setNombre("Finanzas");
-        m6.setCodigo("COM103");
-        m6.setComision("B");
-
-        c2.setMaterias(Arrays.asList(m4, m5, m6));
-        todasLasCarreras.add(c2);
-
-        // Carrera 3
-        Carrera c3 = new Carrera();
-        c3.setNombre("Licenciatura en Economía");
-
-        Materia m7 = new Materia();
-        m7.setNombre("Microeconomía");
-        m7.setCodigo("ECO101");
-        m7.setComision("A");
-
-        Materia m8 = new Materia();
-        m8.setNombre("Macroeconomía");
-        m8.setCodigo("ECO102");
-        m8.setComision("A");
-
-        Materia m9 = new Materia();
-        m9.setNombre("Estadística");
-        m9.setCodigo("ECO103");
-        m9.setComision("B");
-
-        c3.setMaterias(Arrays.asList(m7, m8, m9));
-        todasLasCarreras.add(c3);
-
-        // Carrera 4
-        Carrera c4 = new Carrera();
-        c4.setNombre("Contador Público");
-
-        Materia m10 = new Materia();
-        m10.setNombre("Contabilidad Avanzada");
-        m10.setCodigo("CP101");
-        m10.setComision("A");
-
-        Materia m11 = new Materia();
-        m11.setNombre("Auditoría");
-        m11.setCodigo("CP102");
-        m11.setComision("A");
-
-        Materia m12 = new Materia();
-        m12.setNombre("Impuestos");
-        m12.setCodigo("CP103");
-        m12.setComision("B");
-
-        c4.setMaterias(Arrays.asList(m10, m11, m12));
-        todasLasCarreras.add(c4);
-
-        // Carrera 5
-        Carrera c5 = new Carrera();
-        c5.setNombre("Ingeniería Civil");
-
-        Materia m13 = new Materia();
-        m13.setNombre("Mecánica");
-        m13.setCodigo("IC101");
-        m13.setComision("A");
-
-        Materia m14 = new Materia();
-        m14.setNombre("Estructuras");
-        m14.setCodigo("IC102");
-        m14.setComision("A");
-
-        Materia m15 = new Materia();
-        m15.setNombre("Hidráulica");
-        m15.setCodigo("IC103");
-        m15.setComision("B");
-
-        c5.setMaterias(Arrays.asList(m13, m14, m15));
-        todasLasCarreras.add(c5);
-
-        model.put("todasLasCarreras", todasLasCarreras);
-
+        List<Carrera> carreras = servicioCarrera.buscarTodas();
+        System.out.println("📚 Carreras disponibles:");
+        for (Carrera c : carreras) {
+            System.out.println("ID: " + c.getId() + " - Nombre: " + c.getNombre());
+        }
+        model.put("todasLasCarreras", carreras);
         return new ModelAndView("nuevo-usuario", model);
     }
 

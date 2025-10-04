@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>Taller Web I</title>
-
+    <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
     <link rel="stylesheet" href="../../../resources/core/css/registrarse.css">
 
 </head>
@@ -34,13 +34,14 @@
           </div>
 
             <div class="form-group">
-                <label>Carreras (máx. 2)</label>
-                <div th:each="carrera : ${todasLasCarreras}" class="checkbox-group">
-                    <input type="checkbox"
-                           th:value="${carrera.nombre}"
-                           th:field="*{carrerasNombres}" />
-                    <span th:text="${carrera.nombre}"></span>
-                </div>
+                <label for="carrera">Carrera</label>
+                <select th:field="*{carrera.id}" id="carrera" required>
+                    <option value="" disabled selected>Seleccionar una carrera</option>
+                    <option th:each="carrera : ${todasLasCarreras}"
+                            th:value="${carrera.id}"
+                            th:text="${carrera.nombre}">
+                    </option>
+                </select>
             </div>
 
             <div class="form-group">
