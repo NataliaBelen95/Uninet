@@ -1,0 +1,75 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Source Sans 3", sans-serif;
+}
+
+.mainformularioRegistrarse {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #18181B;
+}
+
+
+.contenedor-form {
+  width: 450px;
+  background: #2BA664;
+  padding: 30px;
+  border-radius: 8px;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+.form-group label {
+  margin-bottom: 5px;
+
+  color: #18181B;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  padding: 8px;
+  border: 1px solid #18181B;
+  border-radius: 4px;
+  background: #28874F;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #fff;
+}
+
+.buttonRegistrarse {
+  width: 100%;
+  padding: 10px;
+  background:#fff;
+  color: #18181B;
+  border: none;
+  border-radius: 4px;
+  font-size:15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #2BA664;
+  transform: scale(1.05); /* zoom leve, 5% más grande */
+  box-shadow: 0 0 5px rgba(43, 166, 100, 0.5); /* opcional, para resaltar más */
+}
+.buttonRegistrarse:hover {
+  background: #e0e0e0;
+}

@@ -94,6 +94,8 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
         model.put("usuario", new Usuario());
 
+
+
         List<Carrera> todasLasCarreras = new ArrayList<>();
 
         // Carrera 1
