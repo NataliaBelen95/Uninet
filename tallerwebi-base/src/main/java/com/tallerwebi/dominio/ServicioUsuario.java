@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional  // Esto asegura que cualquier operación de Hibernate funcione con sesión y transacción
 public class ServicioUsuario {
@@ -20,6 +22,10 @@ public class ServicioUsuario {
 
     public Usuario buscarPorId(long id) {
         return repositorioUsuario.buscarPorId(id);
+    }
+
+    public List<Usuario> mostrarTodos() {
+        return repositorioUsuario.buscarTodos();
     }
 
 }

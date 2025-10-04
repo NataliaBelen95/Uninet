@@ -3,6 +3,8 @@ package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RepositorioUsuario {
 
@@ -12,4 +14,5 @@ public interface RepositorioUsuario {
     void modificar(Usuario usuario);
     void setearCarreraAUsuario(Usuario usuario, Carrera carrera);
     Usuario buscarPorId(long id);
+    List<Usuario> buscarTodos();
 }

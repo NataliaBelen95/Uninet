@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository("repositoryUsuario")
 
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
@@ -29,6 +31,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         Usuario usuario = (Usuario) session.createCriteria(Usuario.class)
                 .add(Restrictions.eq("email", email))
                 .setMaxResults(1) // asegura que solo devuelva 1
+                .add(Restrictions.eq("password", password))
                 .uniqueResult();
 
         if (usuario != null && usuario.getPassword().equals(password)) {
@@ -64,7 +67,14 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         public Usuario buscarPorId(long id) {
             return sessionFactory.getCurrentSession().get(Usuario.class, id);
     }
+
+    public List<Usuario> buscarTodos() {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Usuario", Usuario.class)
+                .list();
     }
+
+}
 
 
 

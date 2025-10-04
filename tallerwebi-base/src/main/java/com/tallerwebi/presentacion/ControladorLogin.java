@@ -41,6 +41,7 @@ public class ControladorLogin {
 
         ModelMap modelo = new ModelMap();
         modelo.put("datosLogin", new DatosLogin());
+
         return new ModelAndView("login", modelo);
     }
 
@@ -74,11 +75,9 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
 
         try {
-            // Asignar las carreras al usuario directamente
-            repositorioUsuario.setearCarreraAUsuario(usuario, usuario.getCarrera());
-
-            // Registrar usuario
+            usuario.setRol("USER");
             servicioLogin.registrar(usuario);
+
 
         } catch (UsuarioExistente e) {
             model.put("error", "El usuario ya existe");
@@ -89,7 +88,9 @@ public class ControladorLogin {
         }
 
         // Redirigir al login si todo sale bien
+        System.out.println("Registrando usuario: " + usuario.getEmail() + " - pass=" + usuario.getPassword());
         return new ModelAndView("redirect:/login");
+
     }
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
