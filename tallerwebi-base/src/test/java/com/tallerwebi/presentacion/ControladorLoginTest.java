@@ -89,9 +89,9 @@ public class ControladorLoginTest {
 
 		// validacion
 		assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
-		verify(sessionMock, times(1)).setAttribute("ROL", usuarioEncontradoMock.getRol());
+        verify(sessionMock).setAttribute(eq("ROL"), eq("ADMIN"));
         // <-- Verificar que el usuario completo se guardó en sesión
-        verify(sessionMock, times(1)).setAttribute("usuarioLogueado", usuarioEncontradoMock);
+        verify(sessionMock).setAttribute(eq("usuarioLogueado"), any(DatosUsuario.class));
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class ControladorLoginTest {
         ModelAndView modelAndView = controladorLogin.validarLogin(datosLoginMock, requestMock);
 
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
-        verify(sessionMock, times(1)).setAttribute("ROL", "USER");
-        verify(sessionMock, times(1)).setAttribute("usuarioLogueado", usuarioEncontradoMock);
+        verify(sessionMock).setAttribute(eq("ROL"), eq("USER"));
+        verify(sessionMock).setAttribute(eq("usuarioLogueado"), any(DatosUsuario.class));
     }
 }
