@@ -1,0 +1,147 @@
+body {
+  background-color: #121212;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+* {
+  box-sizing: border-box;
+}
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+.logo {
+  width: 18rem;
+}
+
+.contenedor {
+  background-color: #1E1E1E;
+  width: 360px;
+  border-radius: 0.8rem;
+  padding: 0 2.5rem 2rem;
+  box-shadow: 0 8px 24px #00000066;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  width: 100%;
+  align-items: center;
+}
+
+.contenedor h3 {
+  color: #F5F5F5;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+input {
+  background-color: #2B2B2B;
+  border: 1px solid #2B2B2B;
+  border-radius: 0.4rem;
+  width: 100%;
+  height: 45px;
+  padding: 0 0.8rem;
+  color: #E0E0E0;
+  font-size: 15px;
+  outline: none;
+}
+input:focus {
+  border: 1px solid #27AE60;
+}
+input::placeholder {
+  color: #9E9E9E;
+}
+
+.btn {
+  background-color: #27AE60;
+  color: #F5F5F5;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.4rem;
+  width: 100%;
+  height: 45px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn:hover {
+  background-color: #219653;
+}
+.btn:disabled {
+  background-color: #1f5133;
+  cursor: not-allowed;
+}
+
+a {
+  text-decoration: none;
+  color: #BDBDBD;
+  font-size: 14px;
+}
+a:hover {
+  color: #E0E0E0;
+}
+
+.separador {
+  width: 80%;
+  height: 1px;
+  background-color: #333333;
+  margin: 0.5rem;
+}
+
+.contenedor_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+/* Celulares chicos (hasta 480px) */
+@media (max-width: 480px) {
+  .contenedor {
+    width: 85%;
+    padding: 2rem 1.2rem;
+  }
+  .logo {
+    width: 140px;
+  }
+}
+
+/* Tablets pequeñas (481px a 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .contenedor {
+    width: 60%;
+  }
+}
+
+/* Tablets grandes (769px a 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .contenedor {
+    width: 45%;
+  }
+}
+
+/* Notebooks y escritorios (1025px en adelante) */
+@media (min-width: 1025px) {
+  .contenedor {
+    width: 22.5rem;
+  }
+}
+
+
+
+
