@@ -1,7 +1,7 @@
---DROP DATABASE tallerwebi;
---CREATE DATABASE tallerwebi;
+CREATE DATABASE IF NOT EXISTS tallerwebi;
+USE tallerwebi;
 
-INSERT IGNORE INTO Carrera(nombre) VALUES
+INSERT INTO Carrera(nombre) VALUES
 ('Tecnicatura en Desarrollo Web'),
 ('Licenciatura en Sistemas de Información'),
 ('Profesorado en Matemática'),
