@@ -4,21 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Taller Web I</title>
-    <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
-    <link rel="stylesheet" href="../../../resources/core/css/registrarse.css">
+  <title>Registrarse</title>
 
+    <link rel="stylesheet" th:href="@{/css/registrar.css}"/>
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/registrar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-
-<main role="main" class="mainformularioRegistrarse">
-<div class="contendor-info-registrarse">
-<!--    <p>Comunidad estudiantil de la Universidad Nacional de La Matanza</p>-->
-</div>
-
-    <div id="loginbox"  class="contenedor-form">
+<nav>
+    <img class="logo" th:src="@{/imagenes/logo.png}">
+    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
+</nav>
+<main role="main" class="contenedor">
+    <div id="loginbox" style="margin-top:50px;" class="contenedor_form">
         <form action="#" th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
 
 

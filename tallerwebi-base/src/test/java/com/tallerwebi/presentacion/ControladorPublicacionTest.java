@@ -59,13 +59,20 @@ public class ControladorPublicacionTest {
         Publicacion publicacionMock = mock(Publicacion.class);
         when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
 
+        // Mockear sesión con usuario logueado
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(userMock);
+
         // Ejecución
         ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publicacionMock, requestMock);
 
         // Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
+<<<<<<< HEAD
         verify(publicacionMock).setUsuario(usuarioMock);
         verify(servicioPublicadoMock).realizar(publicacionMock);
+=======
+>>>>>>> 5cd0c58d320301ea18b98323a1ab8339c168bfc3
     }
 
     @Test
@@ -86,6 +93,10 @@ public class ControladorPublicacionTest {
 
         // Validación
         verify(servicioLikesMock).darLike(usuarioMock, publicacionMock);
+<<<<<<< HEAD
+=======
+        // También podrías verificar que el controlador redirige al endpoint de likes
+>>>>>>> 5cd0c58d320301ea18b98323a1ab8339c168bfc3
         assertEquals("redirect:/home", modelAndView.getViewName());
     }
 
