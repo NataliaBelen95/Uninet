@@ -18,7 +18,8 @@
 
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
     <link rel="stylesheet" href="../../../resources/core/css/home.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
 </head>
 
@@ -77,15 +78,14 @@
             <button><i class="material-icons">attach_file</i></button>
             <button><i class="material-icons">visibility</i></button>
 
-               <button name="nueva-publicacion">Publicar</button>
+               <button name="nueva-publicacion"><i class="material-icons-outlined">publish</i> </button>
 
         </div>
         </form>
     </div>
     <div class="botones-quePublisVer">
-        <div class="botones-ver">
-            <button>Toda La Universidad</button>
-            <button>Para Ti</button>
+        <div class="ordenar-por">
+            <p class="ordernar-por_text">Ordenar Por</p> <span><button><i class="material-icons-outlined">arrow_drop_down</i></button></span>
         </div>
         <div class="container_puicacionesUsuarios" th:each="publi : ${publicaciones}">
             <h2 th:text="${publi.usuario?.nombre}"> </h2>
@@ -93,10 +93,14 @@
 
 
             </p>
-            <a href="#" class="ver-mas">Ver más</a>
+
             <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
-                <button type="submit"><i class="material-icons">recommend</i></button>
+                <div class="botones_acciones">
+                <button type="submit" class="botones_acciones-b boton-mg"><i class="material-icons-outlined">recommend</i>Me gusta</button>
                 <span th:text="${likesPorPublicacion[publi.id]}"></span>
+                <button type="submit" class="botones_acciones-b boton-mg"><i class="material-icons-outlined">comment</i>Comentar</button>
+                <button type="submit" class="botones_acciones-b boton-mg"><i class="material-icons-outlined">bookmark_border</i>Guardar</button>
+                </div>
             </form>
     </div>
     </div>
