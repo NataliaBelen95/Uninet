@@ -59,10 +59,6 @@ public class ControladorPublicacionTest {
         Publicacion publicacionMock = mock(Publicacion.class);
         when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
 
-        // Mockear sesión con usuario logueado
-        when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(userMock);
-
         // Ejecución
         ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publicacionMock, requestMock);
 
