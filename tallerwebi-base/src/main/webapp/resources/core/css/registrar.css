@@ -110,7 +110,7 @@ label {
 
 .carreras {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.8rem 1.5rem;
   justify-content: flex-start;
   align-items: flex-start;
@@ -119,9 +119,11 @@ label {
 
 .carrera {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   flex-basis: 45%;
+  color: #BDBDBD;
 }
 
 .check {
@@ -129,6 +131,7 @@ label {
   height: 1rem;
   accent-color: #27AE60;
   cursor: pointer;
+  color: #BDBDBD;
 }
 
 @media (max-width: 1200px) {
