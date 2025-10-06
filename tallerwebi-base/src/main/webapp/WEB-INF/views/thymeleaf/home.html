@@ -94,8 +94,7 @@
 
             </p>
             <a href="#" class="ver-mas">Ver más</a>
-            <form th:action="@{/publicacion/darLike}" method="post">
-                <input type="hidden" name="id" th:value="${publi.id}" />
+            <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
                 <button type="submit"><i class="material-icons">recommend</i></button>
                 <span th:text="${likesPorPublicacion[publi.id]}"></span>
             </form>
