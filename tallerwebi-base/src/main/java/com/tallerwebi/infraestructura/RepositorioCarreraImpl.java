@@ -35,7 +35,7 @@ public class RepositorioCarreraImpl implements RepositorioCarrera {
 
     public List<Carrera> buscarTodas() {
         return sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT c FROM Carrera c ORDER BY c.nombre", Carrera.class)
+                .createQuery("from Carrera", Carrera.class)
                 .getResultList();
     }
 

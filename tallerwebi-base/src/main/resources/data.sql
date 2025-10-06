@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS tallerwebi;
-USE tallerwebi;
+--CREATE DATABASE IF NOT EXISTS tallerwebi;
+--USE tallerwebi;
 
 INSERT INTO Carrera(nombre) VALUES
 ('Tecnicatura en Desarrollo Web'),
