@@ -6,10 +6,6 @@
 
     <title>UniNet</title>
 
-    <!-- Boostrap core css -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-    <!-- custom style -->
     <link rel="stylesheet" th:href="@{/css/login.css}"/>
     <link rel="stylesheet" href="/src/main/webapp/resources/core/css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,11 +15,10 @@
 </head>
 
 <body>
-
 <nav>
-    <img class="logo" th:src="@{../../../resources/core/imagenes/logo.png}">
+    <img class="logo" th:src="@{/core/imagenes/logo.png}">
+    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
 </nav>
-
 <main role="main" class="contenedor">
         <div class="contenedor_form" id="loginbox" style="margin-top:50px;">
             <form action="#" th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
@@ -39,9 +34,7 @@
             <a class="btn" id="btn-register" href="nuevo-usuario">Registrarme</a>
         </div>
 </main>
-<!-- /.container -->
 
-<!-- Boostrap core js -->
 <script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
 <script type="module" th:src="@{js/login.js}"></script>
 </body>

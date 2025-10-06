@@ -4,65 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Taller Web I</title>
+  <title>Registrarse</title>
 
-  <!-- Boostrap core css -->
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-  <!-- custom style -->
-  <link rel="stylesheet" th:href="@{/css/main.css}"/>
-
+  <!--<link rel="stylesheet" th:href="@{/css/registrar.css}"/>-->
+    <link rel="stylesheet" th:href="@{/core/css/registrar.css}">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/registrar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">UNLAM</a>
+<nav>
+    <img class="logo" th:src="@{/core/imagenes/logo.png}">
+    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
 </nav>
-
-<main role="main" class="container">
-
-  <div class = "container">
-    <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+<main role="main" class="contenedor">
+    <div id="loginbox" style="margin-top:50px;" class="contenedor_form">
         <form action="#" th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
-        <h3 class="form-signin-heading">Nuevo Usuario</h3>
-        <hr class="colorgraph"><br>
-          <div>
-              <label for="nombre" >Nombre</label>
-              <input th:field="*{nombre}" id="nombre" class="form-control" required/>
-          </div>
-          <div>
-              <label for="apellido" >Apellido</label>
-              <input th:field="*{apellido}" id="apellido" class="form-control" required/>
-          </div>
-            <div>
-                <label>Carreras (máx. 2)</label>
-                <div th:each="carrera : ${todasLasCarreras}">
-                    <input type="checkbox"
+        <h3>Nuevo Usuario</h3>
+            <div class="separador"></div>
+            <input th:field="*{nombre}" id="nombre" placeholder="Nombre" required/>
+            <input th:field="*{apellido}" id="apellido" placeholder="Apellido" required/>
+            <input th:field="*{email}" id="email" placeholder="Email" required/>
+            <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
+            <div class="carreras">
+                <label>Carreras (máximo 2)</label>
+                <div class="carrera" th:each="carrera : ${todasLasCarreras}">
+                    <input class="check" type="checkbox"
                            th:value="${carrera.nombre}"
                            th:field="*{carrerasNombres}" />
                     <span th:text="${carrera.nombre}"></span>
                 </div>
             </div>
-          <div>
-        <label for="email" >Email</label>
-        <input th:field="*{email}" id="email" class="form-control" required/>
-          </div>
-          <div>
-              <label for="password">Contraseña</label>
-        <input th:field="*{password}" type="password" id="password" class="form-control" required/>
-          </div>
-
-        <button id="btn-registrarme" class="btn btn-lg btn-primary btn-block" Type="Submit">Registrarme</button>
+        <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
         <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
         </p>
       </form>
-
     </div>
-  </div>
-
 </main>
-<!-- /.container -->
 
 <!-- Boostrap core js -->
 <script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
