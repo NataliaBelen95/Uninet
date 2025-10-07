@@ -70,11 +70,11 @@
                     <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
                         <div class="botones_acciones">
                             <button type="submit"><img class="user2" src="@{/imagenes/like.png}"></button>
-                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
                             <span th:text="${likesPorPublicacion[publi.id]}"></span>
                             <button type="submit"><img class="user2" src="@{/imagenes/comentar.png}"></button>
-                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
                             <button type="submit"><img class="user2" src="@{/imagenes/guardar.png}"></button>
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>-->
                         </div>
                     </form>

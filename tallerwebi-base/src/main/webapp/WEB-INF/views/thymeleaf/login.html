@@ -28,7 +28,7 @@
             <button id="btn-login" class="btn" Type="Submit" disabled>Ingresar</button>
             <a href="nuevo-usuario">Olvidaste la contraseña?</a>
             <div class="separador"></div>
-            <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
+            <p th:if="${error != null}" class="error" th:text="'Error ' + ${error}">
             </p>
         </form>
         <a class="btn" id="btn-register" href="nuevo-usuario">Registrarme</a>
