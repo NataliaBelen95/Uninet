@@ -3,139 +3,104 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <title>Taller Web I</title>
-
-    <!-- font -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Epunda+Sans:ital,wght@0,300..900;1,300..900&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
-    </style>
-
-    <!-- Boostrap core css -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-    <!-- custom style -->
+    <title>Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
     <link rel="stylesheet" href="../../../resources/core/css/home.css"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
 </head>
-
 <body>
-<header class="header">
-
-    <nav class="navbar ">
-        <a class="navbar-brand" href="#"  >UniNet</a>
-        <a class="navbar-brand" href="/spring/miPerfil"  >Mi Perfil</a>
+<header>
+    <nav class="navbar">
+        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
+        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
+        <div>
+            <a href="/spring/miPerfil">Mi Perfil</a>
+            <a href="/spring/miPerfil">Notificaciones</a>
+            <a href="/spring/miPerfil">Mensajes</a>
+        </div>
     </nav>
 </header>
-<aside class="aside">
-
-    <div class="container_profile">
-
-
-        <h2 th:text= "${usuario.nombre}"></h2>
-        <h2 th:text= "${usuario.apellido}"></h2>
-        <ul>
-            <li th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
-        </ul>
-
-    </div>
-
-    <div class="user_info" >
-        <p>blablaba</p>
-        <p>blablaba</p>
-        <p>blablaba</p>
-
-        <a href="#" class="ver_mas">Conocer más...</a>
-
-    </div>
-
-    <div class="user_info_items" >
-        <ul>
-
-            <li> <i class="material-icons">archive</i>Archivos</li>
-            <li> <i class="material-icons">group</i>Grupos</li>
-
-        </ul>
-
-
-    </div>
-
-</aside>
-
-<!-- main que contiene div para publicar y div de publicaciones de otros usuarios -->
-
-<main class="content">
-    <div class = "container_publicar">
-        <form method="POST" action="/spring/publicaciones">
-            <input name="descripcion" id="publicacion" placeholder="Escribe algo"/>
-
-        <div class="contenedor_publi-botones">
-
-            <button><i class="material-icons">attach_file</i></button>
-            <button><i class="material-icons">visibility</i></button>
-
-               <button name="nueva-publicacion"><i class="material-icons-outlined">publish</i> </button>
-
+<main class="contenedor_general">
+    <aside class="estructura columnaUno">
+        <div>
+            <img class="user" th:src="@{/imagenes/user.png}">
+            <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
+            <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
+            <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
+            <ul>
+                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+            </ul>
         </div>
-        </form>
-    </div>
-    <div class="botones-quePublisVer">
-        <div class="ordenar-por">
-            <p class="ordernar-por_text">Ordenar Por</p> <span><button><i class="material-icons-outlined">arrow_drop_down</i></button></span>
+        <div>
+            <p>blablaba</p>
+            <p>blablaba</p>
+            <p>blablaba</p>
+            <a href="#" class="ver_mas">Conocer más...</a>
         </div>
-        <div class="container_puicacionesUsuarios" th:each="publi : ${publicaciones}">
-            <h2 th:text="${publi.usuario?.nombre}"> </h2>
-            <p class="texto" th:text="${publi.descripcion}">
-
-
-            </p>
-
-            <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
-                <div class="botones_acciones">
-                <button type="submit" class="botones_acciones-b boton-mg"><i class="material-icons-outlined">recommend</i>Me gusta</button>
-                <span th:text="${likesPorPublicacion[publi.id]}"></span>
-                <button type="submit" class="botones_acciones-b boton-mg"><i class="material-icons-outlined">comment</i>Comentar</button>
-                <button type="submit" class="botones_acciones-b boton-mg"><i class="material-icons-outlined">bookmark_border</i>Guardar</button>
+        <div>
+            <ul>
+                <li>Archivos</li>
+                <li>Grupos</li>
+            </ul>
+        </div>
+    </aside>
+    <section class="columnaDos">
+        <article class="estructura">
+            <form class="box_comentario" method="POST" action="/spring/publicaciones">
+                <input name="descripcion" id="publicacion" placeholder="Escribe algo"/>
+                <div class="box_publi_botones">
+                    <button>attach_file</button>
+                    <button>Visibilidad</button>
+                    <button name="nueva-publicacion">Publicar</button>
                 </div>
             </form>
-    </div>
-    </div>
-
+        </article>
+        <article class="estructura">
+            <div class="botones-quePublisVer">
+                <div class="ordenar-por">
+                    <p class="ordernar-por_text">Ordenar Por</p><span><button>Ordenar por</button></span>
+                </div>
+                <div class="container_puicacionesUsuarios" th:each="publi : ${publicaciones}">
+                    <h2 th:text="${publi.usuario?.nombre}"> </h2>
+                    <p class="texto" th:text="${publi.descripcion}">
+                    </p>
+                    <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
+                        <div class="botones_acciones">
+                            <button type="submit"><img class="user2" th:src="@{/imagenes/like.png}"></button>
+                            <span th:text="${likesPorPublicacion[publi.id]}"></span>
+                            <button type="submit"><img class="user2" th:src="@{/imagenes/comentar.png}"></button>
+                            <button type="submit"><img class="user2" th:src="@{/imagenes/guardar.png}"></button>
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>-->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </article>
+    </section>
+    <aside class="estructura columnaTres">
+        <div class="container_profile">
+            <h2>Aumnos cursando...</h2>
+            <p>Ingeniería en Sistemas</p>
+        </div>
+        <div class="recomendaciones_users" >
+            <img class="user2" th:src="@{/imagenes/user2.png}">
+            <img class="user2" th:src="@{/imagenes/user2.png}">
+            <img class="user2" th:src="@{/imagenes/user2.png}">
+            <img class="user2" th:src="@{/imagenes/user2.png}">
+            <img class="user2" th:src="@{/imagenes/user2.png}">
+            <!--<img class="user2" src="../../../resources/core/imagenes/user2.png">
+            <img class="user2" src="../../../resources/core/imagenes/user2.png">
+            <img class="user2" src="../../../resources/core/imagenes/user2.png">
+            <img class="user2" src="../../../resources/core/imagenes/user2.png">
+            <img class="user2" src="../../../resources/core/imagenes/user2.png">-->
+        </div>
+    </aside>
 </main>
-
-<!-- aside recomendaciones de alumnos a seguir -->
-
-<aside class="recomendaciones">
-
-    <div class="container_profile">
-
-
-        <h2>Aumnos cursando...</h2>
-        <p>Ingeniería en Sistemas</p>
-    </div>
-
-    <div class="recomendaciones_users" >
-        <i class="material-icons">account_circle</i>
-        <i class="material-icons">account_circle</i>
-        <i class="material-icons">account_circle</i>
-        <i class="material-icons">account_circle</i>
-        <i class="material-icons">account_circle</i>
-
-
-    </div>
-
-
-
-</aside>
-
-
-<!-- /.container -->
-
-<!-- Boostrap core js -->
 <script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
 </body>
 </html>
