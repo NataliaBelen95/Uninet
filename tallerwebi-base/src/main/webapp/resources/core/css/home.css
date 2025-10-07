@@ -1,176 +1,217 @@
-*{
-    margin:0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Source Sans 3", sans-serif;
+* {
+  box-sizing: border-box;
 }
-
-
-
 body{
-
-    display: grid;
-    grid-template-columns: [col-first] 1fr [col-content] 3fr [col-last]1fr;
- grid-template-rows:
-  [row-first] 70px   /* header con tamaño fijo */
-  [row-content] auto /* se ajusta a las publicaciones */
-  [row-last] auto;   /* footer si lo usás */gap: 20px; /* separación entre columnas */
-    padding: 20px; /* margen lateral general */
-    background-color:#0E0E10;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background-color: #121212;
     min-height: 100vh;
-
-    }
-
-
-
-/****MENU ASIDE -- INFO PERFIL***/
-.header{
-    margin: -20px;
-
-    padding: 20px;
-    background: #18181B;
-    grid-row: row-first;
-    grid-column: 1 / -1;
-
-        height: 70px; /* o lo que quieras */
-        display: flex;
-        align-items: center; /* centra el contenido vertical */
-        justify-content: space-between; /* distribuye horizontal */
-
-
+    box-sizing: border-box;
 }
-
+a {
+  text-decoration: none;
+  color: #27AE60;
+  font-size: 14px;
+}
+a:hover {
+  color: #E0E0E0;
+}
+.titulo{
+    font-style: italic;
+    font-size: 1.7rem;
+}
+    /*Header*/
+.isologo{
+    width: 4rem;
+}
 .navbar{
-    height: 100%;
-}
-
-.navbar-brand{
-    color: #019873;
-}
-
-.aside
-{
-    margin-top: 50px;
-    background-color: #26262C;
-    grid-row: row-content;
-    grid-column: col-first;
-    height: 500px;
-    color: #DADADC;
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border-radius: 5px;
-
-
-}
-
-.aside .container_profile{
-
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
+    padding: 1.5rem;
 }
-
-
-.aside .container_profile i{
- font-size: 80px;
+.navbar div{
+    display: flex;
+    gap: 2rem;
+    padding-right: 3rem;
 }
-
-.aside .container_profile i{
-    font-size: 80px;
+.navbar div a{
+    font-size: x-large;
 }
-.aside .user_info {
-    border:1px solid black;
+    /*Main*/
+.contenedor_general{
+    display: grid;
+    grid-template-columns: 0.7fr 1.8fr 0.7fr;
+    padding: 4rem;
+    gap: 3rem;
 }
-.recomendaciones{
-    margin-top: 50px;
-    background-color: #26262C;
-    color: #DADADC;
-    grid-row: row-content;
-    grid-column: col-last;
-    height: 200px;
-    border-radius: 5px;
-
+.estructura{
+    background-color: #1E1E1E;
+    border-radius: 1rem;
+    color: #BDBDBD;
+    padding: 2rem;
 }
-
-/**** CONTENIDO PUBLICACION DE USURARIO + VER CPUBLICACION DE OTROS USUARIOS*****/
-
-.content {
-    margin-top: 50px;
-
-    border-radius: 5px;
-    background-color: transparent;
-    grid-row: row-content;
-    grid-column: col-content;
+ /*Columna izquierda*/
+.user{
+    width: 8rem;
+    border-radius: 50%;
+}
+.columnaUno{
     display: flex;
     flex-direction: column;
-}
-
-.container_publicar{
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    width: 80%;
-    height: 100px;
-    background-color: #26262C;
-    border-radius: 5px;
-    margin-bottom: 25px;
-
-}
-
-.container_publicar input {
-    margin-top: 15px;
-    align-self: center;
-    width: 80%;
-    height: 50px;
-    border-radius: 5px;
-}
-
-.container_publicar .contenedor_publi-botones {
-    display: flex;
-    flex: 1;
-    width: 80%;
-    align-self: center;
-    justify-content: end;
-    gap: 8px;
-
-
-
-}
-
-.container_publicar .contenedor_publi-botones button {
-    padding:5px;
-    width: 40px;
-    height: 25px;
-    align-self: center;
-    display: flex;
+    align-items: left;
     justify-content: center;
+    font-size: 1.5rem;
+}
+.ver_mas{
+    font-size: 1.5rem;
+}
+ /*Columna central*/
+.columnaDos{
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+.box_comentario{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.box_comentario input{
+      background-color: #2B2B2B;
+      border: 1px solid #2B2B2B;
+      border-radius: 0.4rem;
+      width: 100%;
+      height: 5rem;
+      padding: 0 0.8rem;
+      color: #E0E0E0;
+      font-size: 15px;
+      outline: none;
+}
+.box_comentario input:focus {
+  border: 1px solid #27AE60;
+}
+.box_comentario input::placeholder {
+  color: #9E9E9E;
+}
+.box_publi_botones{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    border-radius: 5px;
-    background: #019873;
-    border: none;
-
+    padding: 0.7rem;
+}
+.box_publi_botones button{
+     background-color: #27AE60;
+      color: #F5F5F5;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.4rem;
+      width: 9rem;
+      height: 3rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+}
+.botones_acciones button{
+    background-color: #1E1E1E;
+    cursor: pointer;
+    border-radius: 0.5rem;
+}
+ /*Columna derecha*/
+.columnaTres{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+}
+.user2{
+    width: 3rem;
 }
 
-.ordernar-por_text {
-color:#DADADC}
+    /* Responsive*/
+ @media (max-width: 75rem) {
+     .contenedor_general {
+         grid-template-columns: 1fr 2fr 1fr;
+         gap: 2rem;
+         padding: 1.5rem;
+     }
 
-.botones_acciones {
+     main {
+         font-size: 0.95rem;
+     }
 
-  display:flex;
-  justify-content: end;
+     nav a {
+         font-size: 0.9rem;
+     }
 
+     .box_publi_botones button{
+          width: 8rem;
+          height: 3rem;
+     }
 
-}
-.botones_acciones-b{
+ }
 
-display:flex;
-justify-content:center;
-align-items:center;
-margin: 5px;
-padding:5px;
-cursor:pointer;
+ @media (max-width: 56.25rem) {
+     .contenedor_general {
+         grid-template-columns: 1fr;
+         padding: 1.5rem;
+         margin-top: 2rem;
+     }
 
+     .columnaUno,
+     .columnaTres {
+         display: none;
+     }
 
-}
+     .columnaDos {
+         max-width: 40rem;
+         margin: 0 auto;
+     }
+     .box_publi_botones button{
+        width: 7rem;
+        height: 3rem;
+     }
+     nav .isologo {
+         display: none;
+     }
+
+     nav {
+         display: flex;
+         justify-content: center;
+         gap: 2rem;
+     }
+
+     nav a {
+         font-size: 1rem;
+     }
+ }
+
+ @media (max-width: 37.5rem) {
+     .contenedor_general {
+         grid-template-columns: 1fr;
+         padding: 1rem;
+         gap: 1.5rem;
+     }
+     .columnaDos {
+         max-width: 100%;
+         margin: 0;
+     }
+      nav .isologo {
+          display: none;
+      }
+     nav {
+         padding: 0.8rem 1rem;
+         display: flex;
+         justify-content: center;
+     }
+     nav a {
+         font-size: 0.9rem;
+     }
+     .box_publi_botones button{
+          width: 6rem;
+          height: 3rem;
+     }
+ }
