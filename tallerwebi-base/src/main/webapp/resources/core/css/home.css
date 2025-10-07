@@ -51,6 +51,9 @@ a:hover {
     color: #BDBDBD;
     padding: 2rem;
 }
+.palabra{
+    font-size: 1rem;
+}
  /*Columna izquierda*/
 .user{
     width: 8rem;

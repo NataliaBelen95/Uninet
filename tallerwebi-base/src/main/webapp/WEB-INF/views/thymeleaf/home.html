@@ -14,7 +14,6 @@
 <body>
 <header>
     <nav class="navbar">
-        @{/imagenes/user2.png}
         <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
         <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
         <div>
@@ -29,8 +28,8 @@
         <div>
             <img class="user" src="@{/imagenes/user.png}">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
-            <h2 th:text= "${usuario.nombre}"></h2>
-            <h2 th:text= "${usuario.apellido}"></h2>
+            <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
+            <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
             <ul>
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
@@ -71,12 +70,12 @@
                     <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
                         <div class="botones_acciones">
                             <button type="submit"><img class="user2" src="@{/imagenes/like.png}"></button>
-                            <button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
                             <span th:text="${likesPorPublicacion[publi.id]}"></span>
                             <button type="submit"><img class="user2" src="@{/imagenes/comentar.png}"></button>
-                            <button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
                             <button type="submit"><img class="user2" src="@{/imagenes/guardar.png}"></button>
-                            <button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>
+                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>-->
                         </div>
                     </form>
                 </div>
