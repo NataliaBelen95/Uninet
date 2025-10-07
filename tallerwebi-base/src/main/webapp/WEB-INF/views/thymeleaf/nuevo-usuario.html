@@ -6,7 +6,7 @@
 
   <title>Registrarse</title>
     <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
-    <link rel="stylesheet" href="../../../resources/core/css/registrarse.css">
+    <!--<link rel="stylesheet" href="../../../resources/core/css/registrarse.css">-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <body>
 <nav>
     <img class="logo" th:src="@{/imagenes/logo.png}">
-    <img class="logo" src="../../../resources/core/imagenes/logo.png">
+    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
 </nav>
 <main role="main" class="contenedor">
     <div id="loginbox"  class="contenedor_form">
@@ -40,7 +40,7 @@
             </div>
 
         <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
-            <a href="nuevo-usuario">Volver atrás</a>
+            <a href="login.html">Volver atrás</a>
         <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
         </p>
       </form>
