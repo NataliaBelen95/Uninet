@@ -69,24 +69,70 @@ public class ControladorPublicacionTest {
     }
 
     @Test
-    public void poderDarLikeAUnaPublicacionYQueSeRefleje() {
+    public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
         Publicacion publicacionMock = mock(Publicacion.class);
         when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
 
-        // Datos del usuario en sesión
-        when(datosUsuarioMock.getId()).thenReturn(42L);
-        when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
+        // Datos del usuario 1
+        Usuario usuarioMock1 = mock(Usuario.class);
+        DatosUsuario datosUsuarioMock1 = mock(DatosUsuario.class);
+        HttpSession sessionMock1 = mock(HttpSession.class);
+        HttpServletRequest requestMock1 = mock(HttpServletRequest.class);
 
-        // Mock del servicio por id (mismo id que la sesión)
-        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
+        when(datosUsuarioMock1.getId()).thenReturn(1L);
+        when(requestMock1.getSession()).thenReturn(sessionMock1);
+        when(sessionMock1.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock1);
+        when(servicioUsuarioMock.buscarPorId(1L)).thenReturn(usuarioMock1);
 
-        // Ejecución
-        ModelAndView modelAndView = controladorPublicacion.darLike(5L, requestMock);
+        //usuario 2
+        Usuario usuarioMock2 = mock(Usuario.class);
+        DatosUsuario datosUsuarioMock2 = mock(DatosUsuario.class);
+        HttpSession sessionMock2 = mock(HttpSession.class);
+        HttpServletRequest requestMock2 = mock(HttpServletRequest.class);
 
-        // Validación
-        verify(servicioLikesMock).darLike(usuarioMock, publicacionMock);
-        assertEquals("redirect:/home", modelAndView.getViewName());
+        when(datosUsuarioMock2.getId()).thenReturn(2L);
+        when(requestMock2.getSession()).thenReturn(sessionMock2);
+        when(sessionMock2.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock2);
+        when(servicioUsuarioMock.buscarPorId(2L)).thenReturn(usuarioMock2);
+
+        // Ejecución 1 usuario
+        ModelAndView modelAndView1 = controladorPublicacion.darLike(5L, requestMock1);
+        verify(servicioLikesMock).darLike(usuarioMock1, publicacionMock);
+        assertEquals("redirect:/home", modelAndView1.getViewName());
+
+        //ejecucion y validacion2 usuario
+        ModelAndView modelAndView2 = controladorPublicacion.darLike(5L, requestMock2);
+        verify(servicioLikesMock).darLike(usuarioMock2, publicacionMock);
+        assertEquals("redirect:/home", modelAndView2.getViewName());
+
+    }
+    @Test
+    public void queSeContabilicenCorrectamenteLosLikesDeUnaPublicacion() {
+
+        RepositorioLikeImpl repositorioLike = new RepositorioLikeImpl();
+
+        Publicacion publicacion = new Publicacion();
+        Usuario usuario1 = new Usuario();
+        Usuario usuario2 = new Usuario();
+
+        // Crear y setear likes
+        Like like1 = new Like();
+        like1.setUsuario(usuario1);
+        like1.setPublicacion(publicacion);
+
+        Like like2 = new Like();
+        like2.setUsuario(usuario2);
+        like2.setPublicacion(publicacion);
+
+        // Guardar likes
+        repositorioLike.guardar(like1);
+        repositorioLike.guardar(like2);
+
+        // Contar likes
+        int cantidadLikes = repositorioLike.contarPorPublicacion(publicacion);
+
+        // Verificar
+        assertEquals(2, cantidadLikes);
     }
 
 }

@@ -59,54 +59,68 @@ public class ControladorHomeTest {
         controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock);
     }
 
-
     @Test
-    @SuppressWarnings("unchecked")
-    public void iniciarSesion_seCarganDatosDeUsuarioLogueadoYPublicaciones() {
-        // Mock de la sesión y del usuario logueado como DatosUsuario
+    public void home_UsuarioLogueadoVeDatosPublicacionesYLikes() {
+        // Mock del request y la sesión
+        HttpServletRequest requestMock = mock(HttpServletRequest.class);
         HttpSession sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
 
+        // Datos del usuario logueado (DTO)
         DatosUsuario datosUsuarioMock = new DatosUsuario();
         datosUsuarioMock.setNombre("Ana");
         datosUsuarioMock.setApellido("Perez");
 
-        Carrera c1 = new Carrera();
-        c1.setNombre("Carrera prueba");
-        Materia m1 = new Materia();
-        m1.setNombre("Materia prueba1");
-        Materia m2 = new Materia();
-        m2.setNombre("Materia prueba2");
-        List<Materia> materias = new ArrayList<>();
-        c1.setMaterias(materias);
-        datosUsuarioMock.setCarrera(c1);
-
-        // Cuando se pida el atributo "usuarioLogueado" en la sesión, devuelve datosUsuarioMock
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
 
-        // Ejecutar el método home
+        // Usuario y publicaciones mock
+        Usuario autor = new Usuario();
+        autor.setNombre("Pepe");
+
+        Publicacion pub1 = new Publicacion();
+        pub1.setId(1L);
+        pub1.setDescripcion("Publicación 1");
+        pub1.setUsuario(autor);
+        pub1.setComentarios(new ArrayList<>());
+
+        Publicacion pub2 = new Publicacion();
+        pub2.setId(2L);
+        pub2.setDescripcion("Publicación 2");
+        pub2.setUsuario(autor);
+        pub2.setComentarios(new ArrayList<>());
+
+        List<Publicacion> publicaciones = List.of(pub1, pub2);
+
+        when(servicioPublicadoMock.findAll()).thenReturn(publicaciones);
+        when(servicioLikeMock.contarLikes(pub1)).thenReturn(5);
+        when(servicioLikeMock.contarLikes(pub2)).thenReturn(3);
+
+        // Instanciar el controlador con mocks
+        ControladorHome controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock);
+
+        // Ejecutar
         ModelAndView mav = controlador.home(requestMock);
 
-        // Verificar vista
+        // Validar vista
         assertEquals("home", mav.getViewName());
 
+        // Validar datos del modelo
         Map<String, Object> model = mav.getModel();
+        DatosUsuario usuarioEnModelo = (DatosUsuario) model.get("usuario");
+        assertNotNull(usuarioEnModelo);
+        assertEquals("Ana", usuarioEnModelo.getNombre());
 
-        // Verificar DTO de usuario
-        DatosUsuario datosUsuario = (DatosUsuario) model.get("usuario");
+        // Validar lista de DatosPublicacion
+        List<DatosPublicacion> datosPublicaciones = (List<DatosPublicacion>) model.get("datosPublicaciones");
+        assertNotNull(datosPublicaciones);
+        assertEquals(2, datosPublicaciones.size());
 
-        assertNotNull(datosUsuario);
-        assertEquals("Ana", datosUsuario.getNombre());
-        assertEquals("Perez", datosUsuario.getApellido());
-        assertEquals("Carrera prueba", datosUsuario.getCarrera().getNombre());
+        DatosPublicacion dto1 = datosPublicaciones.get(0);
+        assertEquals("Publicación 1", dto1.getDescripcion());
+        assertEquals(5, dto1.getCantLikes());
 
-        // Verificar publicaciones
-        List<Publicacion> publicaciones = (List<Publicacion>) model.get("publicaciones");
-        assertEquals(2, publicaciones.size());
-
-        // puede empezar vacia
-        assertTrue(model.get("publicacion") == null || model.get("publicacion") instanceof Publicacion);
-
-
+        DatosPublicacion dto2 = datosPublicaciones.get(1);
+        assertEquals("Publicación 2", dto2.getDescripcion());
+        assertEquals(3, dto2.getCantLikes());
     }
 }

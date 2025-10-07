@@ -54,7 +54,7 @@
                 <div class="box_publi_botones">
                     <button>attach_file</button>
                     <button>Visibilidad</button>
-                    <button name="nueva-publicacion">Publicar</button>
+                    <button type="submit" name="nueva-publicacion">Publicar</button>
                 </div>
             </form>
         </article>
@@ -63,21 +63,32 @@
                 <div class="ordenar-por">
                     <p class="ordernar-por_text">Ordenar Por</p><span><button>Ordenar por</button></span>
                 </div>
-                <div class="container_puicacionesUsuarios" th:each="publi : ${publicaciones}">
-                    <h2 th:text="${publi.usuario?.nombre}"> </h2>
-                    <p class="texto" th:text="${publi.descripcion}">
+                <div class="container_puicacionesUsuarios" th:each="dtopubli : ${datosPublicaciones}">
+                    <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"> </h2>
+                    <p class="texto" th:text="${dtopubli.descripcion}">
                     </p>
-                    <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
+                    <div>
+                        <button type="button" class="verComentariosBtn">Ver Comentarios</button>
+                    </div>
+
+
+                    <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
                         <div class="botones_acciones">
                             <button type="submit"><img class="user2" th:src="@{/imagenes/like.png}"></button>
-                            <span th:text="${likesPorPublicacion[publi.id]}"></span>
+                            <span th:text="${dtopubli.cantLikes}"></span>
                             <button type="submit"><img class="user2" th:src="@{/imagenes/comentar.png}"></button>
+
                             <button type="submit"><img class="user2" th:src="@{/imagenes/guardar.png}"></button>
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>-->
                         </div>
                     </form>
+
+
+
+
+                    0
                 </div>
             </div>
         </article>

@@ -1,10 +1,7 @@
 package com.tallerwebi.presentacion;
 
 
-import com.tallerwebi.dominio.Publicacion;
-import com.tallerwebi.dominio.ServicioLike;
-import com.tallerwebi.dominio.ServicioPublicado;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 
@@ -44,13 +39,20 @@ public class ControladorHome {
 
         // Publicaciones y likes
         List<Publicacion> publicaciones = servicioPublicado.findAll();
-        Map<Long, Integer> likesPorPublicacion = new HashMap<>();
+        List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
         for (Publicacion p : publicaciones) {
-            likesPorPublicacion.put(p.getId(), servicioLike.contarLikes(p));
+            DatosPublicacion dto = new DatosPublicacion();
+            dto.setId(p.getId());
+            dto.setDescripcion(p.getDescripcion());
+            dto.setNombreUsuario(p.getUsuario().getNombre());
+            dto.setApellidoUsuario(p.getUsuario().getApellido());
+            dto.setCantLikes(servicioLike.contarLikes(p));
+            List<Comentario> comentarios = p.getComentarios() != null ? p.getComentarios() : Collections.emptyList();
+            dto.setComentarios(comentarios);
+            datosPublicaciones.add(dto);
         }
 
-        model.addAttribute("publicaciones", publicaciones);
-        model.addAttribute("likesPorPublicacion", likesPorPublicacion);
+        model.addAttribute("datosPublicaciones", datosPublicaciones);
 
         return new ModelAndView("home", model);
     }

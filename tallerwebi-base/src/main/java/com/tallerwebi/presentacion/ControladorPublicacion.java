@@ -36,6 +36,7 @@ public class ControladorPublicacion {
             Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId()); // ✅ usa ServicioLogin
             publicacion.setUsuario(usuario);
             servicioPublicado.realizar(publicacion);
+
         }
 
         return new ModelAndView("redirect:/home");
@@ -51,6 +52,8 @@ public class ControladorPublicacion {
 
             if (publicacion != null) {
                 servicioLike.darLike(usuario, publicacion);
+
+
             }
         }
 

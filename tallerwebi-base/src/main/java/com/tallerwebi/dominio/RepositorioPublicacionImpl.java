@@ -1,51 +1,49 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Repository
 public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
-    private List<Publicacion> publicaciones = new ArrayList<>(); // ejemplo en memoria
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
-    public Publicacion publicacion(String descripcion, Usuario usuario) throws UsuarioExistente {
-        Publicacion p = new Publicacion();
-
-        p.setDescripcion(descripcion);
-        p.setUsuario(usuario);
-
-        if (buscarPublicacionExistente(p) != null) {
-            throw new UsuarioExistente();
-        }
-
-        // Agregar la publicación a la lista
-        publicaciones.add(p);
-
-        // Devolver la publicación creada
-        return p;
+    public void guardar(Publicacion publicacion) {
+        sessionFactory.getCurrentSession().save(publicacion);
     }
 
     @Override
-    public void realizada(Publicacion publicacion) {
-        // marcar como realizada, por ejemplo agregando a lista
-        publicaciones.add(publicacion);
+    public Publicacion buscarPorId(Long id) {
+        return sessionFactory.getCurrentSession().get(Publicacion.class, id);
     }
 
     @Override
-    public Publicacion buscarPublicacionExistente(Publicacion publicacion) {
-        // buscar en la lista por igualdad (puede ser por id o contenido)
-        return publicaciones.stream()
-                .filter(p -> p.equals(publicacion))
-                .findFirst()
-                .orElse(null);
+    public List<Publicacion> listarTodas() {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT DISTINCT p FROM Publicacion p LEFT JOIN FETCH p.usuario LEFT JOIN FETCH p.comentarios", Publicacion.class)
+                .getResultList();
     }
 
+    @Override
+    public boolean existeIgual(Publicacion publicacion) {
 
+        String hql = "FROM Publicacion WHERE descripcion = :descripcion AND usuario = :usuario";
+        Publicacion resultado = sessionFactory.getCurrentSession()
+                .createQuery(hql, Publicacion.class)
+                .setParameter("descripcion", publicacion.getDescripcion())
+                .setParameter("usuario", publicacion.getUsuario())
+                .uniqueResult();
 
-
-
+        return resultado != null;
+    }
 }
+
+
+
+

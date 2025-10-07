@@ -6,12 +6,8 @@ import java.util.List;
 
 public interface RepositorioPublicacion {
 
-  Publicacion publicacion(String publicacion,Usuario usuario) throws UsuarioExistente;
-    void realizada(Publicacion publicacion);
-    Publicacion buscarPublicacionExistente (Publicacion publicacion);
-
-
-
-
-
+    void guardar(Publicacion publicacion);
+    Publicacion buscarPorId(Long id);
+    List<Publicacion> listarTodas();
+    boolean existeIgual(Publicacion publicacion);
 }
