@@ -26,7 +26,7 @@
 <main class="contenedor_general">
     <aside class="estructura columnaUno">
         <div>
-            <img class="user" src="@{/imagenes/user.png}">
+            <img class="user" th:src="@{/imagenes/user.png}">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
             <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
@@ -69,10 +69,10 @@
                     </p>
                     <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
                         <div class="botones_acciones">
-                            <button type="submit"><img class="user2" src="@{/imagenes/like.png}"></button>
+                            <button type="submit"><img class="user2" th:src="@{/imagenes/like.png}"></button>
                             <span th:text="${likesPorPublicacion[publi.id]}"></span>
-                            <button type="submit"><img class="user2" src="@{/imagenes/comentar.png}"></button>
-                            <button type="submit"><img class="user2" src="@{/imagenes/guardar.png}"></button>
+                            <button type="submit"><img class="user2" th:src="@{/imagenes/comentar.png}"></button>
+                            <button type="submit"><img class="user2" th:src="@{/imagenes/guardar.png}"></button>
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
                             <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>-->
