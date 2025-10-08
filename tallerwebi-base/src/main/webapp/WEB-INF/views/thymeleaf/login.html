@@ -7,7 +7,7 @@
     <title>UniNet</title>
 
     <link rel="stylesheet" th:href="@{/css/login.css}"/>
-    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/login.css">
+    <!--<link rel="stylesheet" href="/src/main/webapp/resources/core/css/login.css">-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -20,22 +20,21 @@
     <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
 </nav>
 <main role="main" class="contenedor">
-        <div class="contenedor_form" id="loginbox" style="margin-top:50px;">
-            <form action="#" th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
-                <h3>Ingreso</h3>
-                <input th:field="*{email}" id="email" type="email" placeholder="Email" required/>
-                <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
-                <button id="btn-login" class="btn" Type="Submit" disabled>Ingresar</button>
-                <a href="nuevo-usuario">Olvidaste la contraseña?</a>
-                <div class="separador"></div>
-                <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
-                </p>
-            </form>
-            <a class="btn" id="btn-register" href="nuevo-usuario">Registrarme</a>
-        </div>
+    <div class="contenedor_form" id="loginbox" style="margin-top:50px;">
+        <form action="#" th:action="@{/validar-login}" method="POST" th:object="${datosLogin}">
+            <h3>Ingreso</h3>
+            <input th:field="*{email}" id="email" type="email" placeholder="Email" required/>
+            <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
+            <button id="btn-login" class="btn" Type="Submit" disabled>Ingresar</button>
+            <a href="nuevo-usuario">Olvidaste la contraseña?</a>
+            <div class="separador"></div>
+            <p th:if="${error != null}" th:text="'Error ' + ${error}" class="error" >
+            </p>
+        </form>
+        <a class="btn" id="btn-register" href="nuevo-usuario">Registrarme</a>
+    </div>
 </main>
 
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
 <script type="module" th:src="@{js/login.js}"></script>
 </body>
 </html>

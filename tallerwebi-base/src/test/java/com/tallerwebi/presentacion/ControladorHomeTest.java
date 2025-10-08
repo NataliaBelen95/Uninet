@@ -5,6 +5,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+
+@Controller
 public class ControladorHomeTest {
     private ControladorHome controlador;
     private ServicioPublicado servicioPublicadoMock;
@@ -28,6 +30,7 @@ public class ControladorHomeTest {
     private Usuario usuarioLogueado;
     private ServicioLike servicioLikeMock;
     private RepositorioUsuario repositorioUsuarioMock;
+    private PublicacionMapper publicacionMapperMock;
 
     @BeforeEach
     public void init() {
@@ -56,57 +59,86 @@ public class ControladorHomeTest {
         // Controlador
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioLikeMock = mock(ServicioLike.class);
-        controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock);
+        publicacionMapperMock = mock (PublicacionMapper.class);
+        controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock, publicacionMapperMock );
     }
 
-
     @Test
-    @SuppressWarnings("unchecked")
-    public void iniciarSesion_seCarganDatosDeUsuarioLogueadoYPublicaciones() {
-        // Mock de la sesión y del usuario logueado como DatosUsuario
+    public void home_UsuarioLogueadoVeDatosPublicacionesYLikes() {
+        // Mock del request y la sesión
+        HttpServletRequest requestMock = mock(HttpServletRequest.class);
         HttpSession sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
 
+        // Datos del usuario logueado (DTO)
         DatosUsuario datosUsuarioMock = new DatosUsuario();
         datosUsuarioMock.setNombre("Ana");
         datosUsuarioMock.setApellido("Perez");
 
-        Carrera c1 = new Carrera();
-        c1.setNombre("Carrera prueba");
-        Materia m1 = new Materia();
-        m1.setNombre("Materia prueba1");
-        Materia m2 = new Materia();
-        m2.setNombre("Materia prueba2");
-        List<Materia> materias = new ArrayList<>();
-        c1.setMaterias(materias);
-        datosUsuarioMock.setCarrera(c1);
-
-        // Cuando se pida el atributo "usuarioLogueado" en la sesión, devuelve datosUsuarioMock
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
 
-        // Ejecutar el método home
+        // Usuario y publicaciones mock
+        Usuario autor = new Usuario();
+        autor.setNombre("Pepe");
+
+        Publicacion pub1 = new Publicacion();
+        pub1.setId(1L);
+        pub1.setDescripcion("Publicación 1");
+        pub1.setUsuario(autor);
+        pub1.setComentarios(new ArrayList<>());
+
+        Publicacion pub2 = new Publicacion();
+        pub2.setId(2L);
+        pub2.setDescripcion("Publicación 2");
+        pub2.setUsuario(autor);
+        pub2.setComentarios(new ArrayList<>());
+
+        List<Publicacion> publicaciones = List.of(pub1, pub2);
+
+        when(servicioPublicadoMock.findAll()).thenReturn(publicaciones);
+        when(servicioLikeMock.contarLikes(pub1)).thenReturn(5);
+        when(servicioLikeMock.contarLikes(pub2)).thenReturn(3);
+
+        DatosPublicacion dto1 = new DatosPublicacion();
+        dto1.setId(1L);
+        dto1.setDescripcion("Publicación 1");
+        dto1.setCantLikes(5);
+
+        DatosPublicacion dto2 = new DatosPublicacion();
+        dto2.setId(2L);
+        dto2.setDescripcion("Publicación 2");
+        dto2.setCantLikes(3);
+
+        when(publicacionMapperMock.toDto(pub1)).thenReturn(dto1);
+        when(publicacionMapperMock.toDto(pub2)).thenReturn(dto2);
+
+        // Instanciar el controlador con mocks
+        ControladorHome controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock, publicacionMapperMock);
+
+        // Ejecutar
         ModelAndView mav = controlador.home(requestMock);
 
-        // Verificar vista
+        // Validar vista
         assertEquals("home", mav.getViewName());
 
+        // Validar datos del modelo
         Map<String, Object> model = mav.getModel();
+        DatosUsuario usuarioEnModelo = (DatosUsuario) model.get("usuario");
+        assertNotNull(usuarioEnModelo);
+        assertEquals("Ana", usuarioEnModelo.getNombre());
 
-        // Verificar DTO de usuario
-        DatosUsuario datosUsuario = (DatosUsuario) model.get("usuario");
+        // Validar lista de DatosPublicacion
+        List<DatosPublicacion> datosPublicaciones = (List<DatosPublicacion>) model.get("datosPublicaciones");
+        assertNotNull(datosPublicaciones);
+        assertEquals(2, datosPublicaciones.size());
 
-        assertNotNull(datosUsuario);
-        assertEquals("Ana", datosUsuario.getNombre());
-        assertEquals("Perez", datosUsuario.getApellido());
-        assertEquals("Carrera prueba", datosUsuario.getCarrera().getNombre());
+        DatosPublicacion dtoEnModelo1 = datosPublicaciones.get(0);
+        assertEquals("Publicación 1", dtoEnModelo1.getDescripcion());
+        assertEquals(5, dtoEnModelo1.getCantLikes());
 
-        // Verificar publicaciones
-        List<Publicacion> publicaciones = (List<Publicacion>) model.get("publicaciones");
-        assertEquals(2, publicaciones.size());
-
-        // puede empezar vacia
-        assertTrue(model.get("publicacion") == null || model.get("publicacion") instanceof Publicacion);
-
-
+        DatosPublicacion dtoEnModelo2 = datosPublicaciones.get(1);
+        assertEquals("Publicación 2", dtoEnModelo2.getDescripcion());
+        assertEquals(3, dtoEnModelo2.getCantLikes());
     }
+
 }

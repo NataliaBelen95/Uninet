@@ -1,5 +1,5 @@
 body {
-  background-color: #121212;
+  background-color: #0F1317;
   font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: column;
@@ -21,7 +21,7 @@ nav {
   width: 18rem;
 }
 .contenedor {
-  background-color: #1E1E1E;
+  background-color: #181D22;
   width: 360px;
   border-radius: 0.8rem;
   padding: 0 2.5rem 2rem;
@@ -47,8 +47,8 @@ form {
 }
 
 input {
-  background-color: #2B2B2B;
-  border: 1px solid #2B2B2B;
+  background-color: #1B2227;
+  border: 1px solid #1B2227;
   border-radius: 0.4rem;
   width: 100%;
   height: 45px;
@@ -109,7 +109,10 @@ a:hover {
   align-items: center;
   width: 100%;
 }
-/* Celulares chicos (hasta 480px) */
+.error{
+    color: red;
+}
+
 @media (max-width: 480px) {
   .contenedor {
     width: 85%;
@@ -120,27 +123,20 @@ a:hover {
   }
 }
 
-/* Tablets pequeñas (481px a 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
   .contenedor {
     width: 60%;
   }
 }
 
-/* Tablets grandes (769px a 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .contenedor {
     width: 45%;
   }
 }
 
-/* Notebooks y escritorios (1025px en adelante) */
 @media (min-width: 1025px) {
   .contenedor {
     width: 22.5rem;
   }
 }
-
-
-
-

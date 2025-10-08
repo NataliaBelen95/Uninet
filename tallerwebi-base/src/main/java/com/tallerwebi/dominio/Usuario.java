@@ -47,14 +47,14 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likesDados = new ArrayList<>();
 
-
-
     /*relacion con carrera*/
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "carrera_id")
     private Carrera carrera;
 
-
+    /*relacion con comentario*/
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Comentario> comentarios;
 
     public Long getId() {
         return id;
@@ -98,10 +98,10 @@ public class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public String getNombre(){
         return nombre;
     }
+
     public void setApellido(String apellido) {
         this.apellido =apellido;
     }
@@ -109,30 +109,35 @@ public class Usuario {
         return apellido;
     }
 
-
-  public void setDni(Integer dni) {
+    public void setDni(Integer dni) {
         this.dni = dni;
   }
-  public Integer getDni() {
+    public Integer getDni() {
         return dni;
   }
 
-  public void setCarrera(Carrera carrera) {
+    public void setCarrera(Carrera carrera) {
         this.carrera = carrera;
   }
-
-  public Carrera getCarrera() {
+    public Carrera getCarrera() {
         return carrera;
   }
 
-    public void darLike(Like like) {
-        if (!likesDados.contains(like)) {
-            likesDados.add(like);
-        }
+    public List<Like> getLikesDados() {
+        return likesDados;
     }
 
+    public void setLikesDados(List<Like> likesDados) {
+        this.likesDados = likesDados;
+    }
 
-  /*auxiliares*/
+    public List<Publicacion> getPublicaciones() {
+        return publicaciones;
+    }
+
+    public void setPublicaciones(List<Publicacion> publicaciones) {
+        this.publicaciones = publicaciones;
+    }
 
     public List<String> getCarrerasNombres() {
         return carrerasNombres;
@@ -142,4 +147,23 @@ public class Usuario {
         this.carrerasNombres = carrerasNombres;
     }
 
+    public List<Publicacion> getPublicacionesGuardadas() {
+        return publicacionesGuardadas;
+    }
+
+    public void setPublicacionesGuardadas(List<Publicacion> publicacionesGuardadas) {
+        this.publicacionesGuardadas = publicacionesGuardadas;
+    }
+
+
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
 }
+
+
