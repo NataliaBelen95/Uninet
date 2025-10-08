@@ -4,7 +4,7 @@
 body{
     margin: 0;
     font-family: "Inter", sans-serif;
-    background-color: #121212;
+    background-color: #0F1317;
     min-height: 100vh;
     box-sizing: border-box;
 }
@@ -46,7 +46,7 @@ a:hover {
     gap: 3rem;
 }
 .estructura{
-    background-color: #1E1E1E;
+    background-color: #181D22;
     border-radius: 1rem;
     color: #BDBDBD;
     padding: 2rem;
@@ -82,8 +82,8 @@ a:hover {
 }
 .box_comentario textarea{
       font-family: "Inter", sans-serif;
-      background-color: #2B2B2B;
-      border: 1px solid #2B2B2B;
+      background-color: #1B2227;
+      border: 1px solid #1B2227;
       border-radius: 0.4rem;
       width: 100%;
       height: 5rem;

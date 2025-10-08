@@ -25,29 +25,72 @@
         </div>
     </nav>
 </header>
-<main>
-    <aside class="aside">
-        <div class="container_profile">
-            <i class="material-icons">account_circle</i>
-            <h2 th:text= "${usuario.nombre}"></h2>
-            <ul>
-                <li th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
-            </ul>
-        </div>
-        <div class="user_info" >
-            <p>blablaba</p>
-            <p>blablaba</p>
-            <p>blablaba</p>
-            <a href="#" class="ver_mas">Conocer más...</a>
-        </div>
-        <div class="user_info_items" >
-            <ul>
-                <li> <i class="material-icons">archive</i>Archivos</li>
-                <li> <i class="material-icons">group</i>Grupos</li>
-            </ul>
+<main class="contenedor_box_general">
+    <aside class="estructura contenedor_usuario" >
+        <img class="user" src="../../../resources/core/imagenes/user.png">
+        <div class="contenedor_usuario_btn">
+            <button class="btn">Cambiar foto</button>
+            <button class="btn">Eliminar foto</button>
         </div>
     </aside>
-    <section></section>
+    <section class="estructura">
+        <!--<h2 th:text= "${usuario.nombre}"></h2>
+        <ul>
+                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+            </ul>-->
+        <h2>Nombre usuario</h2>
+        <ul>
+            <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+        </ul>
+        <form>
+            <div class="contenedor_campos">
+                <div class="box_campo">
+                    <label>D.N.I</label>
+                    <input type="number">
+                </div>
+                <div class="box_campo">
+                    <label>Fecha de nacimiento</label>
+                    <input  type="date">
+                </div>
+                <div class="box_campo">
+                    <label>Género</label>
+                    <select></select>
+                </div>
+                <div class="box_campo">
+                    <label>Email personal</label>
+                    <input type="email">
+                </div>
+                <div class="box_campo">
+                    <label>Email institucional UNLaM</label>
+                    <input type="email">
+                </div>
+                <div class="box_campo">
+                    <label>Teléfono</label>
+                    <input type="tel">
+                </div>
+                <div class="box_campo">
+                    <label>Dirección</label>
+                    <input type="text">
+                </div>
+                <div class="box_campo">
+                    <label>Localidad</label>
+                    <input type="text">
+                </div>
+                <div class="box_campo">
+                    <label>Provincia</label>
+                    <input type="text">
+                </div>
+                <div class="box_campo">
+                    <label>Código Postal</label>
+                    <input type="text">
+                </div>
+            </div>
+            <div class="contenedor_campos_btn">
+                <button type="submit" class="btn">Guardar cambios</button>
+                <button class="btn"><a href="home.html"></a>Volver</button>
+            </div>
+        </form>
+    </section>
 </main>
 <script type="module" th:src="@{js/login.js}"></script>
 </body>
