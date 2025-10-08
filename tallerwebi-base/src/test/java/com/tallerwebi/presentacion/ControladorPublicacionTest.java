@@ -3,12 +3,16 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.infraestructura.RepositorioComentarioImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
@@ -27,17 +31,20 @@ public class ControladorPublicacionTest {
     private Usuario usuarioMock;
     private DatosUsuario datosUsuarioMock;
     private ServicioUsuario servicioUsuarioMock;
+    private ServicioComentario servicioComentarioMock;
 
     @BeforeEach
     public void init() {
         servicioPublicadoMock = mock(ServicioPublicado.class);
         servicioLikesMock = mock(ServicioLike.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
+        servicioComentarioMock = mock(ServicioComentario.class);
 
         controladorPublicacion = new ControladorPublicacion(
                 servicioPublicadoMock,
                 servicioLikesMock,
-                servicioUsuarioMock
+                servicioUsuarioMock,
+                servicioComentarioMock
         );
 
         requestMock = mock(HttpServletRequest.class);
@@ -70,42 +77,45 @@ public class ControladorPublicacionTest {
 
     @Test
     public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
+        // Mocks
         Publicacion publicacionMock = mock(Publicacion.class);
         when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
 
-        // Datos del usuario 1
-        Usuario usuarioMock1 = mock(Usuario.class);
-        DatosUsuario datosUsuarioMock1 = mock(DatosUsuario.class);
-        HttpSession sessionMock1 = mock(HttpSession.class);
-        HttpServletRequest requestMock1 = mock(HttpServletRequest.class);
+        // Usuario 1
+        Usuario usuario1 = mock(Usuario.class);
+        DatosUsuario datosUsuario1 = mock(DatosUsuario.class);
+        when(datosUsuario1.getId()).thenReturn(1L);
 
-        when(datosUsuarioMock1.getId()).thenReturn(1L);
-        when(requestMock1.getSession()).thenReturn(sessionMock1);
-        when(sessionMock1.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock1);
-        when(servicioUsuarioMock.buscarPorId(1L)).thenReturn(usuarioMock1);
+        HttpServletRequest request1 = mock(HttpServletRequest.class);
+        HttpSession session1 = mock(HttpSession.class);
+        when(request1.getSession()).thenReturn(session1);
+        when(session1.getAttribute("usuarioLogueado")).thenReturn(datosUsuario1);
+        when(servicioUsuarioMock.buscarPorId(1L)).thenReturn(usuario1);
 
-        //usuario 2
-        Usuario usuarioMock2 = mock(Usuario.class);
-        DatosUsuario datosUsuarioMock2 = mock(DatosUsuario.class);
-        HttpSession sessionMock2 = mock(HttpSession.class);
-        HttpServletRequest requestMock2 = mock(HttpServletRequest.class);
+        // Usuario 2
+        Usuario usuario2 = mock(Usuario.class);
+        DatosUsuario datosUsuario2 = mock(DatosUsuario.class);
+        when(datosUsuario2.getId()).thenReturn(2L);
 
-        when(datosUsuarioMock2.getId()).thenReturn(2L);
-        when(requestMock2.getSession()).thenReturn(sessionMock2);
-        when(sessionMock2.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock2);
-        when(servicioUsuarioMock.buscarPorId(2L)).thenReturn(usuarioMock2);
+        HttpServletRequest request2 = mock(HttpServletRequest.class);
+        HttpSession session2 = mock(HttpSession.class);
+        when(request2.getSession()).thenReturn(session2);
+        when(session2.getAttribute("usuarioLogueado")).thenReturn(datosUsuario2);
+        when(servicioUsuarioMock.buscarPorId(2L)).thenReturn(usuario2);
 
-        // Ejecución 1 usuario
-        ModelAndView modelAndView1 = controladorPublicacion.darLike(5L, requestMock1);
-        verify(servicioLikesMock).darLike(usuarioMock1, publicacionMock);
-        assertEquals("redirect:/home", modelAndView1.getViewName());
+        // Ejecución usuario 1
+        ModelAndView mav1 = controladorPublicacion.darLike(5L, request1);
+        verify(servicioLikesMock).darLike(usuario1, publicacionMock);
+        assertEquals("redirect:/home", mav1.getViewName());
 
-        //ejecucion y validacion2 usuario
-        ModelAndView modelAndView2 = controladorPublicacion.darLike(5L, requestMock2);
-        verify(servicioLikesMock).darLike(usuarioMock2, publicacionMock);
-        assertEquals("redirect:/home", modelAndView2.getViewName());
-
+        // Ejecución usuario 2
+        ModelAndView mav2 = controladorPublicacion.darLike(5L, request2);
+        verify(servicioLikesMock).darLike(usuario2, publicacionMock);
+        assertEquals("redirect:/home", mav2.getViewName());
     }
+
+
+
     @Test
     public void queSeContabilicenCorrectamenteLosLikesDeUnaPublicacion() {
 
@@ -135,4 +145,36 @@ public class ControladorPublicacionTest {
         assertEquals(2, cantidadLikes);
     }
 
+    @Test
+    public void queUnaPublicacionPuedaRecibirComentariosDeUnUsuario() {
+        // Mocks
+        long idPublicacion = 10L;
+        String textoComentario = "Este es un comentario de prueba";
+
+        // Mock usuario y sesión
+        Usuario usuario = mock(Usuario.class);
+        DatosUsuario datosUsuario = mock(DatosUsuario.class);
+        when(datosUsuario.getId()).thenReturn(1L);
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuarioLogueado")).thenReturn(datosUsuario);
+
+        // Mock publicación
+        Publicacion publicacionMock = mock(Publicacion.class);
+        when(servicioUsuarioMock.buscarPorId(1L)).thenReturn(usuario);
+        when(servicioPublicadoMock.obtenerPublicacionPorId(idPublicacion)).thenReturn(publicacionMock);
+
+        // Simular request.getParameter (si no se usa @RequestParam)
+        when(request.getParameter("texto")).thenReturn(textoComentario);
+
+        // Llamar al método del controlador
+        ModelAndView modelAndView = controladorPublicacion.comentar(idPublicacion, request);
+
+        // Verificaciones
+        verify(servicioComentarioMock).comentar(textoComentario, usuario, publicacionMock);
+        assertEquals("redirect:/home", modelAndView.getViewName());
+    }
 }
+

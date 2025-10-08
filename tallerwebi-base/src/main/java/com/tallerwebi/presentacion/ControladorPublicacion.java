@@ -4,12 +4,10 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 public class ControladorPublicacion {
@@ -17,14 +15,16 @@ public class ControladorPublicacion {
     private final ServicioPublicado servicioPublicado;
     private final ServicioLike servicioLike;
     private final ServicioUsuario servicioUsuario;
+    private final ServicioComentario servicioComentario;
 
     @Autowired
     public ControladorPublicacion(ServicioPublicado servicioPublicado,
                                   ServicioLike servicioLike,
-                                  ServicioUsuario servicioUsuario) {
+                                  ServicioUsuario servicioUsuario, ServicioComentario servicioComentario) {
         this.servicioPublicado = servicioPublicado;
         this.servicioLike = servicioLike;
         this.servicioUsuario = servicioUsuario;
+        this.servicioComentario = servicioComentario;
     }
 
     @RequestMapping(path = "/publicaciones", method = RequestMethod.POST)
@@ -58,5 +58,26 @@ public class ControladorPublicacion {
         }
 
         return new ModelAndView("redirect:/home");
+    }
+
+    @PostMapping("/publicacion/comentar/{id}")
+    public ModelAndView comentar(@PathVariable Long id, HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+
+        if (datos != null) {
+            String textoComentario = request.getParameter("texto"); // <-- aquí obtienes el texto del formulario
+
+            if (textoComentario != null && !textoComentario.trim().isEmpty()) {
+                Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+                Publicacion publicacion = servicioPublicado.obtenerPublicacionPorId(id);
+
+                if (publicacion != null) {
+                    // Llama al servicio pasando el texto
+                    servicioComentario.comentar(textoComentario, usuario, publicacion);
+                }
+            }
+        }
+
+        return new ModelAndView("redirect:/home"); // o redirigir de vuelta a la publicación
     }
 }

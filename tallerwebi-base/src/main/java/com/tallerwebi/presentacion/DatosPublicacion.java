@@ -1,8 +1,6 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Comentario;
-import com.tallerwebi.dominio.Like;
-import com.tallerwebi.dominio.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +11,15 @@ public class DatosPublicacion {
     private String descripcion;
     private long id;
     private int cantLikes;
-    private List<Comentario> comentarios;
+    private List<DatosComentario> comentarios;
 
 
-    public List<Comentario> getComentarios() {
+    public List<DatosComentario> getComentarios() {
         return comentarios;
     }
-
+    public void setComentariosDTO(List<DatosComentario> comentarios) {
+        this.comentarios = comentarios;
+    }
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -49,12 +49,7 @@ public class DatosPublicacion {
         this.cantLikes = cantLikes;
     }
 
-    public void setComentarios(List<Comentario> comentarios) {
-        if (this.comentarios == null) {
-            this.comentarios = new ArrayList<>();
-        }
-        this.comentarios.addAll(comentarios);
-    }
+
     public int getCantLikes() {
         return cantLikes;
     }

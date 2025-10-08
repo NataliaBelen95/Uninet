@@ -29,32 +29,54 @@ public class ControladorHome {
         ModelMap model = new ModelMap();
         HttpSession session = request.getSession();
 
-        // Obtener usuario logueado de la sesión (DTO)
         DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return new ModelAndView("redirect:/login");
         }
-
         model.addAttribute("usuario", usuario);
 
-        // Publicaciones y likes
         List<Publicacion> publicaciones = servicioPublicado.findAll();
         List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
         for (Publicacion p : publicaciones) {
-            DatosPublicacion dto = new DatosPublicacion();
-            dto.setId(p.getId());
-            dto.setDescripcion(p.getDescripcion());
-            dto.setNombreUsuario(p.getUsuario().getNombre());
-            dto.setApellidoUsuario(p.getUsuario().getApellido());
-            dto.setCantLikes(servicioLike.contarLikes(p));
-            List<Comentario> comentarios = p.getComentarios() != null ? p.getComentarios() : Collections.emptyList();
-            dto.setComentarios(comentarios);
+            DatosPublicacion dto = mapPublicacionToDto(p);
             datosPublicaciones.add(dto);
         }
 
         model.addAttribute("datosPublicaciones", datosPublicaciones);
-
         return new ModelAndView("home", model);
     }
+
+    private DatosPublicacion mapPublicacionToDto(Publicacion p) {
+        DatosPublicacion dto = new DatosPublicacion();
+        dto.setId(p.getId());
+        dto.setDescripcion(p.getDescripcion());
+        dto.setNombreUsuario(p.getUsuario().getNombre());
+        dto.setApellidoUsuario(p.getUsuario().getApellido());
+        dto.setCantLikes(servicioLike.contarLikes(p));
+
+        List<DatosComentario> comentariosDto = new ArrayList<>();
+        if (p.getComentarios() != null) {
+            for (Comentario c : p.getComentarios()) {
+                comentariosDto.add(mapComentarioToDto(c));  // <--- Aquí usás el método nuevo
+            }
+        }
+        dto.setComentariosDTO(comentariosDto);
+
+        return dto;
     }
+
+    private DatosComentario mapComentarioToDto(Comentario c) {
+        DatosComentario dc = new DatosComentario();
+        dc.setTexto(c.getTexto());
+
+        if (c.getUsuario() != null) {
+            dc.setNombreUsuario(c.getUsuario().getNombre());
+            dc.setApellidoUsuario(c.getUsuario().getApellido());
+        } else {
+            dc.setNombreUsuario("Anonimo");
+            dc.setApellidoUsuario("");
+        }
+        return dc;
+    }
+}
 
