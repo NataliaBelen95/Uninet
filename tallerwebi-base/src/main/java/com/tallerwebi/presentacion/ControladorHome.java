@@ -9,19 +9,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 
 public class ControladorHome {
 
+    private final PublicacionMapper publicacionMapper;
     private final ServicioPublicado servicioPublicado;
     private final ServicioLike servicioLike;
 
-    public ControladorHome(ServicioPublicado servicioPublicado, ServicioLike servicioLike) {
+
+    public ControladorHome(ServicioPublicado servicioPublicado, ServicioLike servicioLike, PublicacionMapper publicacionMapper) {
         this.servicioPublicado = servicioPublicado;
         this.servicioLike = servicioLike;
+        this.publicacionMapper = publicacionMapper;
     }
 
     @GetMapping("/home")
@@ -36,47 +39,12 @@ public class ControladorHome {
         model.addAttribute("usuario", usuario);
 
         List<Publicacion> publicaciones = servicioPublicado.findAll();
-        List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
-        for (Publicacion p : publicaciones) {
-            DatosPublicacion dto = mapPublicacionToDto(p);
-            datosPublicaciones.add(dto);
-        }
+        List<DatosPublicacion> datosPublicaciones = publicaciones.stream()
+                .map(publicacionMapper::toDto) //equivale a .map(p-> publicacionMapper.toDto(p))
+                .collect(Collectors.toList());
 
         model.addAttribute("datosPublicaciones", datosPublicaciones);
         return new ModelAndView("home", model);
-    }
-
-    private DatosPublicacion mapPublicacionToDto(Publicacion p) {
-        DatosPublicacion dto = new DatosPublicacion();
-        dto.setId(p.getId());
-        dto.setDescripcion(p.getDescripcion());
-        dto.setNombreUsuario(p.getUsuario().getNombre());
-        dto.setApellidoUsuario(p.getUsuario().getApellido());
-        dto.setCantLikes(servicioLike.contarLikes(p));
-
-        List<DatosComentario> comentariosDto = new ArrayList<>();
-        if (p.getComentarios() != null) {
-            for (Comentario c : p.getComentarios()) {
-                comentariosDto.add(mapComentarioToDto(c));  // <--- Aquí usás el método nuevo
-            }
-        }
-        dto.setComentariosDTO(comentariosDto);
-
-        return dto;
-    }
-
-    private DatosComentario mapComentarioToDto(Comentario c) {
-        DatosComentario dc = new DatosComentario();
-        dc.setTexto(c.getTexto());
-
-        if (c.getUsuario() != null) {
-            dc.setNombreUsuario(c.getUsuario().getNombre());
-            dc.setApellidoUsuario(c.getUsuario().getApellido());
-        } else {
-            dc.setNombreUsuario("Anonimo");
-            dc.setApellidoUsuario("");
-        }
-        return dc;
     }
 }
 

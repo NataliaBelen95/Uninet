@@ -10,4 +10,6 @@ public interface RepositorioPublicacion {
     Publicacion buscarPorId(Long id);
     List<Publicacion> listarTodas();
     boolean existeIgual(Publicacion publicacion);
+    List<Publicacion> findByUsuarioId(Long id);
+
 }

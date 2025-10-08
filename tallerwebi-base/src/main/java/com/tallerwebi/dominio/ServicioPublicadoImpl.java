@@ -44,4 +44,8 @@ public class ServicioPublicadoImpl implements ServicioPublicado {
         Publicacion p = obtenerPublicacionPorId(id);
         return p.getLikes();
     }
+
+    public List<Publicacion> findByUsuarioId(Long id) {
+        return repositorio.findByUsuarioId(id);
+    }
 }

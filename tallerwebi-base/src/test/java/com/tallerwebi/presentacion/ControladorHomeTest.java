@@ -5,6 +5,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+
+@Controller
 public class ControladorHomeTest {
     private ControladorHome controlador;
     private ServicioPublicado servicioPublicadoMock;
@@ -28,6 +30,7 @@ public class ControladorHomeTest {
     private Usuario usuarioLogueado;
     private ServicioLike servicioLikeMock;
     private RepositorioUsuario repositorioUsuarioMock;
+    private PublicacionMapper publicacionMapperMock;
 
     @BeforeEach
     public void init() {
@@ -56,7 +59,8 @@ public class ControladorHomeTest {
         // Controlador
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioLikeMock = mock(ServicioLike.class);
-        controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock);
+        publicacionMapperMock = mock (PublicacionMapper.class);
+        controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock, publicacionMapperMock );
     }
 
     @Test
@@ -95,8 +99,21 @@ public class ControladorHomeTest {
         when(servicioLikeMock.contarLikes(pub1)).thenReturn(5);
         when(servicioLikeMock.contarLikes(pub2)).thenReturn(3);
 
+        DatosPublicacion dto1 = new DatosPublicacion();
+        dto1.setId(1L);
+        dto1.setDescripcion("Publicación 1");
+        dto1.setCantLikes(5);
+
+        DatosPublicacion dto2 = new DatosPublicacion();
+        dto2.setId(2L);
+        dto2.setDescripcion("Publicación 2");
+        dto2.setCantLikes(3);
+
+        when(publicacionMapperMock.toDto(pub1)).thenReturn(dto1);
+        when(publicacionMapperMock.toDto(pub2)).thenReturn(dto2);
+
         // Instanciar el controlador con mocks
-        ControladorHome controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock);
+        ControladorHome controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock, publicacionMapperMock);
 
         // Ejecutar
         ModelAndView mav = controlador.home(requestMock);
@@ -115,12 +132,13 @@ public class ControladorHomeTest {
         assertNotNull(datosPublicaciones);
         assertEquals(2, datosPublicaciones.size());
 
-        DatosPublicacion dto1 = datosPublicaciones.get(0);
-        assertEquals("Publicación 1", dto1.getDescripcion());
-        assertEquals(5, dto1.getCantLikes());
+        DatosPublicacion dtoEnModelo1 = datosPublicaciones.get(0);
+        assertEquals("Publicación 1", dtoEnModelo1.getDescripcion());
+        assertEquals(5, dtoEnModelo1.getCantLikes());
 
-        DatosPublicacion dto2 = datosPublicaciones.get(1);
-        assertEquals("Publicación 2", dto2.getDescripcion());
-        assertEquals(3, dto2.getCantLikes());
+        DatosPublicacion dtoEnModelo2 = datosPublicaciones.get(1);
+        assertEquals("Publicación 2", dtoEnModelo2.getDescripcion());
+        assertEquals(3, dtoEnModelo2.getCantLikes());
     }
+
 }

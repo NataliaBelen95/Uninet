@@ -42,6 +42,11 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
         return resultado != null;
     }
+
+    public List<Publicacion> findByUsuarioId(Long id) {
+       Usuario usuario = sessionFactory.getCurrentSession().get(Usuario.class, id);
+       return usuario.getPublicaciones();
+    }
 }
 
 
