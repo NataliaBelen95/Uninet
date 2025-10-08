@@ -50,7 +50,8 @@
     <section class="columnaDos">
         <article class="estructura">
             <form class="box_comentario" method="POST" action="/spring/publicaciones">
-                <input name="descripcion" id="publicacion" placeholder="Escribe algo"/>
+                <!--<input name="descripcion" id="publicacion" placeholder="Escribe algo"/>-->
+                <textarea name="descripcion" id="publicacion" placeholder="Escribe algo"></textarea>
                 <div class="box_publi_botones">
                     <button>attach_file</button>
                     <button>Visibilidad</button>
@@ -89,6 +90,5 @@
         </div>
     </aside>
 </main>
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
 </body>
 </html>
