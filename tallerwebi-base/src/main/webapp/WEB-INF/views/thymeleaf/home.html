@@ -54,7 +54,7 @@
                 <div class="box_publi_botones">
                     <button>attach_file</button>
                     <button>Visibilidad</button>
-                    <button name="nueva-publicacion">Publicar</button>
+                    <button type="submit" name="nueva-publicacion">Publicar</button>
                 </div>
             </form>
         </article>
@@ -63,23 +63,11 @@
                 <div class="ordenar-por">
                     <p class="ordernar-por_text">Ordenar Por</p><span><button>Ordenar por</button></span>
                 </div>
-                <div class="container_puicacionesUsuarios" th:each="publi : ${publicaciones}">
-                    <h2 th:text="${publi.usuario?.nombre}"> </h2>
-                    <p class="texto" th:text="${publi.descripcion}">
-                    </p>
-                    <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${publi.id})}">
-                        <div class="botones_acciones">
-                            <button type="submit"><img class="user2" th:src="@{/imagenes/like.png}"></button>
-                            <span th:text="${likesPorPublicacion[publi.id]}"></span>
-                            <button type="submit"><img class="user2" th:src="@{/imagenes/comentar.png}"></button>
-                            <button type="submit"><img class="user2" th:src="@{/imagenes/guardar.png}"></button>
-                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/like.png"></button>-->
-                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/comentar.png"></button>-->
-                            <!--<button type="submit"><img class="user2" src="../../../resources/core/imagenes/guardar.png"></button>-->
-                        </div>
-                    </form>
-                </div>
             </div>
+            <div th:each="dtopubli : ${datosPublicaciones}">
+                <div th:replace="templates/publicacion :: tarjetaPublicacion(${dtopubli})"></div>
+            </div>
+
         </article>
     </section>
     <aside class="estructura columnaTres">

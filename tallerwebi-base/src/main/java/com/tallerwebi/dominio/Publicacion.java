@@ -11,7 +11,7 @@ public class Publicacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private String descripcion;
     private LocalDateTime fechaPublicacion;
@@ -72,9 +72,11 @@ public class Publicacion {
     }
 
     public List<Comentario> getComentarios() {
+        if (comentarios == null) {
+            comentarios = new ArrayList<>();
+        }
         return comentarios;
     }
-
     public void setComentarios(List<Comentario> comentarios) {
         this.comentarios = comentarios;
     }

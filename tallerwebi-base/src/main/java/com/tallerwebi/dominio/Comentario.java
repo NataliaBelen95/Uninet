@@ -19,4 +19,36 @@ import javax.persistence.*;
         @ManyToOne(fetch = FetchType.LAZY, optional = false)
         @JoinColumn(name = "publicacion_id", nullable = false)
         private Publicacion publicacion;
-}
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getTexto() {
+            return texto;
+        }
+
+        public void setTexto(String texto) {
+            this.texto = texto;
+        }
+
+        public Usuario getUsuario() {
+            return usuario;
+        }
+
+        public void setUsuario(Usuario usuario) {
+            this.usuario = usuario;
+        }
+
+        public Publicacion getPublicacion() {
+            return publicacion;
+        }
+
+        public void setPublicacion(Publicacion publicacion) {
+            this.publicacion = publicacion;
+        }
+    }
