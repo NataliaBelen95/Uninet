@@ -22,7 +22,7 @@ a:hover {
 }
     /*Header*/
 .isologo{
-    width: 4rem;
+    width: 3rem;
 }
 .navbar{
     display: flex;
@@ -36,7 +36,7 @@ a:hover {
     padding-right: 3rem;
 }
 .navbar div a{
-    font-size: x-large;
+    font-size: large;
 }
     /*Main*/
 .contenedor_general{
@@ -70,6 +70,21 @@ a:hover {
     font-size: 1.5rem;
 }
  /*Columna central*/
+ .box_ordenarPor{
+    display: flex;
+    gap: 1rem;
+ }
+ .separador {
+   width: 100%;
+   height: 1px;
+   background-color: #27AE60;
+   margin: 0.5rem auto;
+ }
+ .box_ordenarPor form{
+    display: flex;
+    color: #BDBDBD;
+    font-size: small;
+ }
 .columnaDos{
     display: flex;
     flex-direction: column;
@@ -91,6 +106,7 @@ a:hover {
       color: #E0E0E0;
       font-size: 15px;
       outline: none;
+      resize: none;
 }
 .box_comentario input:focus {
   border: 1px solid #27AE60;
@@ -132,7 +148,8 @@ a:hover {
     font-size: 1.5rem;
 }
 .user2{
-    width: 3rem;
+    width: 2rem;
+    background-color: transparent;
 }
 
     /* Responsive*/
