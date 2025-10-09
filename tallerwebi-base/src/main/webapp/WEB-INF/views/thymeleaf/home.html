@@ -47,21 +47,23 @@
             </ul>
         </div>
     </aside>
+
     <section class="columnaDos">
         <article class="estructura">
             <div th:replace="templates/form-publicacion :: form-publi(${publicacion})"></div>
         </article>
-        <article class="estructura">
-            <div class="botones-quePublisVer">
-                <div class="ordenar-por">
-                    <p class="ordernar-por_text">Ordenar Por</p><span><button>Ordenar por</button></span>
-                </div>
-            </div>
-            <div th:each="dtopubli : ${datosPublicaciones}">
-                <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})"></div>
-            </div>
 
+        <!--separe el div de ordenar por fuera de la estructura de cada card porque no se donde iria-->
+        <div class="botones-quePublisVer">
+            <div class="ordenar-por">
+                <p class="ordernar-por_text">Ordenar Por</p><span><button>Ordenar por</button></span>
+            </div>
+        </div>
+
+            <!-- se reemplaza por el articulo que contiene c/u de las publis en divTarjeta -->
+        <article th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})" >
         </article>
+
     </section>
     <aside class="estructura columnaTres">
         <div class="container_profile">
