@@ -8,6 +8,14 @@
 .contenedor_box_general h1{
     color: #F5F5F5;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
 .contenedor_usuario{
     display: flex;
     flex-direction: column;
@@ -64,7 +72,7 @@ form{
 }
 .box_campo select{
       width: 100%;
-      height: 2rem;
+      height: 2.1rem;
       background-color: #1B2227;
       color: #F5F5F5;
       border: 1px solid #1B2227;
@@ -72,6 +80,13 @@ form{
       padding: 0.3rem;
       appearance: none;
       cursor: pointer;
+}
+.box_campo input:focus {
+  border: 1px solid #27AE60;
+}
+
+.box_campo input::placeholder {
+  color: #9E9E9E;
 }
 .box_campo select:focus {
   outline: none;
