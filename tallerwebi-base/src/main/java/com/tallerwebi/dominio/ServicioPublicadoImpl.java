@@ -2,64 +2,50 @@ package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-
 @Service("servicioPublicado")
 @Transactional
 public class ServicioPublicadoImpl implements ServicioPublicado {
 
-    private RepositorioPublicacion repositorioPublicacion;
-    private long nextId = 1;
+    private final RepositorioPublicacion repositorio;
 
-
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
-    public ServicioPublicadoImpl(RepositorioPublicacion repositorioPublicacion){
-        this.repositorioPublicacion = repositorioPublicacion;
-    }
-
-    // Lista en memoria para almacenar las publicaciones
-    private List<Publicacion> publicaciones = new ArrayList<>();
-
-    @Override
-    public Publicacion publicacionEntera (String descripcion, Usuario usuario) throws UsuarioExistente {
-        return repositorioPublicacion.publicacion(descripcion, usuario);
+    public ServicioPublicadoImpl(RepositorioPublicacion repositorio) {
+        this.repositorio = repositorio;
     }
 
     @Override
     public void realizar(Publicacion publicacion) throws PublicacionFallida {
-        Publicacion publicacionNueva = repositorioPublicacion.buscarPublicacionExistente(publicacion);
-        if(publicacionNueva != null){
+        if (repositorio.existeIgual(publicacion)) {
             throw new PublicacionFallida();
         }
-        publicacion.setId(nextId++);
+        repositorio.guardar(publicacion);
+    }
 
-        repositorioPublicacion.realizada(publicacion);
-        publicaciones.add(publicacion);
+    @Override
+    public Publicacion obtenerPublicacionPorId(long id) {
+        return repositorio.buscarPorId(id);
     }
 
     @Override
     public List<Publicacion> findAll() {
-        return publicaciones;
-    }
-    @Override
-    public Publicacion obtenerPublicacionPorId(long id) {
-        return publicaciones.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
+        return repositorio.listarTodas();
     }
 
     @Override
     public int obtenerCantidadDeLikes(long id) {
-        Publicacion publiEncontrada = obtenerPublicacionPorId(id);
-        return publiEncontrada.getLikes();
+        Publicacion p = obtenerPublicacionPorId(id);
+        return p.getLikes();
     }
 
+    public List<Publicacion> findByUsuarioId(Long id) {
+        return repositorio.findByUsuarioId(id);
+    }
 }

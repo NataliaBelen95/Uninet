@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>Registrarse</title>
-
-    <link rel="stylesheet" th:href="@{/css/registrar.css}"/>
-    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/registrar.css">
+    <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
+    <!--<link rel="stylesheet" href="../../../resources/core/css/registrarse.css">-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -19,26 +18,17 @@
     <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
 </nav>
 <main role="main" class="contenedor">
-    <div id="loginbox" style="margin-top:50px;" class="contenedor_form">
+    <div id="loginbox"  class="contenedor_form">
         <form action="#" th:action="@{/registrarme}" method="POST" th:object="${usuario}" accept-charset="UTF-8">
+            <h3>Nuevo Usuario</h3>
+            <div class="separador"></div>
+            <input th:field="*{nombre}" id="nombre" placeholder="Nombre" required/>
+            <input th:field="*{apellido}" id="apellido" placeholder="Apellido" required/>
+            <input th:field="*{email}" id="email" placeholder="Email" required/>
+            <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
+            <input th:field="*{dni}" id="dni" type="number" placeholder="D.N.I" required/>
 
-
-
-            <div class="form-group">
-              <label for="nombre" >Nombre</label>
-              <input th:field="*{nombre}" id="nombre"  type="text" required/>
-          </div>
-
-            <div class="form-group">
-              <label for="apellido" >Apellido</label>
-              <input th:field="*{apellido}" id="apellido" type="text" required/>
-          </div>
-            <div class="form-group">
-                <label for="dni" >Dni</label>
-                <input th:field="*{dni}" id="dni" type="number" required/>
-            </div>
-
-            <div class="form-group">
+            <div class="carreras">
                 <label for="carrera">Carrera</label>
                 <select th:field="*{carrera.id}" id="carrera" required>
                     <option value="" disabled selected>Seleccionar una carrera</option>
@@ -49,27 +39,13 @@
                 </select>
             </div>
 
-            <div class="form-group">
-        <label for="email" >Email</label>
-        <input th:field="*{email}" id="email" type="text" required/>
-          </div>
-
-            <div class="form-group">
-              <label for="password">Contraseña</label>
-        <input th:field="*{password}" type="password" id="password"  required/>
-          </div>
-
-        <button id="btn-registrarme" class="buttonRegistrarse" Type="Submit">Registrarme</button>
+        <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
+            <a href="login.html">Volver atrás</a>
         <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
         </p>
       </form>
-
     </div>
-
-
 </main>
-<!-- /.container -->
-
 <!-- Boostrap core js -->
 <script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
 </body>

@@ -3,60 +3,158 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Perfil</title>
 
-    <title>Taller Web I</title>
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Boostrap core css -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-    <!-- custom style -->
-    <link rel="stylesheet" th:href="@{/css/main.css}"/>
-
+    <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <!--<link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/home.css"/>-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
-
 <body>
+<header>
+    <nav class="navbar">
+        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
+        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
+        <div>
+            <a href="/spring/miPerfil">Mi Perfil</a>
+            <a href="/spring/miPerfil">Notificaciones</a>
+            <a href="/spring/miPerfil">Mensajes</a>
+        </div>
+    </nav>
+</header>
+<main class="contenedor_box_general">
+    <aside class="estructura contenedor_usuario" >
+        <!--<img class="user" src="../../../resources/core/imagenes/user.png">
+        <div class="contenedor_usuario_btn">
+            <button type="submit" class="btn">Cambiar foto</button>
+            <button type="submit" class="btn">Eliminar foto</button>
+        </div>-->
+        <img class="user"
+             th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : '/imagenes/user.png'}"
+             alt="Foto de perfil">
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">UNLAM</a>
-</nav>
-<aside class="aside">
+        <div class="contenedor_usuario_btn">
+            <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
+                <input type="file" name="fotoPerfil" accept="image/*">
+                <button type="submit" class="btn">Cambiar foto</button>
+            </form>
 
-    <div class="container_profile">
-        <i class="material-icons">account_circle</i>
-
+            <form th:action="@{/miPerfil/eliminar-foto}" method="post">
+                <button type="submit" class="btn">Eliminar foto</button>
+            </form>
+        </div>
+    </aside>
+    <section class="estructura">
         <h2 th:text= "${usuario.nombre}"></h2>
         <ul>
-            <li th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+            <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
         </ul>
-
+        <form th:action="@{/mi-perfil}" th:object="${usuario}" method="post">
+    <div class="contenedor_campos">
+        <div class="box_campo">
+            <label>D.N.I</label>
+            <input th:field="*{dni}" type="number">
+        </div>
+        <div class="box_campo">
+            <label>Fecha de nacimiento</label>
+            <input th:field="*{fechaNacimiento}" type="date">
+        </div>
+        <div class="box_campo">
+            <label>Género</label>
+            <select th:field="*{genero}">
+                <option value="F">Femenino</option>
+                <option value="M">Masculino</option>
+                <option value="O">Otro</option>
+            </select>
+        </div>
+        <div class="box_campo">
+            <label>Email personal</label>
+            <input th:field="*{email}" type="email">
+        </div>
+        <div class="box_campo">
+            <label>Teléfono</label>
+            <input th:field="*{telefono}" type="tel">
+        </div>
+        <div class="box_campo">
+            <label>Dirección</label>
+            <input th:field="*{direccion}" type="text">
+        </div>
+        <div class="box_campo">
+            <label>Localidad</label>
+            <input th:field="*{localidad}" type="text">
+        </div>
+        <div class="box_campo">
+            <label>Provincia</label>
+            <input th:field="*{provincia}" type="text">
+        </div>
+        <div class="box_campo">
+            <label>Código Postal</label>
+            <input th:field="*{codigoPostal}" type="text">
+        </div>
     </div>
 
-    <div class="user_info" >
-        <p>blablaba</p>
-        <p>blablaba</p>
-        <p>blablaba</p>
-
-        <a href="#" class="ver_mas">Conocer más...</a>
-
+    <div class="contenedor_campos_btn">
+        <button type="submit" class="btn">Guardar cambios</button>
+        <a th:href="@{/home}" class="btn">Volver</a>
     </div>
-
-    <div class="user_info_items" >
+</form>
+       <!--<h2>Nombre usuario</h2>
         <ul>
-
-            <li> <i class="material-icons">archive</i>Archivos</li>
-            <li> <i class="material-icons">group</i>Grupos</li>
-
+            <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
         </ul>
-
-
-    </div>
-
-</aside>
-<!-- /.container -->
-
-<!-- Boostrap core js -->
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+        <form>
+            <div class="contenedor_campos">
+                <div class="box_campo">
+                    <label>D.N.I</label>
+                    <input type="number">
+                </div>
+                <div class="box_campo">
+                    <label>Fecha de nacimiento</label>
+                    <input  type="date">
+                </div>
+                <div class="box_campo">
+                    <label>Género</label>
+                    <select></select>
+                </div>
+                <div class="box_campo">
+                    <label>Email personal</label>
+                    <input type="email">
+                </div>
+                <div class="box_campo">
+                    <label>Email institucional UNLaM</label>
+                    <input type="email">
+                </div>
+                <div class="box_campo">
+                    <label>Teléfono</label>
+                    <input type="tel">
+                </div>
+                <div class="box_campo">
+                    <label>Dirección</label>
+                    <input type="text">
+                </div>
+                <div class="box_campo">
+                    <label>Localidad</label>
+                    <input type="text">
+                </div>
+                <div class="box_campo">
+                    <label>Provincia</label>
+                    <input type="text">
+                </div>
+                <div class="box_campo">
+                    <label>Código Postal</label>
+                    <input type="text">
+                </div>
+            </div>
+            <div class="contenedor_campos_btn">
+                <button type="submit" class="btn">Guardar cambios</button>
+                <button class="btn"><a href="home.html"></a>Volver</button>
+            </div>
+        </form> -->
+    </section>
+</main>
 <script type="module" th:src="@{js/login.js}"></script>
 </body>
 </html>

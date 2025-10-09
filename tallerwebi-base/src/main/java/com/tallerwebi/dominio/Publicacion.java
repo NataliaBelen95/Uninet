@@ -11,7 +11,7 @@ public class Publicacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private String descripcion;
     private LocalDateTime fechaPublicacion;
@@ -25,6 +25,10 @@ public class Publicacion {
   /*relacion con entidad like */
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likesDePublicacion = new ArrayList<>();
+
+    /*relacion con entidad comentarios , una publicacion muchos comentarios, comentario a una publi*/
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL)
+    private List<Comentario> comentarios;
 
     // getters y setters
 
@@ -54,10 +58,34 @@ public class Publicacion {
         this.id = id;
     }
 
-
-
     public int getLikes() {
         return this.likesDePublicacion.size();
     }
 
+
+    public List<Like> getLikesDePublicacion() {
+        return likesDePublicacion;
+    }
+
+    public void setLikesDePublicacion(List<Like> likesDePublicacion) {
+        this.likesDePublicacion = likesDePublicacion;
+    }
+
+    public List<Comentario> getComentarios() {
+        if (comentarios == null) {
+            comentarios = new ArrayList<>();
+        }
+        return comentarios;
+    }
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public LocalDateTime getFechaPublicacion() {
+        return fechaPublicacion;
+    }
+
+    public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
 }
