@@ -83,11 +83,6 @@ public class ControladorPublicacionTest {
         Usuario usuario1 = mock(Usuario.class);
         Usuario usuario2 = mock(Usuario.class);
 
-
-        doNothing().when(servicioLikesMock).darLike(usuario1, publicacionMock);
-        doNothing().when(servicioLikesMock).darLike(usuario2, publicacionMock);
-
-
         servicioLikesMock.darLike(usuario1, publicacionMock);
         servicioLikesMock.darLike(usuario2, publicacionMock);
 
