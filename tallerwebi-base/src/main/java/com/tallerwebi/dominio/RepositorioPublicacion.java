@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 
 import java.util.List;

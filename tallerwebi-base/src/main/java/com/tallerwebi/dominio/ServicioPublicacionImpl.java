@@ -1,31 +1,37 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 @Service("servicioPublicado")
 @Transactional
-public class ServicioPublicadoImpl implements ServicioPublicado {
+public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
 
     @Autowired
-    public ServicioPublicadoImpl(RepositorioPublicacion repositorio) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio) {
         this.repositorio = repositorio;
     }
 
     @Override
     public void realizar(Publicacion publicacion) throws PublicacionFallida {
-        if (repositorio.existeIgual(publicacion)) {
-            throw new PublicacionFallida();
+
+        if (publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty()) {
+            throw new PublicacionFallida("La publicación no puede estar vacía");
         }
+
+        if (publicacion.getDescripcion().length() > 200) {
+            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
+        }
+
+        if (repositorio.existeIgual(publicacion)) {
+            throw new PublicacionFallida("Ya existe una publicación igual");
+        }
+
         repositorio.guardar(publicacion);
     }
 

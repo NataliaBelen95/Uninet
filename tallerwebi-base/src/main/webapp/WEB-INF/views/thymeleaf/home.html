@@ -49,15 +49,7 @@
     </aside>
     <section class="columnaDos">
         <article class="estructura">
-            <form class="box_comentario" method="POST" action="/spring/publicaciones">
-                <!--<input name="descripcion" id="publicacion" placeholder="Escribe algo"/>-->
-                <textarea name="descripcion" id="publicacion" placeholder="Escribe algo"></textarea>
-                <div class="box_publi_botones">
-                    <button>attach_file</button>
-                    <button>Visibilidad</button>
-                    <button type="submit" name="nueva-publicacion">Publicar</button>
-                </div>
-            </form>
+            <div th:replace="templates/form-publicacion :: form-publi(${publicacion})"></div>
         </article>
         <article class="estructura">
             <div class="botones-quePublisVer">
@@ -66,7 +58,7 @@
                 </div>
             </div>
             <div th:each="dtopubli : ${datosPublicaciones}">
-                <div th:replace="templates/publicacion :: tarjetaPublicacion(${dtopubli})"></div>
+                <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})"></div>
             </div>
 
         </article>
@@ -90,5 +82,7 @@
         </div>
     </aside>
 </main>
+
+<script type="module" th:src="@{js/publicacion.js}"></script>
 </body>
 </html>
