@@ -50,6 +50,9 @@ a:hover {
     border-radius: 1rem;
     color: #BDBDBD;
     padding: 2rem;
+
+    /*agregado para checkear*/
+    border:1px solid green;
 }
 .palabra{
     font-size: 3rem;

@@ -3,7 +3,9 @@
 <body>
 
 <!-- se define el nombre del fragmento -->
-<div th:fragment="tarjetaPublicacion(dtopubli)" class="publicacion">
+<article th:fragment="tarjetaPublicacion(dtopubli)"
+         th:each="dtopubli : ${datosPublicaciones}"
+         class="estructura">
 
     <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
     <p class="texto" th:text="${dtopubli.descripcion}"></p>
@@ -63,7 +65,7 @@
     </script>
 
 
-</div>
+</article>
 
 
 </body>
