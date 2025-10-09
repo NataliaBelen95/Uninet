@@ -42,7 +42,8 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private LocalDate fechaNacimiento;
 
-    @Column(unique = true, nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genero_id", nullable = true) //El name es lo que conecta ambas tablas Usuario1-NGenero, o sea que es la fk
     private Genero genero;
 
     // Auxiliar para el formulario
