@@ -23,6 +23,14 @@
         <button class="botones_acciones comentarBtn" type="button">
             <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
         </button>
+        <!-- Formulario para comentar -->
+        <form method="POST" th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}" class="box_comentario formComentario" style="display: none;">
+            <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
+            <br/>
+            <div class="box_publi_botones">
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
         <!-- Botón para mostrar comentarios -->
         <button class="botones_acciones verComentariosBtn" type="button">
             <img th:src="@{/imagenes/vercomentario.png}" alt="Ver comentario" />
@@ -35,14 +43,6 @@
                 <p th:text="${comentario.texto}"></p>
             </div>
         </div>
-        <!-- Formulario para comentar -->
-        <form method="POST" th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}" class="box_comentario formComentario" style="display: none;">
-            <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
-            <br/>
-            <div class="box_publi_botones">
-                <button type="submit">Enviar</button>
-            </div>
-        </form>
     </section>
     <!--<form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
         <button type="submit">
@@ -69,7 +69,6 @@
         <br/>
         <button type="submit">Enviar</button>
     </form>-->
-</article>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Mostrar comentarios
@@ -90,5 +89,6 @@
             });
         });
     </script>
+</article>
 </body>
 </html>
