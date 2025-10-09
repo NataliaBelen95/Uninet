@@ -55,44 +55,44 @@
         <form th:action="@{/mi-perfil}" th:object="${usuario}" method="post">
     <div class="contenedor_campos">
         <div class="box_campo">
-            <label>D.N.I</label>
-            <input th:field="*{dni}" type="number">
+            <label for="dni">D.N.I</label>
+            <input th:field="*{dni}" type="number" id="dni" name="dni">
         </div>
         <div class="box_campo">
-            <label>Fecha de nacimiento</label>
-            <input th:field="*{fechaNacimiento}" type="date">
+            <label for="nac">Fecha de nacimiento</label>
+            <input th:field="*{fechaNacimiento}" type="date" id="nac" name="nac">
         </div>
         <div class="box_campo">
-            <label>Género</label>
-            <select th:field="*{genero}">
+            <label for="genero">Género</label>
+            <select th:field="*{genero}" id="genero" name="genero">
                 <option value="F">Femenino</option>
                 <option value="M">Masculino</option>
                 <option value="O">Otro</option>
             </select>
         </div>
         <div class="box_campo">
-            <label>Email personal</label>
-            <input th:field="*{email}" type="email">
+            <label for="mail">Email personal</label>
+            <input th:field="*{email}" type="email" id="mail" name="mail">
         </div>
         <div class="box_campo">
-            <label>Teléfono</label>
-            <input th:field="*{telefono}" type="tel">
+            <label for="tel">Teléfono</label>
+            <input th:field="*{telefono}" type="tel" id="tel" name="tel">
         </div>
         <div class="box_campo">
-            <label>Dirección</label>
-            <input th:field="*{direccion}" type="text">
+            <label for="dir">Dirección</label>
+            <input th:field="*{direccion}" type="text" id="dir" name="dir">
         </div>
         <div class="box_campo">
-            <label>Localidad</label>
-            <input th:field="*{localidad}" type="text">
+            <label for="localidad">Localidad</label>
+            <input th:field="*{localidad}" type="text" id="localidad" name="localidad">
         </div>
         <div class="box_campo">
-            <label>Provincia</label>
-            <input th:field="*{provincia}" type="text">
+            <label for="prov">Provincia</label>
+            <input th:field="*{provincia}" type="text" id="prov" name="provincia">
         </div>
         <div class="box_campo">
-            <label>Código Postal</label>
-            <input th:field="*{codigoPostal}" type="text">
+            <label for="cod">Código Postal</label>
+            <input th:field="*{codigoPostal}" type="text" id="cod" name="codigoPostal">
         </div>
     </div>
 
@@ -101,58 +101,6 @@
         <a th:href="@{/home}" class="btn">Volver</a>
     </div>
 </form>
-       <!--<h2>Nombre usuario</h2>
-        <ul>
-            <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
-        </ul>
-        <form>
-            <div class="contenedor_campos">
-                <div class="box_campo">
-                    <label>D.N.I</label>
-                    <input type="number">
-                </div>
-                <div class="box_campo">
-                    <label>Fecha de nacimiento</label>
-                    <input  type="date">
-                </div>
-                <div class="box_campo">
-                    <label>Género</label>
-                    <select></select>
-                </div>
-                <div class="box_campo">
-                    <label>Email personal</label>
-                    <input type="email">
-                </div>
-                <div class="box_campo">
-                    <label>Email institucional UNLaM</label>
-                    <input type="email">
-                </div>
-                <div class="box_campo">
-                    <label>Teléfono</label>
-                    <input type="tel">
-                </div>
-                <div class="box_campo">
-                    <label>Dirección</label>
-                    <input type="text">
-                </div>
-                <div class="box_campo">
-                    <label>Localidad</label>
-                    <input type="text">
-                </div>
-                <div class="box_campo">
-                    <label>Provincia</label>
-                    <input type="text">
-                </div>
-                <div class="box_campo">
-                    <label>Código Postal</label>
-                    <input type="text">
-                </div>
-            </div>
-            <div class="contenedor_campos_btn">
-                <button type="submit" class="btn">Guardar cambios</button>
-                <button class="btn"><a href="home.html"></a>Volver</button>
-            </div>
-        </form> -->
     </section>
 </main>
 <script type="module" th:src="@{js/login.js}"></script>

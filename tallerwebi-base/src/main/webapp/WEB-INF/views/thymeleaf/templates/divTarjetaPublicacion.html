@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="../../../../resources/core/css/home.css"/>
 <body>
 
 <!-- se define el nombre del fragmento -->
@@ -10,38 +11,66 @@
     <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
     <p class="texto" th:text="${dtopubli.descripcion}"></p>
 
-    <!-- Formulario para dar like -->
-    <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
+    <section class="btns_interaccion_publicacion">
+        <!-- Formulario para dar like -->
+        <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
+            <button class="botones_acciones" type="submit">
+                <img th:src="@{/imagenes/like.png}" alt="Like" />
+            </button>
+            <span th:text="${dtopubli.cantLikes}"></span>
+        </form>
+        <!-- Botón para mostrar formulario de comentario -->
+        <button class="botones_acciones" type="button">
+            <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
+        </button>
+        <!-- Botón para mostrar comentarios -->
+        <button class="botones_acciones" type="button">
+            <img th:src="@{/imagenes/vercomentario.png}" alt="Ver comentario" />
+        </button>
+        <!-- Contenedor de comentarios oculto inicialmente -->
+        <div class="contenedor_comentarios" style="display: none;">
+            <!-- Lista de comentarios -->
+            <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
+                <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
+                <p th:text="${comentario.texto}"></p>
+            </div>
+        </div>
+    </section>
+    <!-- Formulario para comentar -->
+    <form method="POST" th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}" class="box_comentario">
+        <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
+        <br/>
+        <div class="box_publi_botones">
+            <button type="submit">Enviar</button>
+        </div>
+    </form>
+
+
+    <!--<form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
         <button type="submit">
             <img class="user2" th:src="@{/imagenes/like.png}" alt="Like" />
         </button>
         <span th:text="${dtopubli.cantLikes}"></span>
     </form>
-
-    <!-- Botón para mostrar comentarios -->
+     --Botón para mostrar comentarios
     <button type="button" class="verComentariosBtn">Ver Comentarios</button>
-
-    <!-- Contenedor de comentarios oculto inicialmente -->
+     Contenedor de comentarios oculto inicialmente
     <div class="contenedor_comentarios" style="display: none;">
-        <!-- Lista de comentarios -->
+        --Lista de comentarios
         <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
             <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
             <p th:text="${comentario.texto}"></p>
         </div>
     </div>
-
-    <!-- Botón para mostrar formulario de comentario -->
     <button type="button" class="comentarBtn">
         <img class="user2" th:src="@{/imagenes/comentar.png}" alt="Comentar" />
     </button>
-
-    <!-- Formulario para comentar -->
+    --Formulario para comentar
     <form method="POST" th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}" class="formComentario" style="display: none;">
         <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
         <br/>
         <button type="submit">Enviar</button>
-    </form>
-
+    </form>-->
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
