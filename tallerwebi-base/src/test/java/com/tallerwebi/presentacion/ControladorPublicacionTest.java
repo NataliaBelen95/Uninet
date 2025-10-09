@@ -2,17 +2,13 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
-import com.tallerwebi.infraestructura.RepositorioComentarioImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
@@ -23,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class ControladorPublicacionTest {
 
     private ControladorPublicacion controladorPublicacion;
-    private ServicioPublicado servicioPublicadoMock;
+    private ServicioPublicacion servicioPublicacionMock;
     private ServicioLike servicioLikesMock;
     private ServicioLogin servicioLoginMock;
     private HttpServletRequest requestMock;
@@ -32,22 +28,26 @@ public class ControladorPublicacionTest {
     private DatosUsuario datosUsuarioMock;
     private ServicioUsuario servicioUsuarioMock;
     private ServicioComentario servicioComentarioMock;
+    private RedirectAttributes redirectAttributesMock;
+    private PublicacionMapper publicacionMapperMock;
 
     @BeforeEach
     public void init() {
-        servicioPublicadoMock = mock(ServicioPublicado.class);
+        servicioPublicacionMock = mock(ServicioPublicacion.class);
         servicioLikesMock = mock(ServicioLike.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioComentarioMock = mock(ServicioComentario.class);
 
         controladorPublicacion = new ControladorPublicacion(
-                servicioPublicadoMock,
+                servicioPublicacionMock,
                 servicioLikesMock,
                 servicioUsuarioMock,
-                servicioComentarioMock
+                servicioComentarioMock,
+                publicacionMapperMock
         );
 
         requestMock = mock(HttpServletRequest.class);
+        redirectAttributesMock = mock(RedirectAttributes.class);
         sessionMock = mock(HttpSession.class);
 
         usuarioMock = mock(Usuario.class);
@@ -63,22 +63,22 @@ public class ControladorPublicacionTest {
     @Test
     public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
         // Preparación
-        Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
+       Publicacion publicacionMock = mock(Publicacion.class);
+       when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
 
-        // Ejecución
-        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publicacionMock, requestMock);
+       // Ejecución
+        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(publicacionMock, requestMock, redirectAttributesMock);
 
-        // Validación
+        //Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
         verify(publicacionMock).setUsuario(usuarioMock);
-        verify(servicioPublicadoMock).realizar(publicacionMock);
+       verify(servicioPublicacionMock).realizar(publicacionMock);
     }
     @Test
     public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
         // Arrange
         Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
+        when(servicioPublicacionMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
 
         Usuario usuario1 = mock(Usuario.class);
         Usuario usuario2 = mock(Usuario.class);
@@ -97,10 +97,10 @@ public class ControladorPublicacionTest {
     @Test
     public void queSeContabilicenCorrectamenteLosLikesDeUnaPublicacion() {
         Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioPublicadoMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
+        when(servicioPublicacionMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
 
         // Simulamos que el servicio ya sabe cuántos likes tiene
-        when(servicioPublicadoMock.obtenerCantidadDeLikes(5L)).thenReturn(2);
+        when(servicioPublicacionMock.obtenerCantidadDeLikes(5L)).thenReturn(2);
 
         Usuario usuario1 = mock(Usuario.class);
         Usuario usuario2 = mock(Usuario.class);
@@ -109,7 +109,7 @@ public class ControladorPublicacionTest {
         servicioLikesMock.darLike(usuario2, publicacionMock);
 
         // Validación: no verificamos estado real, sino el valor "stubbeado"
-        assertEquals(2, servicioPublicadoMock.obtenerCantidadDeLikes(5L));
+        assertEquals(2, servicioPublicacionMock.obtenerCantidadDeLikes(5L));
 
 
     }

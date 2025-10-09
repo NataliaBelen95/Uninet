@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<form  th:fragment="form-publi(publicacion)" class="box_comentario" method="POST" action="/spring/publicaciones">
+    <!--<input name="descripcion" id="publicacion" placeholder="Escribe algo"/>-->
+    <textarea name="descripcion" id="publicacion" placeholder="Escribe algo"></textarea>
+    <p th:if="${errorPubli != null}" th:text="${errorPubli}" class="error"></p>
+
+
+    <div class="box_publi_botones">
+        <button name = "archivo">attach_file</button>
+        <button>Visibilidad</button>
+        <button type="submit" name="nueva-publicacion">Publicar</button>
+    </div>
+
+    <script>
+
+    </script>
+</form>
+
+<script type="module" th:src="@{js/publicacion.js}"></script>
+</body>
+</html>

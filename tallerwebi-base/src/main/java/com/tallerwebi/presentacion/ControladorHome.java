@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 public class ControladorHome {
 
     private final PublicacionMapper publicacionMapper;
-    private final ServicioPublicado servicioPublicado;
+    private final ServicioPublicacion servicioPublicacion;
     private final ServicioLike servicioLike;
 
 
-    public ControladorHome(ServicioPublicado servicioPublicado, ServicioLike servicioLike, PublicacionMapper publicacionMapper) {
-        this.servicioPublicado = servicioPublicado;
+    public ControladorHome(ServicioPublicacion servicioPublicacion, ServicioLike servicioLike, PublicacionMapper publicacionMapper) {
+        this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
         this.publicacionMapper = publicacionMapper;
     }
@@ -38,7 +38,7 @@ public class ControladorHome {
         }
         model.addAttribute("usuario", usuario);
 
-        List<Publicacion> publicaciones = servicioPublicado.findAll();
+        List<Publicacion> publicaciones = servicioPublicacion.findAll();
         List<DatosPublicacion> datosPublicaciones = publicaciones.stream()
                 .map(publicacionMapper::toDto) //equivale a .map(p-> publicacionMapper.toDto(p))
                 .collect(Collectors.toList());
