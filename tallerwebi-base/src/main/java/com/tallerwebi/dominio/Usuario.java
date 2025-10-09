@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,33 @@ public class Usuario {
     private String rol;
     private Boolean activo = false;
 
+    //9-10 Belén
+    @Column(unique = true, nullable = true)
+    private String direccion;
+
+    @Column(unique = true, nullable = true)
+    private String localidad;
+
+    @Column(unique = true, nullable = true)
+    private String provincia;
+
+    @Column(unique = true, nullable = true)
+    private String codigoPostal;
+
+    @Column(unique = true, nullable = true)
+    private String telefono;
+
+    @Column(unique = true, nullable = true)
+    private String emailPersonal;
+
+    @Column(unique = true, nullable = true)
+    private String fotoPerfil;
+
+    @Column(unique = true, nullable = false)
+    private LocalDate fechaNacimiento;
+
+    @Column(unique = true, nullable = true)
+    private Genero genero;
 
     // Auxiliar para el formulario
     @Transient //no persiste en bdd
@@ -155,8 +183,6 @@ public class Usuario {
         this.publicacionesGuardadas = publicacionesGuardadas;
     }
 
-
-
     public List<Comentario> getComentarios() {
         return comentarios;
     }
@@ -164,6 +190,34 @@ public class Usuario {
     public void setComentarios(List<Comentario> comentarios) {
         this.comentarios = comentarios;
     }
+
+    public String getDireccion() {return direccion; }
+    public void setDireccion(String direccion) {this.direccion = direccion;    }
+
+    public String getLocalidad() {return localidad;    }
+    public void setLocalidad(String localidad) {this.localidad = localidad;    }
+
+    public String getProvincia() {return provincia;    }
+    public void setProvincia(String provincia) {this.provincia = provincia;    }
+
+    public String getCodigoPostal() {return codigoPostal;    }
+    public void setCodigoPostal(String codigoPostal) {this.codigoPostal = codigoPostal;    }
+
+    public String getTelefono() {return telefono;    }
+    public void setTelefono(String telefono) {this.telefono = telefono;    }
+
+    public String getEmailPersonal() {return emailPersonal;    }
+    public void setEmailPersonal(String emailPersonal) {this.emailPersonal = emailPersonal;    }
+
+    public Genero getGenero() {return genero;   }
+    public void setGenero(Genero genero) {this.genero = genero;    }
+
+    public String getFotoPerfil() {return fotoPerfil;    }
+    public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
+
+    public LocalDate getFechaNacimiento() {return fechaNacimiento;    }
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;    }
 }
+
 
 
