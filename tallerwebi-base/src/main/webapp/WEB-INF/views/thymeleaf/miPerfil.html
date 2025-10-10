@@ -69,14 +69,19 @@
         <div class="box_campo">
             <label for="genero">Género</label>
             <select th:field="*{genero}" id="genero" name="genero">
-                <option value="F">Femenino</option>
-                <option value="M">Masculino</option>
-                <option value="O">Otro</option>
+                <option th:each="g : ${generos}"
+                        th:value="${g.id}"
+                        th:text="${g.nombre}">
+                </option>
             </select>
         </div>
         <div class="box_campo">
-            <label for="mail">Email personal</label>
+            <label for="mail">Email institucional</label>
             <input th:field="*{email}" type="email" id="mail" name="mail">
+        </div>
+        <div class="box_campo">
+            <label for="mailPersonal">Email personal</label>
+            <input th:field="*{emailPersonal}" type="email" id="mailPersonal" name="mailPersonal">
         </div>
         <div class="box_campo">
             <label for="tel">Teléfono</label>

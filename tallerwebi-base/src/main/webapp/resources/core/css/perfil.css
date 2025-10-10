@@ -60,8 +60,8 @@ form{
 }
 .box_campo input{
       font-family: "Inter", sans-serif;
-      background-color: #1B2227;
-      border: 1px solid #1B2227;
+      background-color: #616466;
+      border: 1px solid #616466;
       border-radius: 0.4rem;
       width: 100%;
       height: 2.1rem;
@@ -73,9 +73,9 @@ form{
 .box_campo select{
       width: 100%;
       height: 2.1rem;
-      background-color: #1B2227;
+      background-color: #616466;
       color: #F5F5F5;
-      border: 1px solid #1B2227;
+      border: 1px solid #616466;
       border-radius: 0.3rem;
       padding: 0.3rem;
       appearance: none;
@@ -95,7 +95,7 @@ form{
 }
 
 .box_campo option {
-  background-color: #181D22;
+  background-color: #404345;
   color: #F5F5F5;
 }
 .contenedor_campos_btn{
