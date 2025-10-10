@@ -17,17 +17,30 @@ public class Usuario {
     private String rol;
     private Boolean activo = false;
 
+    @Column(nullable = false)
+    private String nombre;
+
+    @Column(nullable = false)
+    private String apellido;
+
+    @Column(nullable = false)
+    private Integer dni;
+
+    /*relacion con carrera*/
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "carrera_id")
+    private Carrera carrera;
     //9-10 Belén
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String direccion;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String localidad;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String provincia;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String codigoPostal;
 
     @Column(unique = true, nullable = true)
@@ -36,29 +49,16 @@ public class Usuario {
     @Column(unique = true, nullable = true)
     private String emailPersonal;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String fotoPerfil;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private LocalDate fechaNacimiento;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "genero_id", nullable = true) //El name es lo que conecta ambas tablas Usuario1-NGenero, o sea que es la fk
     private Genero genero;
 
-    // Auxiliar para el formulario
-    @Transient //no persiste en bdd
-    private List<String> carrerasNombres = new ArrayList<>();
-    /*La otra lista de carreras que tenés en Usuario —la que es List<Carrera> y
-    se persiste en la base de datos— no la tocás
-    en el formulario. Esa lista se completa a partir de los nombres que vienen por el form
-     */
-
-
-    /*******AGREGADOS*****/
-    private String nombre;
-    private String apellido;
-    private Integer dni;
     /*publicaciones del usuario**/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)  /*si una publi queda sin padre usuario, se borra la publi*/
     private List<Publicacion> publicaciones = new ArrayList<>();
@@ -75,11 +75,6 @@ public class Usuario {
     /*relacion con likes*/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likesDados = new ArrayList<>();
-
-    /*relacion con carrera*/
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "carrera_id")
-    private Carrera carrera;
 
     /*relacion con comentario*/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -166,14 +161,6 @@ public class Usuario {
 
     public void setPublicaciones(List<Publicacion> publicaciones) {
         this.publicaciones = publicaciones;
-    }
-
-    public List<String> getCarrerasNombres() {
-        return carrerasNombres;
-    }
-
-    public void setCarrerasNombres(List<String> carrerasNombres) {
-        this.carrerasNombres = carrerasNombres;
     }
 
     public List<Publicacion> getPublicacionesGuardadas() {

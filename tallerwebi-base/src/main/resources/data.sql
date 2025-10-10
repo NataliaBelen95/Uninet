@@ -26,11 +26,15 @@ INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (3, 3); -- Profesorad
 INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (4, 4); -- Tecnicatura en Gestión de Empresas - Economía General
 
 -- 4️⃣ Crear usuarios y asignarles carrera por id
-INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, carrera_id, fechaNacimiento)
-VALUES (NULL, 'test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez', 1, '1990-01-01');
+INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento)
+VALUES (NULL, 'test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez',38065944, 1, '1990-01-01');
 
-INSERT INTO Usuario(id, email, password, rol, activo, nombre, apellido, carrera_id, fechaNacimiento)
-VALUES (NULL, 'admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 3, '1990-01-01');
+INSERT INTO Usuario(id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento)
+VALUES (NULL, 'admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, '1990-01-01');
 
 -- 5️⃣ Validar que no haya usuarios duplicados
 SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
+
+-- Géneros
+INSERT INTO genero (nombre) VALUES ('Femenino'), ('Masculino'), ('Otro'), ('Prefiero no decirlo');
+
