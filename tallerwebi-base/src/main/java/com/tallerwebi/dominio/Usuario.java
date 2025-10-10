@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class Usuario {
     private String fotoPerfil;
 
     @Column(nullable = true)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaNacimiento;
 
     @ManyToOne(fetch = FetchType.EAGER)

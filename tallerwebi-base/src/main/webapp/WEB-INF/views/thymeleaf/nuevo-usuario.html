@@ -27,7 +27,7 @@
             <input th:field="*{email}" id="email" placeholder="Email" required/>
             <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
             <input th:field="*{dni}" id="dni" type="number" placeholder="D.N.I" required/>
-            <!--<input th:field="*{fechaNacimiento}" id="fecha" type="date" placeholder="Fecha de nacimiento" required/>-->
+            <input th:field="*{fechaNacimiento}" id="fecha" type="date" required/>
             <div class="carreras">
                 <label for="carrera">Carrera</label>
                 <select th:field="*{carrera.id}" id="carrera" required>
