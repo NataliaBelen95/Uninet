@@ -27,7 +27,7 @@
             <input th:field="*{email}" id="email" placeholder="Email" required/>
             <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
             <input th:field="*{dni}" id="dni" type="number" placeholder="D.N.I" required/>
-
+            <input th:field="*{fechaNacimiento}" id="fecha" type="date" placeholder="Fecha de nacimiento" required/>
             <div class="carreras">
                 <label for="carrera">Carrera</label>
                 <select th:field="*{carrera.id}" id="carrera" required>
@@ -41,7 +41,7 @@
 
         <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
             <a href="login.html">Volver atrás</a>
-        <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
+        <p th:if="${error != null}" cclass="error" th:text="'Error ' + ${error}">
         </p>
       </form>
     </div>

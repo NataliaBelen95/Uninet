@@ -27,18 +27,13 @@
 </header>
 <main class="contenedor_box_general">
     <aside class="estructura contenedor_usuario" >
-        <!--<img class="user" src="../../../resources/core/imagenes/user.png">
-        <div class="contenedor_usuario_btn">
-            <button type="submit" class="btn">Cambiar foto</button>
-            <button type="submit" class="btn">Eliminar foto</button>
-        </div>-->
         <img class="user"
-             th:src="@{/resources/core/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
+             th:src="@{/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
              alt="Foto de perfil">
 
         <div class="contenedor_usuario_btn">
             <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
-                <input type="file" name="fotoPerfil" accept="image/*">
+                <input class="btn" type="file" name="fotoPerfil" accept="image/*">
                 <button type="submit" class="btn">Cambiar foto</button>
             </form>
 
@@ -104,7 +99,6 @@
             <input th:field="*{codigoPostal}" type="text" id="cod" name="codigoPostal">
         </div>
     </div>
-
     <div class="contenedor_campos_btn">
         <button type="submit" class="btn">Guardar cambios</button>
         <a th:href="@{/home}" class="btn">Volver</a>
