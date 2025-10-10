@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.ServicioCarrera;
 import com.tallerwebi.dominio.ServicioGenero;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
@@ -17,12 +18,14 @@ public class ControladorMiPerfil {
 
     private final ServicioUsuario servicioUsuario;
     private final ServicioGenero servicioGenero;
+    private final ServicioCarrera servicioCarrera;
 
     // Inyección del repositorio a través del constructor
     @Autowired
-    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero) {
+    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioCarrera servicioCarrera) {
         this.servicioUsuario = servicioUsuario;
         this.servicioGenero = servicioGenero;
+        this.servicioCarrera = servicioCarrera;
     }
 
     @GetMapping("/miPerfil")
