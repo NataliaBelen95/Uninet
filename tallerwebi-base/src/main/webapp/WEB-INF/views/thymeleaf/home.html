@@ -34,6 +34,9 @@
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
+<!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
+        <a th:href="@{/subir-archivo}" class="btn_subir_archivos">Subir archivos</a>
+
         <div>
             <p>blablaba</p>
             <p>blablaba</p>
@@ -53,7 +56,7 @@
                 <!--<input name="descripcion" id="publicacion" placeholder="Escribe algo"/>-->
                 <textarea name="descripcion" id="publicacion" placeholder="Escribe algo"></textarea>
                 <div class="box_publi_botones">
-                    <button>attach_file</button>
+<!--                    <button>attach_file</button>-->
                     <button>Visibilidad</button>
                     <button type="submit" name="nueva-publicacion">Publicar</button>
                 </div>
