@@ -13,7 +13,11 @@ public class Publicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+
+    @Column(nullable = true, length = 200)
     private String descripcion;
+
+
     private LocalDateTime fechaPublicacion;
 
 

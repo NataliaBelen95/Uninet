@@ -121,6 +121,7 @@ a:hover {
 .box_comentario{
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 }
 .box_comentario textarea{
       font-family: "Inter", sans-serif;
@@ -134,6 +135,7 @@ a:hover {
       font-size: 15px;
       outline: none;
       resize: none;
+       transition: border-color 0.3s ease;
 }
 .box_comentario input:focus {
   border: 1px solid #27AE60;
@@ -169,6 +171,8 @@ a:hover {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
+       margin-top: 10px;
+
 }
 
  /*Columna derecha*/
@@ -184,18 +188,31 @@ a:hover {
 
 /*agrego contendror ver comentarios separado de mg y comentar*/
 .contenedor_verComentarios {
-    align-self: flex-start;
+     display: flex;
+     justify-content: flex-end;
+     margin-top: 10px;
 }
 
 .contenedor_comentarios {
-    display: none;
-    margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+      margin-top: 15px;
+}
+
+.contenedor_comentarios .comentario {
+
+    margin-bottom: 10px;
+    align-self:flex-end;
+
+
 }
 
 .botonera-publicacion {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+   display: flex;
+   justify-content: flex-start;
+   align-items: flex-start;
 }
 
 .formComentario {
@@ -203,11 +220,20 @@ a:hover {
     margin-top: 10px;
     width: 100%;
 }
-.btns_interaccion_publicacion form,
-.btns_interaccion_publicacion button {
-  display: flex;
-  align-items: center;
+.btns_interaccion_publicacion {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
+
+.linea-divisora {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+
+
 
 /***/
 
