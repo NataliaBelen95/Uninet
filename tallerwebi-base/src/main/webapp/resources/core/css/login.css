@@ -1,5 +1,5 @@
 body {
-  background-color: #0F1317;
+  background-color: #343639;
   font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: column;
@@ -21,7 +21,7 @@ nav {
   width: 18rem;
 }
 .contenedor {
-  background-color: #181D22;
+  background-color: #404345;
   width: 360px;
   border-radius: 0.8rem;
   padding: 0 2.5rem 2rem;
@@ -47,8 +47,8 @@ form {
 }
 
 input {
-  background-color: #1B2227;
-  border: 1px solid #1B2227;
+  background-color: #616466;
+  border: 1px solid #616466;
   border-radius: 0.4rem;
   width: 100%;
   height: 45px;
@@ -58,7 +58,7 @@ input {
   outline: none;
 }
 input:focus {
-  border: 1px solid #27AE60;
+  border: 1px solid #468B6A;
 }
 input::placeholder {
   color: #9E9E9E;

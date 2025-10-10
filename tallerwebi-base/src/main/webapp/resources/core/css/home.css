@@ -4,7 +4,7 @@
 body{
     margin: 0;
     font-family: "Inter", sans-serif;
-    background-color: #0F1317;
+    background-color: #343639;
     min-height: 100vh;
     box-sizing: border-box;
 }
@@ -46,12 +46,10 @@ a:hover {
     gap: 3rem;
 }
 .estructura{
-    background-color: #181D22;
+    background-color: #404345;
     border-radius: 1rem;
     color: #BDBDBD;
     padding: 2rem;
-
-
 }
 .palabra{
     font-size: 3rem;
@@ -67,6 +65,7 @@ a:hover {
     align-items: left;
     justify-content: center;
     font-size: 1.5rem;
+    gap: 1rem;
 }
 .ver_mas{
     font-size: 1.5rem;
@@ -96,9 +95,9 @@ a:hover {
 .box_ordenarPor select {
      width: 100%;
      height: 2rem;
-     background-color: #1B2227;
+     background-color: #404345;
      color: #F5F5F5;
-     border: 1px solid #1B2227;
+     border: 1px solid #404345;
      border-radius: 0.3rem;
      padding: 0.3rem;
      appearance: none;
@@ -111,7 +110,7 @@ a:hover {
 }
 
 .box_ordenarPor select option {
-  background-color: #181D22;
+  background-color: #404345;
   color: #F5F5F5;
 }
 .columnaDos{
@@ -125,8 +124,8 @@ a:hover {
 }
 .box_comentario textarea{
       font-family: "Inter", sans-serif;
-      background-color: #1B2227;
-      border: 1px solid #1B2227;
+      background-color: #616466;
+      border: 1px solid #616466;
       border-radius: 0.4rem;
       width: 100%;
       height: 5rem;
@@ -142,27 +141,12 @@ a:hover {
 .box_comentario input::placeholder {
   color: #9E9E9E;
 }
-.box_publi_botones{
+.box_botones_acciones{
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    padding: 0.7rem;
-}
-.box_publi_botones button{
-     background-color: #27AE60;
-      color: #F5F5F5;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 0.4rem;
-      width: 9rem;
-      height: 3rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    gap: 1rem;
+    margin-right: 3rem;
 }
 .botones_acciones {
     all: unset; /* borra todos los estilos nativos del navegador */
@@ -182,11 +166,9 @@ a:hover {
     margin-bottom: 1rem;
     /**/
     display: flex;
-
     justify-content: flex-start;
     gap: 10px;
 }
-
 
  /*Columna derecha*/
 .columnaTres{
@@ -198,7 +180,6 @@ a:hover {
     width: 2rem;
     background-color: transparent;
 }
-
 
 /*agrego contendror ver comentarios separado de mg y comentar*/
 .contenedor_verComentarios {

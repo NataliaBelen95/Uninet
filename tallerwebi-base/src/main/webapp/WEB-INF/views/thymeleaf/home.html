@@ -15,7 +15,7 @@
 <header>
     <nav class="navbar">
         <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
-        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
+        <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
         <div>
             <a href="/spring/miPerfil">Mi Perfil</a>
             <a href="/spring/miPerfil">Notificaciones</a>
@@ -24,25 +24,24 @@
     </nav>
 </header>
 <main class="contenedor_general">
-    <aside class="estructura columnaUno">
-        <div>
+    <aside class="columnaUno">
+        <div class="estructura">
             <img class="user" th:src="@{/imagenes/user.png}">
-            <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
+            <img class="user" src="../../../resources/core/imagenes/user.png">
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
             <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
             <ul>
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
-        <div>
+        <div class="estructura">
             <p>blablaba</p>
             <p>blablaba</p>
             <p>blablaba</p>
-            <a href="#" class="ver_mas">Conocer más...</a>
         </div>
-        <div>
+        <div class="estructura">
             <ul>
-                <li>Archivos</li>
+                <li>Guardados</li>
                 <li>Grupos</li>
             </ul>
         </div>
