@@ -18,7 +18,7 @@ a:hover {
 }
 .titulo{
     font-style: italic;
-    font-size: 1.7rem;
+    font-size: 1.4rem;
 }
     /*Header*/
 .isologo{
@@ -52,7 +52,7 @@ a:hover {
     padding: 2rem;
 }
 .palabra{
-    font-size: 3rem;
+    font-size: 2rem;
 }
  /*Columna izquierda*/
 .user{
@@ -147,6 +147,7 @@ a:hover {
     align-items: center;
     gap: 1rem;
     margin-right: 3rem;
+    margin-top: 1rem;
 }
 .botones_acciones {
     all: unset; /* borra todos los estilos nativos del navegador */

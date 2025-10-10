@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
-    <link rel="stylesheet" href="../../../resources/core/css/home.css"/>
+    <!--<link rel="stylesheet" href="../../../resources/core/css/home.css"/>-->
 </head>
 <body>
 <header>
     <nav class="navbar">
         <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
-        <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
+        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
         <div>
             <a href="/spring/miPerfil">Mi Perfil</a>
             <a href="/spring/miPerfil">Notificaciones</a>
@@ -27,7 +27,7 @@
     <aside class="columnaUno">
         <div class="estructura">
             <img class="user" th:src="@{/imagenes/user.png}">
-            <img class="user" src="../../../resources/core/imagenes/user.png">
+            <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
             <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
             <ul>
