@@ -74,6 +74,10 @@ public class ControladorPublicacionTest {
         verify(publicacionMock).setUsuario(usuarioMock);
        verify(servicioPublicacionMock).realizar(publicacionMock);
     }
+
+
+
+    /*preguntar donde van test , no son de controlador publicaion */
     @Test
     public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
         // Arrange
@@ -93,25 +97,23 @@ public class ControladorPublicacionTest {
 
 
 
-
     @Test
-    public void queSeContabilicenCorrectamenteLosLikesDeUnaPublicacion() {
-        Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioPublicacionMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
+    public void queAlVolverADarleLikeSeQuiteLaPublicacion() {
+        // Arrange
+        Usuario usuario = mock(Usuario.class);
+        Publicacion publicacion = mock(Publicacion.class);
+        Like likeMock = mock(Like.class);
 
-        // Simulamos que el servicio ya sabe cuántos likes tiene
-        when(servicioPublicacionMock.obtenerCantidadDeLikes(5L)).thenReturn(2);
+        when(servicioLikesMock.obtenerLike(usuario, publicacion)).thenReturn(likeMock);
+        when(likeMock.getId()).thenReturn(123L);
 
-        Usuario usuario1 = mock(Usuario.class);
-        Usuario usuario2 = mock(Usuario.class);
+        // Act
+        servicioLikesMock.darLike(usuario, publicacion);
+        servicioLikesMock.quitarLike(123L);
 
-        servicioLikesMock.darLike(usuario1, publicacionMock);
-        servicioLikesMock.darLike(usuario2, publicacionMock);
-
-        // Validación: no verificamos estado real, sino el valor "stubbeado"
-        assertEquals(2, servicioPublicacionMock.obtenerCantidadDeLikes(5L));
-
-
+        // Assert
+        verify(servicioLikesMock).darLike(usuario, publicacion);
+        verify(servicioLikesMock).quitarLike(123L);
     }
 }
 

@@ -10,10 +10,8 @@ import java.util.List;
 @Repository
 public class RepositorioLikeImpl implements RepositorioLike {
 
-
     @Autowired
     private SessionFactory sessionFactory;
-
 
     @Override
     public boolean existePorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion) {
@@ -24,16 +22,6 @@ public class RepositorioLikeImpl implements RepositorioLike {
                 .setParameter("publicacion", publicacion)
                 .uniqueResult();
         return count != null && count > 0;
-    }
-
-    @Override
-    public Like encontrarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion) {
-        String hql = "FROM Like l WHERE l.usuario = :usuario AND l.publicacion = :publicacion";
-        return sessionFactory.getCurrentSession()
-                .createQuery(hql, Like.class)
-                .setParameter("usuario", usuario)
-                .setParameter("publicacion", publicacion)
-                .uniqueResult();
     }
 
     @Override
@@ -53,9 +41,24 @@ public class RepositorioLikeImpl implements RepositorioLike {
     }
 
     @Override
-    public Like eliminar(Like like) {
+    public void eliminar(Like like) {
         sessionFactory.getCurrentSession().delete(like);
-        return like;
+    }
+
+    @Override
+    public Like buscarPorId(long id) {
+        return sessionFactory.getCurrentSession().get(Like.class, id);
+    }
+
+    @Override
+    public Like buscarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion) {
+        String hql = "FROM Like l WHERE l.usuario = :usuario AND l.publicacion = :publicacion";
+        List<Like> resultado = sessionFactory.getCurrentSession()
+                .createQuery(hql, Like.class)
+                .setParameter("usuario", usuario)
+                .setParameter("publicacion", publicacion)
+                .getResultList();
+
+        return resultado.isEmpty() ? null : resultado.get(0);
     }
 }
-

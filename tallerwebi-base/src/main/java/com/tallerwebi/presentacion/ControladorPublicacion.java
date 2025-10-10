@@ -64,25 +64,30 @@ public class ControladorPublicacion {
 
 
 
-
     @PostMapping("/publicacion/darLike/{id}")
     public ModelAndView darLike(@PathVariable Long id, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-
 
         if (datos != null) {
             Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
             Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
 
             if (publicacion != null) {
-                servicioLike.darLike(usuario, publicacion);
+                if (servicioLike.yaDioLike(usuario, publicacion)) {
 
-
+                    Like like = servicioLike.obtenerLike(usuario, publicacion);
+                    if (like != null) {
+                        servicioLike.quitarLike(like.getId());
+                    }
+                } else {
+                    servicioLike.darLike(usuario, publicacion);
+                }
             }
         }
 
         return new ModelAndView("redirect:/home");
     }
+
 
     @PostMapping("/publicacion/comentar/{id}")
     public ModelAndView comentar(@PathVariable Long id, HttpServletRequest request) {

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-
 @Service
 @Transactional
 public class ServicioLikeImpl implements ServicioLike {
@@ -15,7 +14,9 @@ public class ServicioLikeImpl implements ServicioLike {
 
     @Override
     public void darLike(Usuario usuario, Publicacion publicacion) {
-        if (repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion)) return;
+        if (repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion)) {
+            return; // Ya dio like
+        }
 
         Like like = new Like();
         like.setUsuario(usuario);
@@ -26,20 +27,25 @@ public class ServicioLikeImpl implements ServicioLike {
     }
 
     @Override
-    public boolean yaDioLike(Usuario usuario, Publicacion publicacion) {
-        return repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion);
-    }
-
-    @Override
-    public void quitarLike(Usuario usuario, Publicacion publicacion) {
-        Like like = repositorioLike.encontrarPorUsuarioYPublicacion(usuario, publicacion);
+    public void quitarLike(long id) {
+        Like like = repositorioLike.buscarPorId(id);
         if (like != null) {
             repositorioLike.eliminar(like);
         }
     }
 
     @Override
+    public boolean yaDioLike(Usuario usuario, Publicacion publicacion) {
+        return repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion);
+    }
+
+    @Override
     public int contarLikes(Publicacion publicacion) {
         return repositorioLike.contarPorPublicacion(publicacion);
+    }
+
+    @Override
+    public Like obtenerLike(Usuario usuario, Publicacion publicacion) {
+        return repositorioLike.buscarPorUsuarioYPublicacion(usuario, publicacion);
     }
 }
