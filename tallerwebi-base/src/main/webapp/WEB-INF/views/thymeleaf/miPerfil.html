@@ -33,7 +33,7 @@
             <button type="submit" class="btn">Eliminar foto</button>
         </div>-->
         <img class="user"
-             th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : '/imagenes/user.png'}"
+             th:src="@{/resources/core/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
              alt="Foto de perfil">
 
         <div class="contenedor_usuario_btn">
@@ -57,6 +57,10 @@
         <div class="box_campo">
             <label for="dni">D.N.I</label>
             <input th:field="*{dni}" type="number" id="dni" name="dni">
+        </div>
+        <div class="box_campo">
+            <label for="pass">Contraseña</label>
+            <input th:field="*{password}" type="password" id="pass" name="pass">
         </div>
         <div class="box_campo">
             <label for="nac">Fecha de nacimiento</label>

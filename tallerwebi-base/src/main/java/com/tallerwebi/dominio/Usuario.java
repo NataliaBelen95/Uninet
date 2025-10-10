@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,20 +17,48 @@ public class Usuario {
     private String rol;
     private Boolean activo = false;
 
-
-    // Auxiliar para el formulario
-    @Transient //no persiste en bdd
-    private List<String> carrerasNombres = new ArrayList<>();
-    /*La otra lista de carreras que tenés en Usuario —la que es List<Carrera> y
-    se persiste en la base de datos— no la tocás
-    en el formulario. Esa lista se completa a partir de los nombres que vienen por el form
-     */
-
-
-    /*******AGREGADOS*****/
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String apellido;
+
+    @Column(nullable = false)
     private Integer dni;
+
+    /*relacion con carrera*/
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "carrera_id")
+    private Carrera carrera;
+    //9-10 Belén
+    @Column(nullable = true)
+    private String direccion;
+
+    @Column(nullable = true)
+    private String localidad;
+
+    @Column(nullable = true)
+    private String provincia;
+
+    @Column(nullable = true)
+    private String codigoPostal;
+
+    @Column(unique = true, nullable = true)
+    private String telefono;
+
+    @Column(unique = true, nullable = true)
+    private String emailPersonal;
+
+    @Column(nullable = true)
+    private String fotoPerfil;
+
+    @Column(nullable = true)
+    private LocalDate fechaNacimiento;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genero_id", nullable = true) //El name es lo que conecta ambas tablas Usuario1-NGenero, o sea que es la fk
+    private Genero genero;
+
     /*publicaciones del usuario**/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)  /*si una publi queda sin padre usuario, se borra la publi*/
     private List<Publicacion> publicaciones = new ArrayList<>();
@@ -46,11 +75,6 @@ public class Usuario {
     /*relacion con likes*/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likesDados = new ArrayList<>();
-
-    /*relacion con carrera*/
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "carrera_id")
-    private Carrera carrera;
 
     /*relacion con comentario*/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -139,14 +163,6 @@ public class Usuario {
         this.publicaciones = publicaciones;
     }
 
-    public List<String> getCarrerasNombres() {
-        return carrerasNombres;
-    }
-
-    public void setCarrerasNombres(List<String> carrerasNombres) {
-        this.carrerasNombres = carrerasNombres;
-    }
-
     public List<Publicacion> getPublicacionesGuardadas() {
         return publicacionesGuardadas;
     }
@@ -155,8 +171,6 @@ public class Usuario {
         this.publicacionesGuardadas = publicacionesGuardadas;
     }
 
-
-
     public List<Comentario> getComentarios() {
         return comentarios;
     }
@@ -164,6 +178,34 @@ public class Usuario {
     public void setComentarios(List<Comentario> comentarios) {
         this.comentarios = comentarios;
     }
+
+    public String getDireccion() {return direccion; }
+    public void setDireccion(String direccion) {this.direccion = direccion;    }
+
+    public String getLocalidad() {return localidad;    }
+    public void setLocalidad(String localidad) {this.localidad = localidad;    }
+
+    public String getProvincia() {return provincia;    }
+    public void setProvincia(String provincia) {this.provincia = provincia;    }
+
+    public String getCodigoPostal() {return codigoPostal;    }
+    public void setCodigoPostal(String codigoPostal) {this.codigoPostal = codigoPostal;    }
+
+    public String getTelefono() {return telefono;    }
+    public void setTelefono(String telefono) {this.telefono = telefono;    }
+
+    public String getEmailPersonal() {return emailPersonal;    }
+    public void setEmailPersonal(String emailPersonal) {this.emailPersonal = emailPersonal;    }
+
+    public Genero getGenero() {return genero;   }
+    public void setGenero(Genero genero) {this.genero = genero;    }
+
+    public String getFotoPerfil() {return fotoPerfil;    }
+    public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
+
+    public LocalDate getFechaNacimiento() {return fechaNacimiento;    }
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;    }
 }
+
 
 
