@@ -1,7 +1,6 @@
 package com.tallerwebi.infraestructura;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.Session;
 import com.tallerwebi.dominio.Genero;
 import com.tallerwebi.dominio.RepositorioGenero;
 import org.springframework.beans.factory.annotation.Autowired;

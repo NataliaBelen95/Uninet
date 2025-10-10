@@ -39,7 +39,7 @@ public class Usuario {
     @Column(unique = true, nullable = true)
     private String fotoPerfil;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = true)
     private LocalDate fechaNacimiento;
 
     @ManyToOne(fetch = FetchType.EAGER)
