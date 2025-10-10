@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Comentario;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class DatosPublicacion {
     private String descripcion;
     private long id;
     private int cantLikes;
+    private LocalDateTime fechaPublicacion;
     private List<DatosComentario> comentarios;
 
 
@@ -48,10 +50,16 @@ public class DatosPublicacion {
     public void setCantLikes (int cantLikes) {
         this.cantLikes = cantLikes;
     }
-
-
     public int getCantLikes() {
         return cantLikes;
+    }
+
+    public LocalDateTime getFechaPublicacion() {
+        return fechaPublicacion;
+    }
+
+    public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
     }
 }
 

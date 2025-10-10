@@ -63,8 +63,9 @@
             </form>
         </article>
             <!-- se reemplaza por el articulo que contiene c/u de las publis en divTarjeta -->
-        <article th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})" >
-        </article>
+        <div th:each="dtopubli : ${datosPublicaciones}">
+            <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})"></div>
+        </div>
 
     </section>
     <aside class="estructura columnaTres">
@@ -81,7 +82,8 @@
         </div>
     </aside>
 </main>
+<script type="module" th:src="@{/js/publicacionBtnFunciones.js}"></script>
 
-<script type="module" th:src="@{js/publicacion.js}"></script>
+
 </body>
 </html>

@@ -50,6 +50,8 @@ a:hover {
     border-radius: 1rem;
     color: #BDBDBD;
     padding: 2rem;
+
+
 }
 .palabra{
     font-size: 3rem;
@@ -175,10 +177,17 @@ a:hover {
     cursor: pointer;
 }
 .btns_interaccion_publicacion{
-    display: flex;
+    /*display: flex;
     gap: 2rem;
     margin-bottom: 1rem;
+    /**/
+    display: flex;
+
+    justify-content: flex-start;
+    gap: 10px;
 }
+
+
  /*Columna derecha*/
 .columnaTres{
     display: flex;
@@ -188,6 +197,41 @@ a:hover {
 .user2{
     width: 2rem;
     background-color: transparent;
+}
+
+
+/*agrego contendror ver comentarios separado de mg y comentar*/
+.contenedor_verComentarios {
+    align-self: flex-start;
+}
+
+.contenedor_comentarios {
+    display: none;
+    margin-top: 10px;
+}
+
+.botonera-publicacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formComentario {
+    display: none;
+    margin-top: 10px;
+    width: 100%;
+}
+.btns_interaccion_publicacion form,
+.btns_interaccion_publicacion button {
+  display: flex;
+  align-items: center;
+}
+
+/***/
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
     /* Responsive*/
