@@ -1,9 +1,6 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.ServicioCarrera;
-import com.tallerwebi.dominio.ServicioGenero;
-import com.tallerwebi.dominio.ServicioUsuario;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +15,14 @@ public class ControladorMiPerfil {
 
     private final ServicioUsuario servicioUsuario;
     private final ServicioGenero servicioGenero;
-    private final ServicioCarrera servicioCarrera;
+    private final ServicioLogin servicioLogin;
 
     // Inyección del repositorio a través del constructor
     @Autowired
-    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioCarrera servicioCarrera) {
+    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioLogin servicioLogin) {
         this.servicioUsuario = servicioUsuario;
         this.servicioGenero = servicioGenero;
-        this.servicioCarrera = servicioCarrera;
+        this.servicioLogin = servicioLogin;
     }
 
     @GetMapping("/miPerfil")
