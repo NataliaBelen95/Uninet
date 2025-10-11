@@ -5,8 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>Registrarse</title>
+
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
-    <!--<link rel="stylesheet" href="../../../resources/core/css/registrarse.css">-->
+    <!--<link rel="stylesheet" href="/src/main/webapp/resources/core/css/variables.css">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/base.css">
+    <link rel="stylesheet" href="../../../resources/core/css/registrarse.css">-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -27,7 +35,7 @@
             <input th:field="*{email}" id="email" placeholder="Email" required/>
             <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
             <input th:field="*{dni}" id="dni" type="number" placeholder="D.N.I" required/>
-
+            <input th:field="*{fechaNacimiento}" id="fecha" type="date" required/>
             <div class="carreras">
                 <label for="carrera">Carrera</label>
                 <select th:field="*{carrera.id}" id="carrera" required>
@@ -41,7 +49,7 @@
 
         <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
             <a href="login.html">Volver atrás</a>
-        <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
+        <p th:if="${error != null}" cclass="error" th:text="'Error ' + ${error}">
         </p>
       </form>
     </div>

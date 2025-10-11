@@ -107,14 +107,5 @@ public class ControladorLogin {
         model.put("todasLasCarreras", carreras);
         return new ModelAndView("nuevo-usuario", model);
     }
-
-
-
-
-
-
-
-
-
 }
 

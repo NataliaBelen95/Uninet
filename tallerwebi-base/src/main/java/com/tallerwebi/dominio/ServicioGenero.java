@@ -26,4 +26,8 @@ public class ServicioGenero {
             repositorioGenero.guardarGenero(new Genero(nombre));
         }
     }
+
+    public Genero buscarPorId(Long id) {
+        return repositorioGenero.buscarGeneroPorId(id);
+    }
 }

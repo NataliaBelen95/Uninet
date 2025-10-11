@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,16 +44,17 @@ public class Usuario {
     @Column(nullable = true)
     private String codigoPostal;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String telefono;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String emailPersonal;
 
     @Column(nullable = true)
     private String fotoPerfil;
 
     @Column(nullable = true)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaNacimiento;
 
     @ManyToOne(fetch = FetchType.EAGER)

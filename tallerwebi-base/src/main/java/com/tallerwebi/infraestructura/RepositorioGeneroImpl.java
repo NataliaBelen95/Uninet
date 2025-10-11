@@ -36,4 +36,9 @@ public class RepositorioGeneroImpl implements RepositorioGenero {
     public void guardarGenero(Genero genero) {
         sessionFactory.getCurrentSession().save(genero);
     }
+
+    @Override
+    public Genero buscarGeneroPorId(Long id) {
+        return sessionFactory.getCurrentSession().get(Genero.class, id);
+    }
 }
