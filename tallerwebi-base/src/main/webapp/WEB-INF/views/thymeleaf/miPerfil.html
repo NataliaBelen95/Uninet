@@ -47,6 +47,7 @@
         <ul>
             <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
         </ul>
+        <p th:if="${mensaje}" style="color:green;" th:text="${mensaje}"></p>
         <form th:action="@{/mi-perfil}" th:object="${usuario}" method="post">
     <div class="contenedor_campos">
         <div class="box_campo">
@@ -64,6 +65,7 @@
         <div class="box_campo">
             <label for="genero">Género</label>
             <select th:field="*{genero}" id="genero" name="genero">
+                <option value="vacio">Seleccione un género </option>
                 <option th:each="g : ${generos}"
                         th:value="${g.id}"
                         th:text="${g.nombre}">
