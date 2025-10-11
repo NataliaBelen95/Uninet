@@ -52,20 +52,20 @@
     <div class="contenedor_campos">
         <div class="box_campo">
             <label for="dni">D.N.I</label>
-            <input th:field="*{dni}" type="number" id="dni" name="dni">
+            <input th:field="*{dni}" type="number" id="dni">
         </div>
         <div class="box_campo">
             <label for="pass">Contraseña</label>
-            <input th:field="*{password}" type="password" id="pass" name="pass">
+            <input th:field="*{password}" type="password" id="pass">
         </div>
         <div class="box_campo">
             <label for="nac">Fecha de nacimiento</label>
-            <input th:field="*{fechaNacimiento}" type="date" id="nac" name="nac">
+            <input th:field="*{fechaNacimiento}" type="date" id="nac">
         </div>
         <div class="box_campo">
             <label for="genero">Género</label>
-            <select th:field="*{genero.id}" id="genero" name="genero.id">
-                <option value="vacio">Seleccione un género </option>
+            <select th:field="*{genero.id}" id="genero">
+                <option value="">Seleccione un género </option>
                 <option th:each="g : ${generos}"
                         th:value="${g.id}"
                         th:text="${g.nombre}">
@@ -74,31 +74,31 @@
         </div>
         <div class="box_campo">
             <label for="mail">Email institucional</label>
-            <input th:field="*{email}" type="email" id="mail" name="mail">
+            <input th:field="*{email}" type="email" id="mail" readonly>
         </div>
         <div class="box_campo">
             <label for="mailPersonal">Email personal</label>
-            <input th:field="*{emailPersonal}" type="email" id="mailPersonal" name="mailPersonal">
+            <input th:field="*{emailPersonal}" type="email" id="mailPersonal">
         </div>
         <div class="box_campo">
             <label for="tel">Teléfono</label>
-            <input th:field="*{telefono}" type="tel" id="tel" name="tel">
+            <input th:field="*{telefono}" type="tel" id="tel">
         </div>
         <div class="box_campo">
             <label for="dir">Dirección</label>
-            <input th:field="*{direccion}" type="text" id="dir" name="dir">
+            <input th:field="*{direccion}" type="text" id="dir">
         </div>
         <div class="box_campo">
             <label for="localidad">Localidad</label>
-            <input th:field="*{localidad}" type="text" id="localidad" name="localidad">
+            <input th:field="*{localidad}" type="text" id="localidad">
         </div>
         <div class="box_campo">
             <label for="prov">Provincia</label>
-            <input th:field="*{provincia}" type="text" id="prov" name="provincia">
+            <input th:field="*{provincia}" type="text" id="prov">
         </div>
         <div class="box_campo">
             <label for="cod">Código Postal</label>
-            <input th:field="*{codigoPostal}" type="text" id="cod" name="codigoPostal">
+            <input th:field="*{codigoPostal}" type="text" id="cod">
         </div>
     </div>
     <div class="contenedor_campos_btn">

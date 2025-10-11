@@ -44,10 +44,10 @@ public class Usuario {
     @Column(nullable = true)
     private String codigoPostal;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String telefono;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String emailPersonal;
 
     @Column(nullable = true)
