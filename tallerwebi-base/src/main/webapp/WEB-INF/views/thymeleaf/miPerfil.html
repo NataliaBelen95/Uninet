@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Perfil</title>
+
+    <!--<link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">-->
+    <link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">
+
     <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
     <!--<link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>
@@ -47,7 +51,6 @@
         <ul>
             <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
         </ul>
-        <p th:if="${mensaje}" style="color:green;" th:text="${mensaje}"></p>
         <form th:action="@{/miPerfil}" th:object="${usuario}" method="post">
     <div class="contenedor_campos">
         <div class="box_campo">
@@ -101,6 +104,9 @@
             <input th:field="*{codigoPostal}" type="text" id="cod">
         </div>
     </div>
+     <div>
+         <p th:if="${mensaje}" style="color:green;" th:text="${mensaje}"></p>
+     </div>
     <div class="contenedor_campos_btn">
         <button type="submit" class="btn">Guardar cambios</button>
         <a th:href="@{/home}" class="btn">Volver</a>

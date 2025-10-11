@@ -1,0 +1,75 @@
+@import url ('variables.css');
+
+* { box-sizing: border-box; }
+
+html,body { margin:0; padding:0; height:100vh; }
+body{
+  font-family: var(--font-family);
+  background-color: var(--background);
+  color: var(--texto);
+  box-sizing: border-box;
+}
+
+/* Links globales */
+a { color: var(--verde);
+    text-decoration:none;
+}
+
+a:hover { color: var(--texto);
+}
+
+/* Reglas base para inputs y botones (podés adaptar por vista) */
+input, textarea, select {
+  background: var(--background-input);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  width: 100%;
+  font-family: var(--font-family);
+}
+/* Clase reutilizable que ya usás: estructura */
+.estructura {
+  background: var(--background-contenedor);
+  border-radius: var(--radius);
+  color: var(--texto-sec);
+  padding: 1.25rem;
+}
+
+/* Botón base */
+.btn {
+  background: var(--verde);
+  color: var(--texto);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+    /*Header*/
+.isologo{
+    width: 3rem;
+}
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.7rem 4rem;
+}
+.navbar div{
+    display: flex;
+    gap: 2rem;
+    padding-right: 3rem;
+}
+.navbar div a{
+    font-size: large;
+}
+ .separador {
+   width: 100%;
+   height: 1px;
+   background-color: var(--verde);
+   margin: 0.5rem auto;
+ }
+

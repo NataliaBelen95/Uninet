@@ -1,42 +1,11 @@
-* {
-  box-sizing: border-box;
-}
-body{
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    background-color: #343639;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
+@import url ('variables.css');
 a {
-  text-decoration: none;
-  color: #27AE60;
   font-size: 14px;
 }
-a:hover {
-  color: #E0E0E0;
-}
+
 .titulo{
     font-style: italic;
     font-size: 1.4rem;
-}
-    /*Header*/
-.isologo{
-    width: 3rem;
-}
-.navbar{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-}
-.navbar div{
-    display: flex;
-    gap: 2rem;
-    padding-right: 3rem;
-}
-.navbar div a{
-    font-size: large;
 }
     /*Main*/
 .contenedor_general{
@@ -46,9 +15,7 @@ a:hover {
     gap: 3rem;
 }
 .estructura{
-    background-color: #404345;
     border-radius: 1rem;
-    color: #BDBDBD;
     padding: 2rem;
 }
 .palabra{
@@ -67,26 +34,38 @@ a:hover {
     font-size: 1.5rem;
     gap: 1rem;
 }
-.ver_mas{
-    font-size: 1.5rem;
+.box_columnaUno{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+.box_columnaUno a{
+    color: var(--texto-ter);
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: var(--gap);
+    font-weight: bold;
+}
+.box_columnaUno a:hover{
+    text-decoration: underline;
+}
+.box_columnaUno img{
+    width: 2rem;
 }
  /*Columna central*/
  .box_ordenarPor{
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--gap);
  }
- .separador {
-   width: 100%;
-   height: 1px;
-   background-color: #27AE60;
-   margin: 0.5rem auto;
- }
+
  .box_ordenarPor form{
     display: flex;
-    gap: 1rem;
+    gap: var(--gap);
     align-items: center;
-    color: #BDBDBD;
+    color: var(--texto-ter);
     font-size: small;
  }
  .box_ordenarPor form label{
@@ -95,23 +74,23 @@ a:hover {
 .box_ordenarPor select {
      width: 100%;
      height: 2rem;
-     background-color: #404345;
-     color: #F5F5F5;
-     border: 1px solid #404345;
-     border-radius: 0.3rem;
+     background-color: var(--background-contenedor);
+     color: var(--texto);
+     border: 1px solid var(--background-contenedor);
+     border-radius: var(--radius);
      padding: 0.3rem;
      appearance: none;
      cursor: pointer;
 }
 .box_ordenarPor select:focus {
   outline: none;
-  border: 1px solid #27AE60;
-  box-shadow: 0 0 0.3rem #27AE60;
+  border: 1px solid var(--verde);
+  box-shadow: 0 0 0.3rem var(--verde);
 }
 
 .box_ordenarPor select option {
-  background-color: #404345;
-  color: #F5F5F5;
+  background-color: var(--background-contenedor);
+  color: var(--texto);
 }
 .columnaDos{
     display: flex;
@@ -123,14 +102,9 @@ a:hover {
     flex-direction: column;
 }
 .box_comentario textarea{
-      font-family: "Inter", sans-serif;
-      background-color: #616466;
-      border: 1px solid #616466;
-      border-radius: 0.4rem;
-      width: 100%;
       height: 5rem;
       padding: 0 0.8rem;
-      color: #BDBDBD;
+      color: var(--texto-sec);
       font-size: 15px;
       outline: none;
       resize: none;
@@ -145,7 +119,7 @@ a:hover {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 1rem;
+    gap: var(--gap);
     margin-right: 3rem;
     margin-top: 1rem;
 }
@@ -162,10 +136,6 @@ a:hover {
     cursor: pointer;
 }
 .btns_interaccion_publicacion{
-    /*display: flex;
-    gap: 2rem;
-    margin-bottom: 1rem;
-    /**/
     display: flex;
     justify-content: flex-start;
     gap: 10px;
