@@ -51,7 +51,7 @@ public class ControladorMiPerfil {
 
        //Acá actualizamos los campos editables
         usuarioEnBD.setEmail(usuario.getEmail());
-        usuarioEnBD.setEmailPersonal(usuario.getEmail());
+        usuarioEnBD.setEmailPersonal(usuario.getEmailPersonal());
         usuarioEnBD.setFechaNacimiento(usuario.getFechaNacimiento());
         usuarioEnBD.setTelefono(usuario.getTelefono());
         usuarioEnBD.setDireccion(usuario.getDireccion());

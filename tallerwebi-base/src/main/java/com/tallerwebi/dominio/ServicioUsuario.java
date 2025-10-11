@@ -30,6 +30,6 @@ public class ServicioUsuario {
 
     @Transactional
     public void actualizar(Usuario usuario) {
-        repositorioUsuario.guardar(usuario);
+        repositorioUsuario.actualizar(usuario);
     }
 }
