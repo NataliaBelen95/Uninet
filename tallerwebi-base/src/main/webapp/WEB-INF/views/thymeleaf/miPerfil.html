@@ -48,7 +48,7 @@
             <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
         </ul>
         <p th:if="${mensaje}" style="color:green;" th:text="${mensaje}"></p>
-        <form th:action="@{/mi-perfil}" th:object="${usuario}" method="post">
+        <form th:action="@{/miPerfil}" th:object="${usuario}" method="post">
     <div class="contenedor_campos">
         <div class="box_campo">
             <label for="dni">D.N.I</label>
