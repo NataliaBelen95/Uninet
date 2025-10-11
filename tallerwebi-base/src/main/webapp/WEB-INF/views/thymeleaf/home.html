@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Home</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <th:block th:include="template/head :: links-comunes"></th:block>
+
+    <!--<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">-->
 
-    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">-->
     <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
 
     <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
@@ -24,7 +26,6 @@
 <header>
     <nav th:replace="templates/nav :: nav"></nav>
     <!--<nav class="navbar"> nav antiguo
-        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
         <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
         <div>
             <a href="/spring/miPerfil">Mi Perfil</a>

@@ -18,16 +18,7 @@
 </head>
 <body>
 <header>
-    <nav class="navbar">
-        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
-        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
-        <div>
-            <a href="/spring/miPerfil">Mi Perfil</a>
-            <a href="/spring/miPerfil">Notificaciones</a>
-            <a href="/spring/miPerfil">Mensajes</a>
-            <a href="/spring/miPerfil">Cerrar sesión</a>
-        </div>
-    </nav>
+    <nav th:replace="templates/nav :: nav"></nav>
 </header>
 <main class="contenedor_box_general">
     <aside class="estructura contenedor_usuario" >
