@@ -60,9 +60,11 @@ public class ControladorMiPerfil {
         usuarioEnBD.setProvincia(usuario.getProvincia());
         usuarioEnBD.setPassword(usuario.getPassword());
 
-        Genero generoEnBD = servicioGenero.buscarPorId(usuario.getGenero().getId());
-        if(usuarioEnBD != null){
+        if(usuario.getGenero() != null && usuario.getGenero().getId() != null) {
+            Genero generoEnBD = servicioGenero.buscarPorId(usuario.getGenero().getId());
             usuarioEnBD.setGenero(generoEnBD);
+        }else{
+            usuarioEnBD.setGenero(null);
         }
 
         //Guardamos en la base de datos

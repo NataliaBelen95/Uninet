@@ -64,7 +64,7 @@
         </div>
         <div class="box_campo">
             <label for="genero">Género</label>
-            <select th:field="*{genero}" id="genero" name="genero">
+            <select th:field="*{genero.id}" id="genero" name="genero.id">
                 <option value="vacio">Seleccione un género </option>
                 <option th:each="g : ${generos}"
                         th:value="${g.id}"
