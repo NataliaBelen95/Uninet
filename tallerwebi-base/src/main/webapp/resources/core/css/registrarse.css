@@ -71,7 +71,6 @@ input::placeholder {
 }
 
 .btn {
-  font-weight: 600;
   height: 2.8rem;
   display: flex;
   align-items: center;

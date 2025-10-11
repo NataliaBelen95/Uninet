@@ -78,6 +78,7 @@ select option:hover {
   align-items: center;
   justify-content: center;
   width: 100%;
+  font-weight: 600;
 }
 .btn:hover {
   opacity: 0.9;
