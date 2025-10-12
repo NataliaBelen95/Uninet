@@ -68,3 +68,7 @@ form{
     width: 11rem;
     height: 3rem;
 }
+.user{
+    width: 8rem;
+    border-radius: 50%;
+}

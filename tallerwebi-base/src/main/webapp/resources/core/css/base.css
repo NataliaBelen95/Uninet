@@ -96,11 +96,16 @@ select option:hover {
 }
 .navbar div{
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 2rem;
     padding-right: 3rem;
 }
 .navbar div a{
     font-size: large;
+}
+.navbar div a:hover{
+    transform: scale(1.1);
 }
 .separador {
    width: 100%;
@@ -108,6 +113,24 @@ select option:hover {
    background-color: var(--verde);
    margin: 0.5rem auto;
 }
+.boton-tema {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-texto);
+    transition: transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.boton-tema img{
+   width: 2rem;
+}
+.boton-tema:hover {
+    transform: scale(1.1);
+}
+
 
 
 

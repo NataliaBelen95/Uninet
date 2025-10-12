@@ -15,10 +15,13 @@
 }
 
 /* tema claro */
-body.light-theme{
+body.tema-claro{
+  --verde: #27AE60;
+  --verde-2: #1F5133;
   --background: #EAFBF0;
   --background-contenedor: #ffffff;
-  --color-input: #f4f7f5;
+  --background-input: #f4f7f5;
   --texto: #1E1E1E;
   --texto-sec: #666666;
+  --texto-ter: #E0E0E0;
 }

@@ -22,9 +22,10 @@
 <body>
 <header>
     <nav th:replace="templates/nav :: nav"></nav>
-    <!--<nav class="navbar"> nav viejo
+    <!--<nav class="navbar">
         <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
         <div>
+            <button id="btn-tema" class="boton-tema"><img class="isologo" src="../../../resources/core/imagenes/modo-oscuro.png"></button>
             <a href="/spring/miPerfil">Mi Perfil</a>
             <a href="/spring/miPerfil">Notificaciones</a>
             <a href="/spring/miPerfil">Mensajes</a>
@@ -40,8 +41,8 @@
 
         <div class="contenedor_usuario_btn">
             <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
-                <input class="btn" type="file" name="fotoPerfil" accept="image/*">
-                <button type="submit" class="btn">Cambiar foto</button>
+                <input class="btn" type="file" name="fotoPerfil" accept="image/*" placeholder="
+Cambiar foto">
             </form>
 
             <form th:action="@{/miPerfil/eliminar-foto}" method="post">
@@ -117,6 +118,8 @@
 </form>
     </section>
 </main>
+<!--<script src="../../../resources/core/js/tema.js"></script>-->
+<script type="module" th:src="@{js/tema.js}"></script>
 <script type="module" th:src="@{js/login.js}"></script>
 </body>
 </html>
