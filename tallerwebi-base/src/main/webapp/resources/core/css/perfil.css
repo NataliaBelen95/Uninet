@@ -72,3 +72,6 @@ form{
     width: 8rem;
     border-radius: 50%;
 }
+.input-oculto{
+    display: none;
+}

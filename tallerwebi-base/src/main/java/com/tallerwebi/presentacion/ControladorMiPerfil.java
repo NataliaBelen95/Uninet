@@ -9,9 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 public class ControladorMiPerfil {
 
@@ -47,7 +52,8 @@ public class ControladorMiPerfil {
        if(datosUsuario == null){
            return new ModelAndView("miPerfil");
        }
-       Usuario usuarioEnBD = servicioUsuario.buscarPorEmail(datosUsuario.getEmail());
+       //Usuario usuarioEnBD = servicioUsuario.buscarPorEmail(datosUsuario.getEmail()); forma vieja
+       Usuario usuarioEnBD = servicioUsuario.buscarPorId(datosUsuario.getId());
 
        //Acá actualizamos los campos editables
         usuarioEnBD.setEmail(usuario.getEmail());
@@ -78,4 +84,55 @@ public class ControladorMiPerfil {
 
         return new ModelAndView("miPerfil", model);
     }
+
+
+    @PostMapping("/miPerfil/foto")
+      @Transactional
+    public ModelAndView subirFoto(@RequestParam("fotoPerfil") MultipartFile foto, HttpServletRequest request) {
+        DatosUsuario  datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+        ModelMap model = new ModelMap();
+
+        if(foto.isEmpty()){
+            model.addAttribute("mensaje", "No seleccionaste ninguna imagen");
+            return new ModelAndView("miPerfil", model);
+        }
+
+        String nombreOriginal = foto.getOriginalFilename();
+        String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf('.')).toLowerCase();
+        long pesoPermitido = 2 * 1024 * 1024;
+        List<String> extensionesPermitidas = Arrays.asList(".png", ".jpg", ".jpeg", ".webp");
+
+        if(!extensionesPermitidas.contains(extension)){
+            model.addAttribute("mensaje", "Formato no válido. Solo se aceptan: JPG, PNG, WEBP");
+            return new ModelAndView("miPerfil", model);
+        }
+
+        if(foto.getSize()>pesoPermitido){
+            model.addAttribute("mensaje", "El archivo es demasiado grande (máx. 2MB)");
+            return new ModelAndView("miPerfil", model);
+        }
+
+        try {
+            String nombreFinal = java.util.UUID.randomUUID().toString() + extension;
+
+            String rutaBase = request.getSession().getServletContext().getRealPath("/imagenes/perfiles");
+            java.io.File directorio =  new java.io.File(rutaBase);
+            if(!directorio.exists()){
+                directorio.mkdir();
+            }
+            java.io.File destino = new java.io.File(rutaBase + nombreFinal);
+            foto.transferTo(destino);
+
+            usuario.setFotoPerfil("imagenes/perfiles/" + nombreFinal);
+            servicioUsuario.actualizar(usuario);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            model.addAttribute("mensaje", "Error al cargar imagen");
+        }
+        model.addAttribute("usuario", usuario);
+        return new ModelAndView("miPerfil", model);
+    }
+
 }

@@ -41,8 +41,8 @@
 
         <div class="contenedor_usuario_btn">
             <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
-                <input class="btn" type="file" name="fotoPerfil" accept="image/*" placeholder="
-Cambiar foto">
+                <input id="foto" class="input-oculto" type="file" name="fotoPerfil" accept="image/*">
+                <label class="btn" for="foto">Cambiar foto</label>
             </form>
 
             <form th:action="@{/miPerfil/eliminar-foto}" method="post">
