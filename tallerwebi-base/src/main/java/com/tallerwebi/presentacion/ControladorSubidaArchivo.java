@@ -1,6 +1,9 @@
 package com.tallerwebi.presentacion;
 
 
+import com.tallerwebi.dominio.ServicioSubirArchivo;
+import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
+import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,73 +15,61 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
+
 
 @Controller
 public class ControladorSubidaArchivo {
 
-    public ControladorSubidaArchivo() {
-        //constructor vacio
-    }
-//con este mostramos los datos del usuario en la pagina
-    @GetMapping("/subir-archivo")
-    public ModelAndView mostrarSubirArchivo(HttpServletRequest request) {
-        ModelMap model = new ModelMap();
-        HttpSession session=request.getSession();
-        DatosUsuario usuario=(DatosUsuario) session.getAttribute("usuarioLogueado");
+    private final ServicioSubirArchivo servicioSubirArchivo;
 
-        if(usuario==null){
+    public ControladorSubidaArchivo(ServicioSubirArchivo servicioSubirArchivo) {
+        //constructor vacío
+        this.servicioSubirArchivo = servicioSubirArchivo;
+    }
+
+    //con este mostramos los datos del usuario en la página
+    @GetMapping("/subir-archivo")
+    public ModelAndView mostrarDatosEnSubirArchivo(HttpServletRequest request) {
+        ModelMap model = new ModelMap();
+        HttpSession session = request.getSession();
+        DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
+
+        if (usuario == null) {
             return new ModelAndView("redirect:/login");
         }
         model.addAttribute("usuario", usuario);
 
         return new ModelAndView("subir-archivo", model);
     }
-//y con este manejamos la subida de archivos
-@PostMapping("/subir-archivo")
-public ModelAndView guardarSubirArchivo(
-        @SessionAttribute("usuarioLogueado") DatosUsuario usuario,
-        @RequestParam("archivo") MultipartFile archivo) {
 
-    ModelMap model = new ModelMap();
-    model.addAttribute("usuario", usuario);
+    //y con este manejamos la subida de archivos, responde al post del html
+    @PostMapping("/subir-archivo")
+    public ModelAndView guardarArchivoDeSubirArchivo(@SessionAttribute("usuarioLogueado") DatosUsuario usuario, @RequestParam("archivo") MultipartFile archivo){
+        // este método devuelve un modelandview , retorna una vista de datos
+        //el session attribute obtiene los datos de usuario de la sesión
+        //el request param recibe el archivo que enviamos por post como un "MultipartFile"
 
-    if (archivo == null || archivo.isEmpty()) {
-        model.addAttribute("mensaje", "Archivo no encontrado.");
-        return new ModelAndView("subir-archivo", model);
-    }
+        ModelMap model = new ModelMap();//Crea un model map… estructura clave-valor para pasar datos a la vista
+        model.addAttribute("usuario", usuario);//agrego el usuario logueado al modelo para mostrar sus datos en la vista
 
-    try {
-        // Ruta absoluta del proyecto
-        String basePath = System.getProperty("user.dir");
-        Path rutaDestino = Paths.get(basePath, "archivos_pdf");
-        Files.createDirectories(rutaDestino);
-
-        // Nombre limpio del archivo
-        String nombreArchivo = Paths.get(Objects.requireNonNull(archivo.getOriginalFilename())).getFileName().toString();
-        Path destinoFinal = rutaDestino.resolve(nombreArchivo);
-
-        // Solución: copiar manualmente el stream del archivo
-        try (InputStream inputStream = archivo.getInputStream()) {
-            Files.copy(inputStream, destinoFinal, StandardCopyOption.REPLACE_EXISTING);
+        //PRIMER VALIDACIÓN---> SI NO HAY ARCHIVO
+        if (archivo == null || archivo.isEmpty()) {
+            model.addAttribute("mensaje", "Archivo no encontrado.");//agrego mensaje de error al modelo
+            return new ModelAndView("subir-archivo", model);// retorno la vista con el mensaje
         }
 
-        model.addAttribute("mensaje", "Archivo guardado exitosamente: " + nombreArchivo);
+        try{
+            //delego la lógica de subida al servicio
+            String nombreArchivo =servicioSubirArchivo.guardarArchivoPdf(archivo, usuario);
+            //si se pudo subir, envía mensaje de éxito
+            model.addAttribute("mensaje", "Archivo guardado exitosamente: " + nombreArchivo);
 
-    } catch (IOException e) {
-        e.printStackTrace();
-        model.addAttribute("mensaje", "Error al subir el archivo: " + e.getMessage());
-    }
+        //si no se pudo subir envía la excepción
+        }catch (NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException | NoSePuedeSubirArchivoPorFallaException e) {
+            model.addAttribute("mensaje", e.getMessage());
+        }
+        //retorno la vista con los datos del model map
+        return new ModelAndView("subir-archivo", model);
 
-    return new ModelAndView("subir-archivo", model);
-}
-
-
-}
+    }//fin del método
+}//fin de la clase

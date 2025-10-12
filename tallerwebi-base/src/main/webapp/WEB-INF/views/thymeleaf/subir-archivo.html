@@ -37,11 +37,11 @@
     <section class="columnaDos">
         <article class="estructura">
             <h3>Subir archivos pdf</h3>
-            <p >(aca se subiran archivos para generar cuestionarios)</p>
             <form th:action="@{/subir-archivo}" method="POST" enctype="multipart/form-data">
                 <input type="file" name="archivo" accept="application/pdf" required />
                 <button type="submit">Subir PDF</button>
             </form>
+            <p th:if="${mensaje}" th:text="${mensaje}" style="color: green;"></p>
         </article>
     </section>
 
