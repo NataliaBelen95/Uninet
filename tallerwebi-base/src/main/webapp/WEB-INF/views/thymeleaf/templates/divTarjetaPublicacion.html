@@ -30,19 +30,12 @@
         <div class="botonera-publicacion">
             <section class="btns_interaccion_publicacion">
                 <!-- Botón dar like -->
-                <button class="botones_acciones" type="button"
-                        th:attr="data-id=${dtopubli.id}"
-                        th:onclick="'darLike(' + ${dtopubli.id} + ')'">
-                    <img th:src="@{/imagenes/like.png}"
-                         alt="Like"
-                         th:id="'like-img-' + ${dtopubli.id}" />
+                <button class="botones_acciones likeBtn" type="button" th:data-id="${dtopubli.id}">
+                    <img th:src="@{/imagenes/like.png}" alt="Like" th:id="'like-img-' + ${dtopubli.id}" />
                 </button>
 
                 <!-- Botón comentar -->
-                <button class="botones_acciones comentarBtn"
-                        type="button"
-                        th:attr="data-id=${dtopubli.id}"
-                        onclick="toggleComentario([[${dtopubli.id}]])">
+                <button class="botones_acciones comentarBtn" type="button" th:data-id="${dtopubli.id}">
                     <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
                 </button>
 
