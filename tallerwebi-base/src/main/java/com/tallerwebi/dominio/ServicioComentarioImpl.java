@@ -39,4 +39,11 @@ public class ServicioComentarioImpl implements ServicioComentario {
     public void editarComentario(Comentario comentario) {
 
     }
+
+    @Override
+    public int contarComentarios(Publicacion publicacion) {
+        return repositorioComentario.contarComentarioPorPublicacion(publicacion);
+
+    }
+
 }

@@ -2,14 +2,19 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Script cargado");
 
     // Mostrar comentarios
-    document.querySelectorAll(".ver-comentariosBtn").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-            const contenedor = btn.closest("article").querySelector(".contenedor_comentarios");
-            if (contenedor) {
-                contenedor.style.display = contenedor.style.display === "none" ? "block" : "none";
-            }
-        });
-    });
+   document.querySelectorAll(".ver-comentariosBtn").forEach(function (btn) {
+       btn.addEventListener("click", function () {
+           // Si el texto contiene "No comentarios", no hace nada
+           if (btn.textContent.trim().includes("No comentarios")) {
+               return;
+           }
+
+           const contenedor = btn.closest("article").querySelector(".contenedor_comentarios");
+           if (contenedor) {
+               contenedor.style.display = contenedor.style.display === "none" ? "block" : "none";
+           }
+       });
+   });
 
     // Mostrar/Ocultar formulario para comentar
     document.querySelectorAll(".comentarBtn").forEach(function (btn) {
