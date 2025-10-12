@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
-<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}">
+<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}"
+     xmlns:th="http://www.w3.org/1999/xhtml">
     <article class="estructura">
         <!-- Usuario y descripción -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
@@ -11,27 +8,10 @@
                         ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm'))
                         : 'Sin fecha'}"></span>
 
-        <!-- Opciones (Eliminar) -->
-        <div class="opciones-publicacion">
-            <button class="options-btn">...</button>
-            <ul class="options-menu">
-                <li>
-                    <form th:id="'form-eliminar' + ${dtopubli.id}"
-                          method="POST"
-                          th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}">
-                        <button type="submit" class="eliminar-opcion">Eliminar</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Like y comentarios -->
+        <!-- Contador de likes y comentarios -->
         <div class="contenedor_verComentarios">
             <div class="like-container">
-                <button class="botones_acciones" type="button"
-                        th:onclick="'darLike(' + ${dtopubli.id} + ')'">
-                    <img th:src="@{/imagenes/like.png}" alt="Like" th:id="'like-img-' + ${dtopubli.id}" style="width:20px;"/>
-                </button>
+                <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
                 <span th:text="${dtopubli.cantLikes}" th:id="'likes-' + ${dtopubli.id}"></span>
             </div>
 
@@ -46,18 +26,39 @@
 
         <hr class="linea-divisora"/>
 
-        <!-- Formulario de comentar -->
-        <div class="contenedor_comentar">
-            <form th:id="'form-comentario-' + ${dtopubli.id}"
-                  method="POST"
-                  th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}"
-                  class="box_comentario formComentario"
-                  style="display: none;">
-                <textarea name="texto" rows="3" placeholder="Escribe tu comentario..."></textarea>
-                <div class="box_publi_botones">
-                    <button type="submit">Enviar</button>
+        <!-- Botonera de interacción -->
+        <div class="botonera-publicacion">
+            <section class="btns_interaccion_publicacion">
+                <!-- Botón dar like -->
+                <button class="botones_acciones" type="button"
+                        th:attr="data-id=${dtopubli.id}"
+                        th:onclick="'darLike(' + ${dtopubli.id} + ')'">
+                    <img th:src="@{/imagenes/like.png}"
+                         alt="Like"
+                         th:id="'like-img-' + ${dtopubli.id}" />
+                </button>
+
+                <!-- Botón comentar -->
+                <button class="botones_acciones comentarBtn"
+                        type="button"
+                        th:attr="data-id=${dtopubli.id}"
+                        onclick="toggleComentario([[${dtopubli.id}]])">
+                    <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
+                </button>
+
+                <!-- Formulario de comentar (oculto) -->
+                <div class="contenedor_comentar" th:id="'contenedor-comentar-' + ${dtopubli.id}" style="display:none;">
+                    <form th:id="'form-comentario-' + ${dtopubli.id}"
+                          method="POST"
+                          th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}"
+                          class="box_comentario formComentario">
+                        <textarea name="texto" rows="3" placeholder="Escribe tu comentario..."></textarea>
+                        <div class="box_publi_botones">
+                            <button type="submit">Enviar</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </section>
         </div>
 
         <!-- Contenedor de comentarios -->
@@ -72,5 +73,3 @@
     </article>
 </div>
 
-</body>
-</html>
