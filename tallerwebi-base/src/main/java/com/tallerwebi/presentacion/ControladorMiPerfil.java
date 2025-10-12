@@ -98,9 +98,9 @@ public class ControladorMiPerfil {
             return new ModelAndView("miPerfil", model);
         }
 
-        String nombreOriginal = foto.getOriginalFilename();
+        String nombreOriginal = foto.getOriginalFilename(); // ej: nombreOriginal = pepito.jpg
         String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf('.')).toLowerCase();
-        long pesoPermitido = 2 * 1024 * 1024;
+        long pesoPermitido = 2 * 1024 * 1024; // Equivale a 2MB
         List<String> extensionesPermitidas = Arrays.asList(".png", ".jpg", ".jpeg", ".webp");
 
         if(!extensionesPermitidas.contains(extension)){
@@ -134,5 +134,42 @@ public class ControladorMiPerfil {
         model.addAttribute("usuario", usuario);
         return new ModelAndView("miPerfil", model);
     }
+
+    @PostMapping("/miPerfil/eliminar-foto")
+    @Transactional
+    public ModelAndView eliminarFoto(HttpServletRequest request) {
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datosUsuario == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+        ModelMap model = new ModelMap();
+
+        try {
+            if (usuario.getFotoPerfil() != null) {
+                // Elimina el archivo físico
+                String rutaCompleta = request.getServletContext().getRealPath(usuario.getFotoPerfil());
+                java.io.File archivo = new java.io.File(rutaCompleta);
+                if (archivo.exists()) {
+                    archivo.delete();
+                }
+
+                // Elimina la ruta en la base
+                usuario.setFotoPerfil(null);
+                servicioUsuario.actualizar(usuario);
+            }
+
+            model.addAttribute("mensaje", "Foto de perfil eliminada correctamente");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Error al eliminar la foto");
+        }
+
+        model.addAttribute("usuario", usuario);
+        return new ModelAndView("miPerfil", model);
+    }
+
 
 }
