@@ -215,9 +215,8 @@ a {
 }
 
 .formComentario {
-    display: none;
-    margin-top: 10px;
-    width: 100%;
+   margin-top: 10px;
+   width: 100%;
 }
 .btns_interaccion_publicacion {
     display: flex;
