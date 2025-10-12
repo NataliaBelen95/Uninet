@@ -116,16 +116,23 @@ public class ControladorMiPerfil {
         try {
             String nombreFinal = java.util.UUID.randomUUID().toString() + extension;
 
-            String rutaBase = request.getSession().getServletContext().getRealPath("/imagenes/perfiles/");
+            String rutaBase = request.getSession().getServletContext().getRealPath("/imagenes/perfiles");
             java.io.File directorio =  new java.io.File(rutaBase);
+
+            System.out.println("Archivo subido: " + nombreOriginal);
+            System.out.println("Ruta guardada: imagenes/perfiles/" + nombreFinal);
+            System.out.println("Usuario antes de actualizar: " + usuario.getFotoPerfil());
+
             if(!directorio.exists()){
                 directorio.mkdir();
             }
-            java.io.File destino = new java.io.File(rutaBase + nombreFinal);
+            java.io.File destino = new java.io.File(rutaBase + "/" + nombreFinal);
             foto.transferTo(destino);
+
 
             usuario.setFotoPerfil("imagenes/perfiles/" + nombreFinal);
             servicioUsuario.actualizar(usuario);
+            System.out.println("Usuario después de actualizar: " + usuario.getFotoPerfil());
 
         }catch (Exception e){
             e.printStackTrace();
