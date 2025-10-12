@@ -70,6 +70,12 @@ public class ControladorLogin {
         }
     }
 
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
+    public ModelAndView cerrarSesion(HttpServletRequest request) {
+       request.getSession().invalidate();
+       return new ModelAndView("redirect:/login");
+    }
+
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
@@ -107,5 +113,7 @@ public class ControladorLogin {
         model.put("todasLasCarreras", carreras);
         return new ModelAndView("nuevo-usuario", model);
     }
+
+
 }
 

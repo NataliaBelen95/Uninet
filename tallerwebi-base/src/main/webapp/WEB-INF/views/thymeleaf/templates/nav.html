@@ -9,7 +9,10 @@
         <a href="/spring/miPerfil">Mi Perfil</a>
         <a href="/spring/miPerfil">Notificaciones</a>
         <a href="/spring/miPerfil">Mensajes</a>
-        <a href="/spring/miPerfil">Cerrar sesión</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn">Cerrar sesión</button>
+        </form>
+        <!--<a href="/spring/miPerfil">Cerrar sesión</a>-->
     </div>
 </nav>
 </body>
