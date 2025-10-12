@@ -116,9 +116,6 @@ public class ControladorPublicacion {
                     servicioLike.darLike(usuario, publicacion);
                 }
 
-                // Forzar inicialización del usuario para evitar LazyInitializationException
-                publicacion.getUsuario().getNombre();
-
                 DatosPublicacion dto = publicacionMapper.toDto(publicacion);
                 model.addAttribute("dtopubli", dto);
             }

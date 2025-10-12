@@ -199,6 +199,15 @@ a {
 
 }
 
+
+.btn-like img {
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.btn-like.liked img {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
 .botonera-publicacion {
    display: flex;
    justify-content: flex-start;

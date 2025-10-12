@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+
+
+
 <body>
 <div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}">
     <article class="estructura">
@@ -14,7 +17,9 @@
                 <span th:text="${dtopubli.cantLikes}" th:id="'likes-' + ${dtopubli.id}"></span>
             </div>
 
-            <button class="botones_acciones ver-comentariosBtn" type="button"
+            <button class="botones_acciones ver-comentariosBtn"
+                    type="button"
+                    th:attr="data-id=${dtopubli.id}"
                     th:text="${dtopubli.cantComentarios == 0 ? 'No hay comentarios'
                       : (dtopubli.cantComentarios == 1 ? '1 comentario'
                       : dtopubli.cantComentarios + ' comentarios')}">
@@ -25,20 +30,26 @@
 
         <div class="botonera-publicacion">
             <section class="btns_interaccion_publicacion">
-                <button class="botones_acciones" type="button" th:onclick="'darLike(' + ${dtopubli.id} + ')'">
-                    <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
+                <button class="botones_acciones" type="button"
+                        th:onclick="'darLike(' + ${dtopubli.id} + ')'">
+                    <img th:src="@{/imagenes/like.png}"
+                         alt="Like"
+                         th:id="'like-img-' + ${dtopubli.id}" />
+                </button>
+
+                <button class="botones_acciones comentarBtn"
+                        type="button"
+                        th:attr="data-id=${dtopubli.id}">
+                    <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
                 </button>
 
                 <div class="contenedor_comentar">
-                    <button class="botones_acciones comentarBtn" type="button">
-                        <img th:src="@{/imagenes/comentar.png}" alt="Comentar"/>
-                    </button>
-
-                    <form method="POST"
+                    <form th:id="'form-comentario-' + ${dtopubli.id}"
+                          method="POST"
                           th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}"
                           class="box_comentario formComentario"
-                          style="display: none;" accept-charset="UTF-8">
-                        <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
+                          style="display: none;">
+                        <textarea name="texto" rows="3" placeholder="Escribe tu comentario..."></textarea>
                         <div class="box_publi_botones">
                             <button type="submit">Enviar</button>
                         </div>
@@ -47,7 +58,9 @@
             </section>
         </div>
 
-        <div class="contenedor_comentarios" style="display: none;">
+        <div class="contenedor_comentarios"
+             th:id="'contenedor-comentarios-' + ${dtopubli.id}"
+             style="display: none;">
             <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
                 <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
                 <p th:text="${comentario.texto}"></p>
