@@ -7,7 +7,7 @@ import java.util.List;
 public interface ServicioPublicacion {
 
 
-    void realizar(Publicacion publicacion) throws PublicacionFallida;
+    void realizar(Publicacion publicacion, Usuario usuario) throws PublicacionFallida;
     List<Publicacion> findAll();
     Publicacion  obtenerPublicacionPorId(long id);
 

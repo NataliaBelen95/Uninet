@@ -24,7 +24,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
 
     @Override
-    public void realizar(Publicacion publicacion) throws PublicacionFallida {
+    public void realizar(Publicacion publicacion, Usuario usuario) throws PublicacionFallida {
 
         if (publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty()) {
             throw new PublicacionFallida("La publicación no puede estar vacía");
@@ -40,7 +40,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         if (publicacion.getFechaPublicacion() == null) {
             publicacion.setFechaPublicacion(LocalDateTime.now());
         }
-
+        publicacion.setUsuario(usuario);
         repositorio.guardar(publicacion);
     }
 

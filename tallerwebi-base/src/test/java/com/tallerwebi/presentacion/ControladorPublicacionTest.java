@@ -72,8 +72,8 @@ public class ControladorPublicacionTest {
 
         //Validación
         assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
-        verify(publicacionMock).setUsuario(usuarioMock);
-       verify(servicioPublicacionMock).realizar(publicacionMock);
+
+       verify(servicioPublicacionMock).realizar(publicacionMock, usuarioMock);
     }
 
 

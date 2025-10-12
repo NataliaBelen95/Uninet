@@ -56,9 +56,9 @@ public class ControladorPublicacion {
         if(datosUsuario!=null) {
             try {
                 Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId()); // ✅ usa ServicioLogin
-                publicacion.setUsuario(usuario);
 
-                servicioPublicacion.realizar(publicacion);
+
+                servicioPublicacion.realizar(publicacion, usuario);
             } catch (PublicacionFallida e) {
 
                 redirectAttributes.addFlashAttribute("errorPubli", e.getMessage());
