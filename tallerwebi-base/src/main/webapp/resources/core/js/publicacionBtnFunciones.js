@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
    document.querySelectorAll(".ver-comentariosBtn").forEach(function (btn) {
        btn.addEventListener("click", function () {
            // Si el texto contiene "No comentarios", no hace nada
-           if (btn.textContent.trim().includes("No comentarios")) {
+           if (btn.textContent.trim().includes("No hay comentarios")) {
                return;
            }
 

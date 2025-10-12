@@ -37,6 +37,7 @@ public class ControladorPublicacionTest {
         servicioLikesMock = mock(ServicioLike.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioComentarioMock = mock(ServicioComentario.class);
+        publicacionMapperMock = mock(PublicacionMapper.class);
 
         controladorPublicacion = new ControladorPublicacion(
                 servicioPublicacionMock,

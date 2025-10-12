@@ -2,69 +2,59 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
+<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}">
+    <article class="estructura">
+        <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
+        <p class="texto" th:text="${dtopubli.descripcion}"></p>
+        <span th:text="${dtopubli.fechaPublicacion != null ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm')) : 'Sin fecha'}"></span>
 
-<article th:fragment="tarjetaPublicacion(dtopubli)" class="estructura">
-    <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
-    <p class="texto" th:text="${dtopubli.descripcion}"></p>
-    <span class="texto" th:text="${dtopubli.fechaPublicacion}"></span>
+        <div class="contenedor_verComentarios">
+            <div class="like-container">
+                <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
+                <span th:text="${dtopubli.cantLikes}" th:id="'likes-' + ${dtopubli.id}"></span>
+            </div>
 
-    <!-- Ver comentarios (alineado a la derecha) -->
-    <div class="contenedor_verComentarios">
-        <button class="botones_acciones ver-comentariosBtn" type="button">
             <button class="botones_acciones ver-comentariosBtn" type="button"
                     th:text="${dtopubli.cantComentarios == 0 ? 'No hay comentarios'
-                  : (dtopubli.cantComentarios == 1 ? '1 comentario'
-                  : dtopubli.cantComentarios + ' comentarios')}">
+                      : (dtopubli.cantComentarios == 1 ? '1 comentario'
+                      : dtopubli.cantComentarios + ' comentarios')}">
             </button>
-        </button>
-    </div>
-
-
-
-    <!-- Línea divisoria -->
-    <hr class="linea-divisora"/>
-
-    <!-- Botonera Like y Comentar -->
-    <div class="botonera-publicacion">
-        <section class="btns_interaccion_publicacion">
-            <!-- Botón Like -->
-            <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
-                <button class="botones_acciones" type="submit">
-                    <img th:src="@{/imagenes/like.png}" alt="Like"/>
-                </button>
-                <span th:text="${dtopubli.cantLikes}"></span>
-            </form>
-
-            <!-- Botón Comentar -->
-            <div class="contenedor_comentar">
-                <button class="botones_acciones comentarBtn" type="button">
-                    <img th:src="@{/imagenes/comentar.png}" alt="Comentar"/>
-                </button>
-
-                <!-- Formulario de comentario (debajo del botón) -->
-                <form method="POST"
-                      th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}"
-                      class="box_comentario formComentario"
-                      style="display: none;" accept-charset="UTF-8">
-                    <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
-                    <div class="box_publi_botones">
-                        <button type="submit">Enviar</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-    </div>
-
-    <!-- Comentarios -->
-    <div class="contenedor_comentarios" style="display: none;">
-        <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
-            <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
-            <p th:text="${comentario.texto}"></p>
         </div>
-    </div>
-</article>
 
+        <hr class="linea-divisora"/>
 
+        <div class="botonera-publicacion">
+            <section class="btns_interaccion_publicacion">
+                <button class="botones_acciones" type="button" th:onclick="'darLike(' + ${dtopubli.id} + ')'">
+                    <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
+                </button>
+
+                <div class="contenedor_comentar">
+                    <button class="botones_acciones comentarBtn" type="button">
+                        <img th:src="@{/imagenes/comentar.png}" alt="Comentar"/>
+                    </button>
+
+                    <form method="POST"
+                          th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}"
+                          class="box_comentario formComentario"
+                          style="display: none;" accept-charset="UTF-8">
+                        <textarea name="texto" rows="3" cols="40" placeholder="Escribe tu comentario..."></textarea>
+                        <div class="box_publi_botones">
+                            <button type="submit">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div class="contenedor_comentarios" style="display: none;">
+            <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
+                <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
+                <p th:text="${comentario.texto}"></p>
+            </div>
+        </div>
+    </article>
+</div>
 
 
 </body>
