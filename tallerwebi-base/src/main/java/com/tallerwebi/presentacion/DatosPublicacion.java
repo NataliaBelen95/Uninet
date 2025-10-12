@@ -14,6 +14,7 @@ public class DatosPublicacion {
     private int cantLikes;
     private LocalDateTime fechaPublicacion;
     private List<DatosComentario> comentarios;
+    private int cantComentarios;
 
 
     public List<DatosComentario> getComentarios() {
@@ -60,6 +61,13 @@ public class DatosPublicacion {
 
     public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public void setCantComentarios (int cantComentarios) {
+        this.cantComentarios = cantComentarios;
+    }
+    public int getCantComentarios() {
+        return cantComentarios;
     }
 }
 

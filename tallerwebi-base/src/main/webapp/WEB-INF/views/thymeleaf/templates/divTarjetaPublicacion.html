@@ -11,7 +11,11 @@
     <!-- Ver comentarios (alineado a la derecha) -->
     <div class="contenedor_verComentarios">
         <button class="botones_acciones ver-comentariosBtn" type="button">
-            Ver Comentarios
+            <button class="botones_acciones ver-comentariosBtn" type="button"
+                    th:text="${dtopubli.cantComentarios == 0 ? 'No hay comentarios'
+                  : (dtopubli.cantComentarios == 1 ? '1 comentario'
+                  : dtopubli.cantComentarios + ' comentarios')}">
+            </button>
         </button>
     </div>
 
