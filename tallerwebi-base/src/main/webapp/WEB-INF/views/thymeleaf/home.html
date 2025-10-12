@@ -38,7 +38,9 @@
 <main class="contenedor_general">
     <aside class="columnaUno">
         <div class="estructura">
-            <img class="user" th:src="@{/imagenes/user.png}">
+            <img class="user"
+                 th:src="@{/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
+                 alt="Foto de perfil">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
             <h2 class="palabra" th:text= "${usuario.apellido}"></h2>

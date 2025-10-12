@@ -10,6 +10,11 @@ public class DatosUsuario {
     private String email;
     private Long id ;
 
+    public String getFotoPerfil() {return fotoPerfil;}
+    public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
+
+    private String fotoPerfil;
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
