@@ -1,6 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script cargado");
 
+    // Mostrar comentarios
+   document.querySelectorAll(".ver-comentariosBtn").forEach(function (btn) {
+       btn.addEventListener("click", function () {
+           // Si el texto contiene "No comentarios", no hace nada
+           if (btn.textContent.trim().includes("No comentarios")) {
+               return;
+           }
+
+           const contenedor = btn.closest("article").querySelector(".contenedor_comentarios");
+           if (contenedor) {
+               contenedor.style.display = contenedor.style.display === "none" ? "block" : "none";
+           }
+       });
+   });
+
     // ====== FUNCIÓN PARA REASIGNAR EVENTOS ======
     function inicializarEventos() {
         // Mostrar/Ocultar comentarios
@@ -8,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
             btn.onclick = function() {
                 const id = btn.dataset.id;
                 if (!id) return;
+
 
                 if (btn.textContent.trim().includes("No hay comentarios")) return;
 

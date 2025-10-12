@@ -47,6 +47,11 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
        Usuario usuario = sessionFactory.getCurrentSession().get(Usuario.class, id);
        return usuario.getPublicaciones();
     }
+
+    public void eliminarPubli(Publicacion publicacion) {
+
+        sessionFactory.getCurrentSession().delete(publicacion);
+    }
 }
 
 

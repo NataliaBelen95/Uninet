@@ -6,7 +6,7 @@ public interface RepositorioComentario {
 
     void guardar (Comentario comentario);
 
-    void eliminar(long id);
+    void eliminar(Comentario comentario);
     Comentario buscar(long id);
     int contarComentarioPorPublicacion(Publicacion publicacion);
 
