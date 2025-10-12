@@ -73,7 +73,7 @@ public class ControladorLogin {
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
-
+        model.put("todasLasCarreras", servicioCarrera.buscarTodas());
         try {
             usuario.setRol("USER");
             servicioLogin.registrar(usuario);
@@ -84,6 +84,7 @@ public class ControladorLogin {
             return new ModelAndView("nuevo-usuario", model);
         } catch (Exception e) {
             model.put("error", "Error al registrar el nuevo usuario");
+
             return new ModelAndView("nuevo-usuario", model);
         }
 
