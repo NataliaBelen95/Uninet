@@ -12,5 +12,5 @@ public interface ServicioPublicacion {
     Publicacion  obtenerPublicacionPorId(long id);
 
     int obtenerCantidadDeLikes(long id);
-
+    void eliminarPublicacionEntera(Publicacion publicacion);
 }

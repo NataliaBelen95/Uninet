@@ -29,8 +29,8 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
 
 
     @Override
-    public void eliminar(long id) {
-        sessionFactory.getCurrentSession().delete(id);
+    public void eliminar(Comentario comentario) {
+        sessionFactory.getCurrentSession().delete(comentario);
 
     }
 

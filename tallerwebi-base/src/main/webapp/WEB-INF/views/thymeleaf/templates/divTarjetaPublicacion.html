@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
 
+<<<<<<< HEAD
 <article th:fragment="tarjetaPublicacion(dtopubli)" class="estructura">
     <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
     <p class="texto" th:text="${dtopubli.descripcion}"></p>
@@ -13,10 +13,67 @@
             <form method="POST" th:action="@{/publicacion/darLike/{id}(id=${dtopubli.id})}">
                 <button class="botones_acciones" type="submit">
                     <img th:src="@{/imagenes/like.png}" alt="Like" />
+=======
+
+
+
+<body>
+<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}">
+    <article class="estructura">
+        <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
+        <p class="texto" th:text="${dtopubli.descripcion}"></p>
+        <span th:text="${dtopubli.fechaPublicacion != null ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm')) : 'Sin fecha'}"></span>
+
+        <div class="opciones-publicacion">
+            <button class="options-btn">...</button>
+            <ul class="options-menu">
+                <li>
+                    <form th:id="'form-eliminar' + ${dtopubli.id}"
+                          method="POST"
+                          th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}">
+                        <button type="submit" class="eliminar-opcion">Eliminar</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="contenedor_verComentarios">
+            <div class="like-container">
+                <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
+                <span th:text="${dtopubli.cantLikes}" th:id="'likes-' + ${dtopubli.id}"></span>
+            </div>
+
+            <button class="botones_acciones ver-comentariosBtn"
+                    type="button"
+                    th:attr="data-id=${dtopubli.id}"
+                    th:text="${dtopubli.cantComentarios == 0 ? 'No hay comentarios'
+                      : (dtopubli.cantComentarios == 1 ? '1 comentario'
+                      : dtopubli.cantComentarios + ' comentarios')}">
+            </button>
+        </div>
+
+        <hr class="linea-divisora"/>
+
+        <div class="botonera-publicacion">
+            <section class="btns_interaccion_publicacion">
+                <button class="botones_acciones" type="button"
+                        th:onclick="'darLike(' + ${dtopubli.id} + ')'">
+                    <img th:src="@{/imagenes/like.png}"
+                         alt="Like"
+                         th:id="'like-img-' + ${dtopubli.id}" />
+                </button>
+
+                <button class="botones_acciones comentarBtn"
+                        type="button"
+                        th:attr="data-id=${dtopubli.id}">
+                    <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
+>>>>>>> recuperar-todo
                 </button>
                 <span th:text="${dtopubli.cantLikes}"></span>
             </form>
 
+<<<<<<< HEAD
             <!-- Ver comentarios con conteo dinámico -->
             <div class="contenedor_verComentarios">
                 <button class="botones_acciones ver-comentariosBtn" type="button"
@@ -46,9 +103,25 @@
             <button class="botones_acciones ver-comentariosBtn" type="button">
                 Ver Comentarios
             </button>
+=======
+                <div class="contenedor_comentar">
+                    <form th:id="'form-comentario-' + ${dtopubli.id}"
+                          method="POST"
+                          th:action="@{/publicacion/comentar/{id}(id=${dtopubli.id})}"
+                          class="box_comentario formComentario"
+                          style="display: none;">
+                        <textarea name="texto" rows="3" placeholder="Escribe tu comentario..."></textarea>
+                        <div class="box_publi_botones">
+                            <button type="submit">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+>>>>>>> recuperar-todo
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Comentarios -->
     <div class="contenedor_comentarios" style="display: none;">
         <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
@@ -57,6 +130,19 @@
         </div>
     </div>
 </article>
+=======
+        <div class="contenedor_comentarios"
+             th:id="'contenedor-comentarios-' + ${dtopubli.id}"
+             style="display: none;">
+            <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
+                <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
+                <p th:text="${comentario.texto}"></p>
+            </div>
+        </div>
+    </article>
+</div>
+
+>>>>>>> recuperar-todo
 
 </body>
 </html>

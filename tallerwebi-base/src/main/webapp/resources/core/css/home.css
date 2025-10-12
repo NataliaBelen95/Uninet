@@ -100,6 +100,7 @@ a {
 .box_comentario{
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 }
 .box_comentario textarea{
       height: 5rem;
@@ -108,6 +109,7 @@ a {
       font-size: 15px;
       outline: none;
       resize: none;
+       transition: border-color 0.3s ease;
 }
 .box_comentario input:focus {
   border: 1px solid #27AE60;
@@ -139,6 +141,8 @@ a {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
+       margin-top: 10px;
+
 }
 
  /*Columna derecha*/
@@ -154,18 +158,60 @@ a {
 
 /*agrego contendror ver comentarios separado de mg y comentar*/
 .contenedor_verComentarios {
-    align-self: flex-start;
-}
-
-.contenedor_comentarios {
-    display: none;
+    display: flex;
+    align-items: center; /* centra verticalmente */
     margin-top: 10px;
 }
-
-.botonera-publicacion {
+/****like sin accion, muestra cantidad)******/
+.like-container img {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 5px;
+}
+
+.like-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.like-container img {
+    width:25px;
+}
+/*****final like que muestra cantidad**/
+.ver-comentariosBtn {
+    margin-left: auto; /* empuja el botón al final */
+}
+.contenedor_comentarios {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+      margin-top: 15px;
+}
+
+
+
+.contenedor_comentarios .comentario {
+
+    margin-bottom: 10px;
+    align-self:flex-end;
+
+
+}
+
+
+.btn-like img {
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.btn-like.liked img {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+.botonera-publicacion {
+   display: flex;
+   justify-content: flex-start;
+   align-items: flex-start;
 }
 
 .formComentario {
@@ -173,11 +219,20 @@ a {
     margin-top: 10px;
     width: 100%;
 }
-.btns_interaccion_publicacion form,
-.btns_interaccion_publicacion button {
-  display: flex;
-  align-items: center;
+.btns_interaccion_publicacion {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
+
+.linea-divisora {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+
+
 
 /***/
 
