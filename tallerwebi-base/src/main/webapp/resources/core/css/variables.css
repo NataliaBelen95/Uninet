@@ -1,0 +1,27 @@
+:root{ /*el nivel más alto del documento*/
+  --verde: #27AE60;
+  --verde-2: #1F5133; /* opcional */
+  --background:  #343639;
+  --background-contenedor: #404345;
+  --background-input: #616466;
+  --texto: #F5F5F5;
+  --texto-sec: #BDBDBD;
+  --texto-ter: #E0E0E0;
+  --borde: #616466;
+  --radius: 0.4rem;
+  --gap: 1rem;
+  --font-family: "Inter", sans-serif;
+  --max-width-site: 1200px;
+}
+
+/* tema claro */
+body.tema-claro{
+  --verde: #27AE60;
+  --verde-2: #1F5133;
+  --background: #F4F2EE;
+  --background-contenedor: #ffffff;
+  --background-input: #f4f7f5;
+  --texto: #1E1E1E;
+  --texto-sec: #666666;
+  --texto-ter: #E0E0E0;
+}

@@ -6,10 +6,14 @@ import org.springframework.stereotype.Repository;
 public interface RepositorioLike {
 
     boolean existePorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
-    Like encontrarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
+
     int contarPorPublicacion(Publicacion publicacion);
-    Like guardar (Like like);
-    Like eliminar(Like like);
 
-    }
+    Like guardar(Like like);
 
+    void eliminar(Like like);
+
+    Like buscarPorId(long id);
+
+    Like buscarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
+}

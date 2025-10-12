@@ -5,41 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Perfil</title>
 
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
-    <link rel="stylesheet" th:href="@{/css/home.css}"/>
-    <!--<link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>
-    <link rel="stylesheet" href="../../../resources/core/css/home.css"/>-->
+    <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>-->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
-    <nav class="navbar">
-        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
-        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
+    <nav th:replace="templates/nav :: nav"></nav>
+    <!--<nav class="navbar">
+        <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
         <div>
+            <button id="btn-tema" class="boton-tema"><img class="isologo" src="../../../resources/core/imagenes/modo-oscuro.png"></button>
             <a href="/spring/miPerfil">Mi Perfil</a>
             <a href="/spring/miPerfil">Notificaciones</a>
             <a href="/spring/miPerfil">Mensajes</a>
+            <a href="/spring/miPerfil">Cerrar sesión</a>
         </div>
-    </nav>
+    </nav>-->
 </header>
 <main class="contenedor_box_general">
     <aside class="estructura contenedor_usuario" >
-        <!--<img class="user" src="../../../resources/core/imagenes/user.png">
-        <div class="contenedor_usuario_btn">
-            <button type="submit" class="btn">Cambiar foto</button>
-            <button type="submit" class="btn">Eliminar foto</button>
-        </div>-->
         <img class="user"
-             th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : '/imagenes/user.png'}"
+             th:src="@{/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
              alt="Foto de perfil">
 
         <div class="contenedor_usuario_btn">
             <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
-                <input type="file" name="fotoPerfil" accept="image/*">
-                <button type="submit" class="btn">Cambiar foto</button>
+                <input id="foto" class="input-oculto" type="file" name="fotoPerfil" accept="image/*">
+                <label class="btn" for="foto">Cambiar foto</label>
             </form>
 
             <form th:action="@{/miPerfil/eliminar-foto}" method="post">
@@ -52,109 +55,71 @@
         <ul>
             <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
         </ul>
-        <form th:action="@{/mi-perfil}" th:object="${usuario}" method="post">
+        <form th:action="@{/miPerfil}" th:object="${usuario}" method="post">
     <div class="contenedor_campos">
         <div class="box_campo">
-            <label>D.N.I</label>
-            <input th:field="*{dni}" type="number">
+            <label for="dni">D.N.I</label>
+            <input th:field="*{dni}" type="number" id="dni">
         </div>
         <div class="box_campo">
-            <label>Fecha de nacimiento</label>
-            <input th:field="*{fechaNacimiento}" type="date">
+            <label for="pass">Contraseña</label>
+            <input th:field="*{password}" type="password" id="pass">
         </div>
         <div class="box_campo">
-            <label>Género</label>
-            <select th:field="*{genero}">
-                <option value="F">Femenino</option>
-                <option value="M">Masculino</option>
-                <option value="O">Otro</option>
+            <label for="nac">Fecha de nacimiento</label>
+            <input th:field="*{fechaNacimiento}" type="date" id="nac">
+        </div>
+        <div class="box_campo">
+            <label for="genero">Género</label>
+            <select th:field="*{genero.id}" id="genero">
+                <option value="">Seleccione un género </option>
+                <option th:each="g : ${generos}"
+                        th:value="${g.id}"
+                        th:text="${g.nombre}">
+                </option>
             </select>
         </div>
         <div class="box_campo">
-            <label>Email personal</label>
-            <input th:field="*{email}" type="email">
+            <label for="mail">Email institucional</label>
+            <input th:field="*{email}" type="email" id="mail" readonly>
         </div>
         <div class="box_campo">
-            <label>Teléfono</label>
-            <input th:field="*{telefono}" type="tel">
+            <label for="mailPersonal">Email personal</label>
+            <input th:field="*{emailPersonal}" type="email" id="mailPersonal">
         </div>
         <div class="box_campo">
-            <label>Dirección</label>
-            <input th:field="*{direccion}" type="text">
+            <label for="tel">Teléfono</label>
+            <input th:field="*{telefono}" type="tel" id="tel">
         </div>
         <div class="box_campo">
-            <label>Localidad</label>
-            <input th:field="*{localidad}" type="text">
+            <label for="dir">Dirección</label>
+            <input th:field="*{direccion}" type="text" id="dir">
         </div>
         <div class="box_campo">
-            <label>Provincia</label>
-            <input th:field="*{provincia}" type="text">
+            <label for="localidad">Localidad</label>
+            <input th:field="*{localidad}" type="text" id="localidad">
         </div>
         <div class="box_campo">
-            <label>Código Postal</label>
-            <input th:field="*{codigoPostal}" type="text">
+            <label for="prov">Provincia</label>
+            <input th:field="*{provincia}" type="text" id="prov">
+        </div>
+        <div class="box_campo">
+            <label for="cod">Código Postal</label>
+            <input th:field="*{codigoPostal}" type="text" id="cod">
         </div>
     </div>
-
+     <div>
+         <p th:if="${mensaje}" style="color:green;" th:text="${mensaje}"></p>
+     </div>
     <div class="contenedor_campos_btn">
         <button type="submit" class="btn">Guardar cambios</button>
         <a th:href="@{/home}" class="btn">Volver</a>
     </div>
 </form>
-       <!--<h2>Nombre usuario</h2>
-        <ul>
-            <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
-        </ul>
-        <form>
-            <div class="contenedor_campos">
-                <div class="box_campo">
-                    <label>D.N.I</label>
-                    <input type="number">
-                </div>
-                <div class="box_campo">
-                    <label>Fecha de nacimiento</label>
-                    <input  type="date">
-                </div>
-                <div class="box_campo">
-                    <label>Género</label>
-                    <select></select>
-                </div>
-                <div class="box_campo">
-                    <label>Email personal</label>
-                    <input type="email">
-                </div>
-                <div class="box_campo">
-                    <label>Email institucional UNLaM</label>
-                    <input type="email">
-                </div>
-                <div class="box_campo">
-                    <label>Teléfono</label>
-                    <input type="tel">
-                </div>
-                <div class="box_campo">
-                    <label>Dirección</label>
-                    <input type="text">
-                </div>
-                <div class="box_campo">
-                    <label>Localidad</label>
-                    <input type="text">
-                </div>
-                <div class="box_campo">
-                    <label>Provincia</label>
-                    <input type="text">
-                </div>
-                <div class="box_campo">
-                    <label>Código Postal</label>
-                    <input type="text">
-                </div>
-            </div>
-            <div class="contenedor_campos_btn">
-                <button type="submit" class="btn">Guardar cambios</button>
-                <button class="btn"><a href="home.html"></a>Volver</button>
-            </div>
-        </form> -->
     </section>
 </main>
+<!--<script src="../../../resources/core/js/tema.js"></script>-->
+<script type="module" th:src="@{js/tema.js}"></script>
 <script type="module" th:src="@{js/login.js}"></script>
 </body>
 </html>

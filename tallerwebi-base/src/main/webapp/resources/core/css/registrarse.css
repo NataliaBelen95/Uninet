@@ -1,10 +1,5 @@
-* {
-  box-sizing: border-box;
-}
-
+@import url ('variables.css');
 body {
-  background-color: #0F1317;
-  font-family: "Inter", sans-serif;
   min-height: 100vh;
   margin: 0;
   display: flex;
@@ -18,7 +13,7 @@ a {
   font-size: 14px;
 }
 a:hover {
-  color: #27AE60;
+  color: var(--verde);
 }
 
 nav {
@@ -28,14 +23,13 @@ nav {
   margin-top: 2rem;
   padding-left: 3rem;
 }
-
 .logo {
-  width: 18rem;
+  width: 10rem;
   height: auto;
 }
 
 .contenedor {
-  background-color: #181D22;
+  background-color: var(--background-contenedor);
   width: 40rem;
   border-radius: 0.8rem;
   padding: 0 2.5rem 2rem;
@@ -55,58 +49,32 @@ form {
 }
 
 .contenedor h3 {
-  color: #F5F5F5;
+  color: var(--texto);
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
-.separador {
-  width: 100%;
-  height: 1px;
-  background-color: #27AE60;
-  margin: 0.5rem auto;
-}
-
 input {
-  background-color: #1B2227;
-  border: 1px solid #1B2227;
-  border-radius: 0.4rem;
-  width: 100%;
   height: 2.8rem;
   padding: 0 0.8rem;
-  color: #E0E0E0;
   font-size: 1rem;
+  /*color: #E0E0E0;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease;*/
 }
-
 input:focus {
   border: 1px solid #27AE60;
 }
-
 input::placeholder {
   color: #9E9E9E;
 }
 
 .btn {
-  background-color: #27AE60;
-  color: #F5F5F5;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.4rem;
-  width: 100%;
   height: 2.8rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.btn:hover {
-  background-color: #219653;
 }
 
 .btn:disabled {
@@ -115,7 +83,7 @@ input::placeholder {
 }
 
 label {
-  color: #F5F5F5;
+  color: var(--text-ter);
 }
 
 .carreras {
@@ -126,33 +94,8 @@ label {
   align-items: flex-start;
   width: 100%;
 }
-
-.carreras select {
-  width: 100%;
-  height: 2rem;
-  background-color: #1B2227;
-  color: #F5F5F5;
-  border: 1px solid #1B2227;
-  border-radius: 0.3rem;
-  padding: 0.3rem;
-  appearance: none;
-  cursor: pointer;
-}
-
-.carreras select:focus {
-  outline: none;
-  border: 1px solid #27AE60;
-  box-shadow: 0 0 0.3rem #27AE60;
-}
-
-.carreras select option {
-  background-color: #181D22;
-  color: #F5F5F5;
-}
-
-.carreras select option:hover {
-  background-color: #27AE60;
-  color: #0F1317;
+.error{
+    color: red;
 }
 
 @media (max-width: 1200px) {

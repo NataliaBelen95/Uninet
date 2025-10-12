@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 @Controller
 public class ControladorHomeTest {
     private ControladorHome controlador;
-    private ServicioPublicado servicioPublicadoMock;
+    private ServicioPublicacion servicioPublicacionMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private Usuario usuarioLogueado;
@@ -35,7 +35,7 @@ public class ControladorHomeTest {
     @BeforeEach
     public void init() {
         // Mocks
-        servicioPublicadoMock = mock(ServicioPublicado.class);
+        servicioPublicacionMock = mock(ServicioPublicacion.class);
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
@@ -51,16 +51,16 @@ public class ControladorHomeTest {
 
         // Simular sesión
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(usuarioLogueado);
-        when(servicioPublicadoMock.findAll()).thenReturn(List.of(new Publicacion(), new Publicacion()));
+        when(servicioPublicacionMock.findAll()).thenReturn(List.of(new Publicacion(), new Publicacion()));
 
         // Mock publicaciones
-        when(servicioPublicadoMock.findAll()).thenReturn(List.of(new Publicacion(), new Publicacion()));
+        when(servicioPublicacionMock.findAll()).thenReturn(List.of(new Publicacion(), new Publicacion()));
 
         // Controlador
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioLikeMock = mock(ServicioLike.class);
         publicacionMapperMock = mock (PublicacionMapper.class);
-        controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock, publicacionMapperMock );
+        controlador = new ControladorHome(servicioPublicacionMock, servicioLikeMock, publicacionMapperMock );
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ControladorHomeTest {
 
         List<Publicacion> publicaciones = List.of(pub1, pub2);
 
-        when(servicioPublicadoMock.findAll()).thenReturn(publicaciones);
+        when(servicioPublicacionMock.findAll()).thenReturn(publicaciones);
         when(servicioLikeMock.contarLikes(pub1)).thenReturn(5);
         when(servicioLikeMock.contarLikes(pub2)).thenReturn(3);
 
@@ -113,7 +113,7 @@ public class ControladorHomeTest {
         when(publicacionMapperMock.toDto(pub2)).thenReturn(dto2);
 
         // Instanciar el controlador con mocks
-        ControladorHome controlador = new ControladorHome(servicioPublicadoMock, servicioLikeMock, publicacionMapperMock);
+        ControladorHome controlador = new ControladorHome(servicioPublicacionMock, servicioLikeMock, publicacionMapperMock);
 
         // Ejecutar
         ModelAndView mav = controlador.home(requestMock);

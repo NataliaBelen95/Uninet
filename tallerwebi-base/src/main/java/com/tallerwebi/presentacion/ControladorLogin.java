@@ -70,10 +70,16 @@ public class ControladorLogin {
         }
     }
 
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
+    public ModelAndView cerrarSesion(HttpServletRequest request) {
+       request.getSession().invalidate();
+       return new ModelAndView("redirect:/login");
+    }
+
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
-
+        model.put("todasLasCarreras", servicioCarrera.buscarTodas());
         try {
             usuario.setRol("USER");
             servicioLogin.registrar(usuario);
@@ -84,6 +90,7 @@ public class ControladorLogin {
             return new ModelAndView("nuevo-usuario", model);
         } catch (Exception e) {
             model.put("error", "Error al registrar el nuevo usuario");
+
             return new ModelAndView("nuevo-usuario", model);
         }
 
@@ -107,13 +114,6 @@ public class ControladorLogin {
         model.put("todasLasCarreras", carreras);
         return new ModelAndView("nuevo-usuario", model);
     }
-
-
-
-
-
-
-
 
 
 }

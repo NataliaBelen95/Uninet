@@ -4,28 +4,40 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Home</title>
+
+    <!--<th:block th:insert="template/head :: links-comunes"></th:block>-->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/home.css"/>-->
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
-    <link rel="stylesheet" href="../../../resources/core/css/home.css"/>
+
 </head>
 <body>
 <header>
-    <nav class="navbar">
-        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
-        <!--<a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>-->
+    <nav th:replace="templates/nav :: nav"></nav>
+    <!--<nav class="navbar"> nav antiguo
+        <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
         <div>
             <a href="/spring/miPerfil">Mi Perfil</a>
             <a href="/spring/miPerfil">Notificaciones</a>
             <a href="/spring/miPerfil">Mensajes</a>
+            <a href="/spring/miPerfil">Cerrar sesión</a>
         </div>
-    </nav>
+    </nav>-->
 </header>
 <main class="contenedor_general">
-    <aside class="estructura columnaUno">
-        <div>
+    <aside class="columnaUno">
+        <div class="estructura">
             <img class="user" th:src="@{/imagenes/user.png}">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
@@ -34,45 +46,33 @@
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
-<!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
-        <a th:href="@{/subir-archivo}" class="btn_subir_archivos">Subir archivos</a>
-
-        <div>
-            <p>blablaba</p>
-            <p>blablaba</p>
-            <p>blablaba</p>
-            <a href="#" class="ver_mas">Conocer más...</a>
-        </div>
-        <div>
-            <ul>
-                <li>Archivos</li>
-                <li>Grupos</li>
-            </ul>
+        <div class="estructura box_columnaUno">
+            <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
+            <a href=""><img th:src="@{/imagenes/guardados.png}"> Elementos guardados</a>
+            <!--<a href=""><img src="../../../resources/core/imagenes/grupos.png"> Grupos</a>
+            <a href=""><img src="../../../resources/core/imagenes/guardados.png"> Elementos guardados</a>-->
         </div>
     </aside>
+
     <section class="columnaDos">
         <article class="estructura">
-            <form class="box_comentario" method="POST" action="/spring/publicaciones">
-                <!--<input name="descripcion" id="publicacion" placeholder="Escribe algo"/>-->
-                <textarea name="descripcion" id="publicacion" placeholder="Escribe algo"></textarea>
-                <div class="box_publi_botones">
-<!--                    <button>attach_file</button>-->
-                    <button>Visibilidad</button>
-                    <button type="submit" name="nueva-publicacion">Publicar</button>
-                </div>
+            <div th:replace="templates/form-publicacion :: form-publi(${publicacion})"></div>
+        </article>
+        <article class="box_ordenarPor">
+            <div class="separador"></div>
+            <form>
+                <label for="ordenar">Ordenar por: </label>
+                <select name="ordenar" id="ordenar">
+                    <option value="p">Principal</option>
+                    <option value="r">Recientes</option>
+                </select>
             </form>
         </article>
-        <article class="estructura">
-            <div class="botones-quePublisVer">
-                <div class="ordenar-por">
-                    <p class="ordernar-por_text">Ordenar Por</p><span><button>Ordenar por</button></span>
-                </div>
-            </div>
-            <div th:each="dtopubli : ${datosPublicaciones}">
-                <div th:replace="templates/publicacion :: tarjetaPublicacion(${dtopubli})"></div>
-            </div>
+            <!-- se reemplaza por el articulo que contiene c/u de las publis en divTarjeta -->
+        <div th:each="dtopubli : ${datosPublicaciones}">
+            <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})"></div>
+        </div>
 
-        </article>
     </section>
     <aside class="estructura columnaTres">
         <div class="container_profile">
@@ -85,13 +85,16 @@
             <img class="user2" th:src="@{/imagenes/user2.png}">
             <img class="user2" th:src="@{/imagenes/user2.png}">
             <img class="user2" th:src="@{/imagenes/user2.png}">
-            <!--<img class="user2" src="../../../resources/core/imagenes/user2.png">
-            <img class="user2" src="../../../resources/core/imagenes/user2.png">
-            <img class="user2" src="../../../resources/core/imagenes/user2.png">
-            <img class="user2" src="../../../resources/core/imagenes/user2.png">
-            <img class="user2" src="../../../resources/core/imagenes/user2.png">-->
         </div>
     </aside>
 </main>
+<script type="module" th:src="@{/js/publicacionBtnFunciones.js}"></script>
+
+<script type="module" th:src="@{js/tema.js}"></script>
+
+
+
+
+
 </body>
 </html>

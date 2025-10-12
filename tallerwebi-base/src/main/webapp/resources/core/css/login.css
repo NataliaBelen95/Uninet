@@ -1,15 +1,11 @@
+@import url ('variables.css');
 body {
-  background-color: #0F1317;
-  font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   margin: 0;
-}
-* {
-  box-sizing: border-box;
 }
 nav {
   display: flex;
@@ -21,7 +17,7 @@ nav {
   width: 18rem;
 }
 .contenedor {
-  background-color: #181D22;
+  background: var(--background-contenedor);
   width: 360px;
   border-radius: 0.8rem;
   padding: 0 2.5rem 2rem;
@@ -41,47 +37,36 @@ form {
 }
 
 .contenedor h3 {
-  color: #F5F5F5;
+  color: var(--texto);
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
 input {
-  background-color: #1B2227;
-  border: 1px solid #1B2227;
   border-radius: 0.4rem;
   width: 100%;
   height: 45px;
   padding: 0 0.8rem;
-  color: #E0E0E0;
+  color: var(--texto-ter);
   font-size: 15px;
   outline: none;
 }
 input:focus {
-  border: 1px solid #27AE60;
+  border: 1px solid var(--verde-2);
 }
 input::placeholder {
   color: #9E9E9E;
 }
 
 .btn {
-  background-color: #27AE60;
-  color: #F5F5F5;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.4rem;
   width: 100%;
   height: 45px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  /*transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;*/
 }
-.btn:hover {
-  background-color: #219653;
-}
+
 .btn:disabled {
   background-color: #1f5133;
   cursor: not-allowed;
@@ -98,7 +83,6 @@ a:hover {
 
 .separador {
   width: 80%;
-  height: 1px;
   background-color: #333333;
   margin: 0.5rem;
 }

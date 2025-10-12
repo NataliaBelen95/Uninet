@@ -1,6 +1,7 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Comentario;
+import com.tallerwebi.dominio.Publicacion;
 import com.tallerwebi.dominio.RepositorioComentario;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.ErrorEnEditarComentario;
@@ -28,8 +29,8 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
 
 
     @Override
-    public void eliminar(long id) {
-        sessionFactory.getCurrentSession().delete(id);
+    public void eliminar(Comentario comentario) {
+        sessionFactory.getCurrentSession().delete(comentario);
 
     }
 
@@ -37,4 +38,20 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
     public Comentario buscar(long id) {
         return sessionFactory.getCurrentSession().get(Comentario.class, id);
     }
+
+    @Override
+    public int contarComentarioPorPublicacion(Publicacion publicacion) {
+
+            String hql = "SELECT COUNT(l) FROM Comentario l WHERE l.publicacion = :publicacion";
+            Long count = (Long) sessionFactory.getCurrentSession()
+                    .createQuery(hql)
+                    .setParameter("publicacion", publicacion)
+                    .uniqueResult();
+            return count != null ? count.intValue() : 0;
+        }
+
+
 }
+
+
+
