@@ -8,6 +8,7 @@ public interface RepositorioComentario {
 
     void eliminar(long id);
     Comentario buscar(long id);
+    int contarComentarioPorPublicacion(Publicacion publicacion);
 
 
 }

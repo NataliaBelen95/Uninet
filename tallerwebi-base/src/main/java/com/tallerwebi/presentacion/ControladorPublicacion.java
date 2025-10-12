@@ -4,12 +4,16 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +26,11 @@ public class ControladorPublicacion {
     private final ServicioLike servicioLike;
     private final ServicioUsuario servicioUsuario;
     private final ServicioComentario servicioComentario;
+    private final PublicacionMapper publicacionMapper;
 
 
     @Autowired
+
     public ControladorPublicacion(ServicioPublicacion servicioPublicacion,
                                   ServicioLike servicioLike,
                                   ServicioUsuario servicioUsuario, ServicioComentario servicioComentario,
@@ -33,6 +39,8 @@ public class ControladorPublicacion {
         this.servicioLike = servicioLike;
         this.servicioUsuario = servicioUsuario;
         this.servicioComentario = servicioComentario;
+        this.publicacionMapper = publicacionMapper;
+
 
     }
 
@@ -48,6 +56,7 @@ public class ControladorPublicacion {
             try {
                 Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId()); // ✅ usa ServicioLogin
                 publicacion.setUsuario(usuario);
+
                 servicioPublicacion.realizar(publicacion);
             } catch (PublicacionFallida e) {
 
@@ -62,10 +71,35 @@ public class ControladorPublicacion {
 
 
 
-
+//
+//
+//    @PostMapping("/publicacion/darLike/{id}")
+//    public ModelAndView darLike(@PathVariable Long id, HttpServletRequest request) {
+//        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+//
+//        if (datos != null) {
+//            Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+//            Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
+//
+//            if (publicacion != null) {
+//                if (servicioLike.yaDioLike(usuario, publicacion)) {
+//
+//                    Like like = servicioLike.obtenerLike(usuario, publicacion);
+//                    if (like != null) {
+//                        servicioLike.quitarLike(like.getId());
+//                    }
+//                } else {
+//                    servicioLike.darLike(usuario, publicacion);
+//                }
+//            }
+//        }
+//
+//        return new ModelAndView("redirect:/home");
+//    }
 
     @PostMapping("/publicacion/darLike/{id}")
-    public ModelAndView darLike(@PathVariable Long id, HttpServletRequest request) {
+    @Transactional
+    public String darLikeFragment(@PathVariable Long id, Model model, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
         if (datos != null) {
@@ -74,7 +108,6 @@ public class ControladorPublicacion {
 
             if (publicacion != null) {
                 if (servicioLike.yaDioLike(usuario, publicacion)) {
-
                     Like like = servicioLike.obtenerLike(usuario, publicacion);
                     if (like != null) {
                         servicioLike.quitarLike(like.getId());
@@ -82,10 +115,13 @@ public class ControladorPublicacion {
                 } else {
                     servicioLike.darLike(usuario, publicacion);
                 }
+
+                DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+                model.addAttribute("dtopubli", dto);
             }
         }
 
-        return new ModelAndView("redirect:/home");
+        return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli})";
     }
 
 

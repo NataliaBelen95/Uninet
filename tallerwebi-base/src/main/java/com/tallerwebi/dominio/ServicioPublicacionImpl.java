@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 @Service("servicioPublicado")
 @Transactional
@@ -30,6 +31,9 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
         if (repositorio.existeIgual(publicacion)) {
             throw new PublicacionFallida("Ya existe una publicación igual");
+        }
+        if (publicacion.getFechaPublicacion() == null) {
+            publicacion.setFechaPublicacion(LocalDateTime.now());
         }
 
         repositorio.guardar(publicacion);
