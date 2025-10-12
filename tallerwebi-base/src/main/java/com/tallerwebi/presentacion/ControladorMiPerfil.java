@@ -87,7 +87,7 @@ public class ControladorMiPerfil {
 
 
     @PostMapping("/miPerfil/foto")
-      @Transactional
+    @Transactional
     public ModelAndView subirFoto(@RequestParam("fotoPerfil") MultipartFile foto, HttpServletRequest request) {
         DatosUsuario  datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
@@ -116,7 +116,7 @@ public class ControladorMiPerfil {
         try {
             String nombreFinal = java.util.UUID.randomUUID().toString() + extension;
 
-            String rutaBase = request.getSession().getServletContext().getRealPath("/imagenes/perfiles");
+            String rutaBase = request.getSession().getServletContext().getRealPath("/imagenes/perfiles/");
             java.io.File directorio =  new java.io.File(rutaBase);
             if(!directorio.exists()){
                 directorio.mkdir();
