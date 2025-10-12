@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.excepcion.NoSeEncuentraPublicacion;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -148,39 +149,30 @@ public class ControladorPublicacion {
 
         return new ModelAndView("redirect:/home");
     }
+
+
+    @PostMapping("/publicacion/eliminar/{id}")
+    public ModelAndView eliminar(@PathVariable Long id, HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        Publicacion publicacionAEliminar = servicioPublicacion.obtenerPublicacionPorId(id);
+
+        if (datos != null && publicacionAEliminar != null) {
+            try {
+                if (publicacionAEliminar.getUsuario().getId().equals(datos.getId())) {
+                    servicioPublicacion.eliminarPublicacionEntera(publicacionAEliminar);
+                    return new ModelAndView("redirect:/home");
+                } else {
+                    return new ModelAndView("error").addObject("mensaje", "No tienes permisos para eliminar esta publicación.");
+                }
+            } catch (NoSeEncuentraPublicacion e) {
+                return new ModelAndView("error").addObject("mensaje", "Hubo un error al intentar eliminar la publicación.");
+            }
+        }
+
+        return new ModelAndView("error").addObject("mensaje", "Publicación o usuario no encontrado.");
+    }
+
 }
 
 
 
-//@ResponseBody
-//public Map<String, Object> agregarPublicacionAjax(@ModelAttribute Publicacion publicacion,
-//                                                  HttpServletRequest request) {
-//    Map<String, Object> respuesta = new HashMap<>();
-//    DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-//
-//    if (datosUsuario != null) {
-//        try {
-//            Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
-//            publicacion.setUsuario(usuario);
-//            servicioPublicacion.realizar(publicacion);
-//
-//            // Lista actualizada de publicaciones
-//            List<Publicacion> publicaciones = servicioPublicacion.findAll();
-//            List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
-//            for (Publicacion p : publicaciones) {
-//                datosPublicaciones.add(publicacionMapper.toDto(p));
-//            }
-//
-//            respuesta.put("exito", true);
-//            respuesta.put("publicaciones", datosPublicaciones);
-//        } catch (PublicacionFallida e) {
-//            respuesta.put("exito", false);
-//            respuesta.put("error", e.getMessage());
-//        }
-//    } else {
-//        respuesta.put("exito", false);
-//        respuesta.put("error", "Usuario no logueado");
-//    }
-//
-//    return respuesta;
-//}

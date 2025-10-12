@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.NoSeEncuentraPublicacion;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,14 @@ import java.util.List;
 public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
+    private final RepositorioComentario repositorioComentario;
+    private final RepositorioLike  repositorioLike;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorio) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioLike repositorioLike) {
         this.repositorio = repositorio;
+        this.repositorioComentario = repositorioComentario;
+        this.repositorioLike = repositorioLike;
     }
 
     @Override
@@ -55,7 +60,19 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return p.getLikes();
     }
 
+    @Override
+    public void eliminarPublicacionEntera(Publicacion publicacion) {
+        if(publicacion !=null) {
+
+            repositorio.eliminarPubli(publicacion);
+        } else {
+            throw  new NoSeEncuentraPublicacion();
+        }
+    }
+
     public List<Publicacion> findByUsuarioId(Long id) {
         return repositorio.findByUsuarioId(id);
     }
+
+
 }

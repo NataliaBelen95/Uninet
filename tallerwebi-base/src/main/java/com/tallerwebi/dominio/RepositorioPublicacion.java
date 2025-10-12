@@ -12,5 +12,5 @@ public interface RepositorioPublicacion {
     List<Publicacion> listarTodas();
     boolean existeIgual(Publicacion publicacion);
     List<Publicacion> findByUsuarioId(Long id);
-
+    void eliminarPubli(Publicacion publicacion);
 }

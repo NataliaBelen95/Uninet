@@ -11,6 +11,20 @@
         <p class="texto" th:text="${dtopubli.descripcion}"></p>
         <span th:text="${dtopubli.fechaPublicacion != null ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm')) : 'Sin fecha'}"></span>
 
+        <div class="opciones-publicacion">
+            <button class="options-btn">...</button>
+            <ul class="options-menu">
+                <li>
+                    <form th:id="'form-eliminar' + ${dtopubli.id}"
+                          method="POST"
+                          th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}">
+                        <button type="submit" class="eliminar-opcion">Eliminar</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+
         <div class="contenedor_verComentarios">
             <div class="like-container">
                 <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
