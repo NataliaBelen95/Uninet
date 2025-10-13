@@ -13,6 +13,8 @@ a {
     grid-template-columns: 0.7fr 1.8fr 0.7fr;
     padding: 4rem;
     gap: 3rem;
+    height: 100vh;
+    grid-template-rows: auto;
 }
 .estructura{
     border-radius: 1rem;
@@ -33,6 +35,9 @@ a {
     justify-content: center;
     font-size: 1.5rem;
     gap: 1rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 .box_columnaUno{
     display: flex;
@@ -96,6 +101,9 @@ a {
     display: flex;
     flex-direction: column;
     gap: 4rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 0;
 }
 .box_comentario{
     display: flex;
@@ -141,7 +149,7 @@ a {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
-       margin-top: 10px;
+    margin-top: 10px;
 
 }
 
@@ -150,6 +158,8 @@ a {
     display: flex;
     flex-direction: column;
     font-size: 1.5rem;
+    position: sticky;
+    top: 0;
 }
 .user2{
     width: 2rem;
