@@ -1,4 +1,5 @@
 package com.tallerwebi.presentacion;
+import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
 import com.tallerwebi.dominio.ServicioSubirArchivo;
 
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.*;
 public class ControladorSubidaArchivoTest {
 
     private ServicioSubirArchivo servicioSubirArchivo;
+    private ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos;
     private ControladorSubidaArchivo controladorSubidaArchivo;
     private HttpServletRequest request;
     private HttpSession session;
@@ -28,7 +30,9 @@ public class ControladorSubidaArchivoTest {
     @BeforeEach
     public void init(){
         servicioSubirArchivo = mock(ServicioSubirArchivo.class);
-        controladorSubidaArchivo = new ControladorSubidaArchivo(servicioSubirArchivo);
+        servicioMostrarArchivosSubidos = mock(ServicioMostrarArchivosSubidos.class);
+
+        controladorSubidaArchivo = new ControladorSubidaArchivo(servicioSubirArchivo, servicioMostrarArchivosSubidos);
         request = mock(HttpServletRequest.class);
         session = mock(HttpSession.class);
 

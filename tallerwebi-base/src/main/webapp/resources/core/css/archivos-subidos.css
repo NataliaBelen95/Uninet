@@ -1,0 +1,46 @@
+
+/* Contenedor principal */
+.archivos-subidos {
+    display: flex;          /* hace que los elementos hijos estén en fila */
+    flex-wrap: wrap;        /* permite que pasen a la siguiente línea si no entran */
+    gap: 20px;              /* espacio entre cada "icono" */
+    padding: 10px;
+}
+
+/* Cada item de la lista */
+.archivos-subidos ul {
+    list-style: none;       /* quita los bullets */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;        /* para que los <li> también se acomoden en fila */
+    gap: 20px;
+}
+
+/* Cada archivo individual */
+.archivos-subidos li {
+    display: flex;
+    flex-direction: column; /* icono arriba, texto debajo */
+    align-items: center;    /* centra horizontalmente */
+    width: 100px;           /* ancho fijo para cada "icono" */
+    text-align: center;
+}
+
+/* Estilo del enlace */
+.archivos-subidos li a {
+    text-decoration: none;
+    color: var(--verde);
+    font-size: 0.9rem;
+}
+
+/* Icono del PDF */
+.archivos-subidos li img.icono-pdf {
+    width: 64px;            /* tamaño tipo "icono mediano" */
+    height: 64px;
+    margin-bottom: 5px;
+}
+
+/* Hover efecto */
+.archivos-subidos li a:hover {
+    color: var(--verde-2);
+}
