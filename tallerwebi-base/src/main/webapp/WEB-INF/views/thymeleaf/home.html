@@ -25,21 +25,12 @@
 <body>
 <header>
     <nav th:replace="templates/nav :: nav"></nav>
-    <!--<nav class="navbar"> nav antiguo
-        <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
-        <div>
-            <a href="/spring/miPerfil">Mi Perfil</a>
-            <a href="/spring/miPerfil">Notificaciones</a>
-            <a href="/spring/miPerfil">Mensajes</a>
-            <a href="/spring/miPerfil">Cerrar sesión</a>
-        </div>
-    </nav>-->
 </header>
 <main class="contenedor_general">
     <aside class="columnaUno">
         <div class="estructura">
             <img class="user"
-                 th:src="@{/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
+                 th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
                  alt="Foto de perfil">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
@@ -48,9 +39,6 @@
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
-
-
-
         </div>
         <div class="estructura box_columnaUno">
             <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
@@ -99,12 +87,6 @@
     </aside>
 </main>
 <script type="module" th:src="@{/js/publicacionBtnFunciones.js}"></script>
-
 <script type="module" th:src="@{js/tema.js}"></script>
-
-
-
-
-
 </body>
 </html>

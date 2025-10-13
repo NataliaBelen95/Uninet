@@ -70,6 +70,7 @@ public class ControladorMiPerfil {
         usuarioEnBD.setCodigoPostal(usuario.getCodigoPostal());
         usuarioEnBD.setProvincia(usuario.getProvincia());
         usuarioEnBD.setPassword(usuario.getPassword());
+        datosUsuario.setFotoPerfil(usuario.getFotoPerfil());
 
         if(usuario.getGenero() != null && usuario.getGenero().getId() != null) {
             Genero generoEnBD = servicioGenero.buscarPorId(usuario.getGenero().getId());
@@ -121,26 +122,35 @@ public class ControladorMiPerfil {
             // Nombre único para evitar conflictos
             String nombreFinal = java.util.UUID.randomUUID().toString() + extension;
 
-            String rutaBase = request.getServletContext().getRealPath("/resources/core/imagenes/perfiles");
-            java.io.File directorio =  new java.io.File(rutaBase);
+            // Usamos una única fuente: la carpeta "perfiles" en la raíz del proyecto
+            String rutaBase = System.getProperty("user.dir") + java.io.File.separator + "perfiles";
+            java.io.File directorio = new java.io.File(rutaBase);
 
-            if(!directorio.exists()){
-                directorio.mkdir();
+            // Crea todos los directorios necesarios (mkdirs en vez de mkdir)
+            if (!directorio.exists()) {
+                boolean ok = directorio.mkdirs();
+                System.out.println("Directorio creado: " + directorio.getAbsolutePath() + " -> " + ok);
             }
-            java.io.File destino = new java.io.File(directorio, nombreFinal);
-            foto.transferTo(destino);
 
+            java.io.File destino = new java.io.File(directorio, nombreFinal);
+
+            // DEBUG: imprimir rutas para chequear
+            System.out.println("rutaBase = " + rutaBase);
+            System.out.println("destino absoluto = " + destino.getAbsolutePath());
+
+            // Guardar el archivo (usa la ruta absoluta)
+            foto.transferTo(destino);
 
             usuario.setFotoPerfil("perfiles/" + nombreFinal);
             datosUsuario.setFotoPerfil(usuario.getFotoPerfil());
             servicioUsuario.actualizar(usuario);
-            System.out.println("Archivo subido: " + nombreOriginal);
-            System.out.println("Ruta guardada: imagenes/perfiles/" + nombreFinal);
-            System.out.println("Usuario antes de actualizar: " + usuario.getFotoPerfil());
 
-        }catch (Exception e){
+            System.out.println("Archivo subido: " + nombreOriginal);
+            System.out.println("Ruta guardada en BD: " + usuario.getFotoPerfil());
+
+        } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("mensaje", "Error al cargar imagen");
+            model.addAttribute("mensaje", "Error al cargar imagen: " + e.getMessage());
         }
         model.addAttribute("usuario", usuario);
         return new ModelAndView("miPerfil", model);
@@ -160,8 +170,12 @@ public class ControladorMiPerfil {
         try {
             if (usuario.getFotoPerfil() != null) {
                 // Elimina el archivo físico
-                String rutaCompleta = request.getServletContext().getRealPath(usuario.getFotoPerfil());
+                String rutaBase = System.getProperty("user.dir") + java.io.File.separator + "perfiles";
+                String rutaCompleta = rutaBase + java.io.File.separator + usuario.getFotoPerfil().substring("perfiles/".length());
+
+                // Crear el archivo
                 java.io.File archivo = new java.io.File(rutaCompleta);
+
                 if (archivo.exists()) {
                     archivo.delete();
                 }

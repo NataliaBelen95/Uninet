@@ -37,7 +37,8 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
         registry.addResourceHandler("/archivosPublicacion/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivosPublicacion/");
-
+        registry.addResourceHandler("/perfiles/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/perfiles/");
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
@@ -83,17 +84,17 @@ public class SpringWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MultipartResolver multipartResolverFotoPerfil() {
+    public MultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(5 * 1024 * 1024); // 5 MB por ejemplo
+        multipartResolver.setMaxUploadSize(10 * 1024 * 1024); // 10 MB por ejemplo
         multipartResolver.setDefaultEncoding("utf-8");
         return multipartResolver;
     }
 
 //para que permita subir archivos pdf
-    @Bean
+   /* @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
-    }
+    }*/
 
 }

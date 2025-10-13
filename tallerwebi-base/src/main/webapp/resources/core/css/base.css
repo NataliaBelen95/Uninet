@@ -179,7 +179,10 @@ select option:hover {
     height: 1px;
     background-color: var(--verde);
     margin: 0.5rem auto;
- }
+}
+.input-oculto{
+    display: none;
+}
 
 
 
