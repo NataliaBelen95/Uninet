@@ -29,7 +29,11 @@ public class PublicacionMapper {
         dto.setCantLikes(servicioLike.contarLikes(p));
         dto.setCantComentarios(servicioComentario.contarComentarios(p));
         dto.setFechaPublicacion(p.getFechaPublicacion());
+        dto.setUsuarioId(p.getUsuario().getId());
 
+
+        // Debug print
+        System.out.println("Usuario ID: " + p.getUsuario().getId());
         // Mapear comentarios
         List<DatosComentario> comentariosDto = new ArrayList<>();
         if (p.getComentarios() != null) {

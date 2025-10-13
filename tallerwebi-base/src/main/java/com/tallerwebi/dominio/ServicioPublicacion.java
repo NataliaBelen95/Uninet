@@ -14,4 +14,7 @@ public interface ServicioPublicacion {
 
     int obtenerCantidadDeLikes(long id);
     void eliminarPublicacionEntera(Publicacion publicacion);
+    public List<Comentario> obtenerComentariosDePublicacion(long publicacionId);
+
+    Publicacion obtenerPublicacionConComentarios(Long id);
 }

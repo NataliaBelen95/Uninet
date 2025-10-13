@@ -34,7 +34,7 @@ public class Publicacion {
     private List<Like> likesDePublicacion = new ArrayList<>();
 
     /*relacion con entidad comentarios , una publicacion muchos comentarios, comentario a una publi*/
-    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comentario> comentarios;
 
     // getters y setters

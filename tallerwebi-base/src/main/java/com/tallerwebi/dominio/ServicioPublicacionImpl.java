@@ -24,13 +24,15 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
     private final RepositorioComentario repositorioComentario;
-    private final RepositorioLike  repositorioLike;
+
+    private final RepositorioPublicacion repositorioPublicacion;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioLike repositorioLike) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
-        this.repositorioLike = repositorioLike;
+        this.repositorioPublicacion = repositorioPublicacion;
+
     }
     public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida {
 
@@ -130,6 +132,16 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         } else {
             throw  new NoSeEncuentraPublicacion();
         }
+    }
+
+    @Override
+    public List<Comentario> obtenerComentariosDePublicacion(long publicacionId) {
+        return repositorioComentario.findComentariosByPublicacionId(publicacionId);
+    }
+
+    @Override
+    public Publicacion obtenerPublicacionConComentarios(Long id) {
+        return repositorioPublicacion.obtenerPublicacionConComentarios(id);
     }
 
     public List<Publicacion> findByUsuarioId(Long id) {

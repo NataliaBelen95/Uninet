@@ -33,25 +33,28 @@ public class ControladorHome {
         ModelMap model = new ModelMap();
         HttpSession session = request.getSession();
 
+        // Obtener el usuario logueado
         DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return new ModelAndView("redirect:/login");
         }
         model.addAttribute("usuario", usuario);
 
+        // Ahora la lista de publicaciones ya trae los comentarios por estar con `EAGER` en la entidad
         List<Publicacion> publicaciones = servicioPublicacion.findAll();
-        for (Publicacion p : publicaciones) {
-            Hibernate.initialize(p.getArchivo());  // Evita LazyInitializationException para archivos
-            // Inicializar más colecciones si usas más lazy
-        }
 
-        List<DatosPublicacion> datosPublicaciones = publicaciones.stream()
-                .map(publicacionMapper::toDto)
-                .collect(Collectors.toList());
+        // Mapear las publicaciones a DTOs
+        List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
+        for (Publicacion publicacion : publicaciones) {
+            DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+            System.out.println("Publicacion usuarioId: " + dto.getUsuarioId());
+            datosPublicaciones.add(dto);
+        }
 
         model.addAttribute("datosPublicaciones", datosPublicaciones);
         return new ModelAndView("home", model);
     }
+
 
 }
 

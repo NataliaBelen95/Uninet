@@ -3,6 +3,12 @@
         <!-- Usuario -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
 
+        <form th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}" method="post">
+            <button class="delete-button" type="submit" th:unless="${dtopubli != null and usuario != null and dtopubli.usuarioId != usuario.id}">
+                <img th:src="@{/imagenes/borrarParaSiempre.png}" alt="deleteLogo" class="delete-logo"/>
+            </button>
+        </form>
+
         <!-- Mostrar descripción solo si existe -->
         <p class="texto" th:if="${dtopubli.descripcion != null and !#strings.isEmpty(dtopubli.descripcion)}" th:text="${dtopubli.descripcion}"></p>
 
@@ -78,6 +84,7 @@
                 <button class="botones_acciones comentarBtn" type="button" th:data-id="${dtopubli.id}">
                     <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
                 </button>
+
 
                 <!-- Formulario de comentar (oculto) -->
                 <div class="contenedor_comentar" th:id="'contenedor-comentar-' + ${dtopubli.id}" style="display:none;">

@@ -10,11 +10,47 @@ document.addEventListener("DOMContentLoaded", function () {
             btn.onclick = () => {
                 const id = btn.dataset.id;
                 const contenedor = document.getElementById('contenedor-comentar-' + id);
+
                 if (!contenedor) {
                     console.log("Contenedor no encontrado para comentar id:", id);
                     return;
                 }
+
+                // Toggling visibility of the comment form
                 contenedor.style.display = (contenedor.style.display === "none" || contenedor.style.display === "") ? "block" : "none";
+
+                // Attach submit event handler for the comment form
+                const form = document.querySelector(`#form-comentario-${id}`);
+                if (form) {
+                    form.onsubmit = (e) => {
+                        e.preventDefault(); // Prevent normal form submission
+
+                        const textarea = form.querySelector("textarea");
+                        const textoComentario = textarea.value.trim();
+
+                        if (!textoComentario) return;  // No empty comments
+
+                        // Fetch request to add the comment
+                        fetch('/spring/publicacion/comentar/' + id, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams({
+                                'texto': textoComentario
+                            })
+                        })
+                        .then(response => response.text())
+                        .then(htmlFragment => {
+                            const el = document.getElementById('publicacion-' + id);  // Publicación con id "publicacion-{id}"
+                            if (!el) return;
+                            el.outerHTML = htmlFragment;  // Actualiza la publicación con el nuevo comentario
+                            inicializarEventos();  // Reasigna los eventos de los botones
+                        })
+                        .catch(err => console.error("Error al comentar:", err));
+                    };
+                }
             };
         });
 
