@@ -81,10 +81,13 @@ document.addEventListener("DOMContentLoaded", function () {
         loadingTask.promise.then(pdf => {
             return pdf.getPage(1);
         }).then(page => {
-            const viewport = page.getViewport({ scale: 1.0 });
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+           const containerWidth = container.clientWidth;
+           const unscaledViewport = page.getViewport({ scale: 1 });
+           const scale = (containerWidth * 0.8) / unscaledViewport.width;
+           const viewport = page.getViewport({ scale });
+           const context = canvas.getContext('2d');
+               canvas.width = viewport.width;
+               canvas.height = viewport.height
 
             const renderContext = {
                 canvasContext: context,

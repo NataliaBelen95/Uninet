@@ -230,6 +230,35 @@ a {
     margin: 10px 0;
 }
 
+/*pdf*/
+/* Asegurate que el contenedor del canvas no se expanda más del tamaño del padre */
+.archivo-pdf {
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
+.archivo-pdf .acciones-archivo {
+    margin-bottom: 10px;
+}
+
+.archivo-pdf canvas {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    margin: 0 auto;
+}
+
+/* Contenedor con scroll si el PDF es muy largo */
+.archivo-pdf .pdf-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #aaa;
+    padding: 5px;
+}
+
+
 
 
 
