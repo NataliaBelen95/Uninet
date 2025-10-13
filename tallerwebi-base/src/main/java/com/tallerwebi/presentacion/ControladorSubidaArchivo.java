@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 
+import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
 import com.tallerwebi.dominio.ServicioSubirArchivo;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
@@ -15,16 +16,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 
 @Controller
 public class ControladorSubidaArchivo {
 
     private final ServicioSubirArchivo servicioSubirArchivo;
+    private final ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos;
 
-    public ControladorSubidaArchivo(ServicioSubirArchivo servicioSubirArchivo) {
-        //constructor vacío
+    public ControladorSubidaArchivo(ServicioSubirArchivo servicioSubirArchivo, ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos) {
         this.servicioSubirArchivo = servicioSubirArchivo;
+        this.servicioMostrarArchivosSubidos = servicioMostrarArchivosSubidos;
     }
 
     //con este mostramos los datos del usuario en la página
@@ -39,13 +42,17 @@ public class ControladorSubidaArchivo {
         }
         model.addAttribute("usuario", usuario);
 
+        //agrego lista de archivos al model
+        List<String> archivos = servicioMostrarArchivosSubidos.listarArchivosPdf();
+        model.addAttribute("archivos", archivos);
+
         return new ModelAndView("subir-archivo", model);
     }
 
     //y con este manejamos la subida de archivos, responde al post del html
     @PostMapping("/subir-archivo")
     public ModelAndView guardarArchivoDeSubirArchivo(@SessionAttribute("usuarioLogueado") DatosUsuario usuario, @RequestParam("archivo") MultipartFile archivo){
-        // este método devuelve un modelandview , retorna una vista de datos
+        // este metodo devuelve un modelandview , retorna una vista de datos
         //el session attribute obtiene los datos de usuario de la sesión
         //el request param recibe el archivo que enviamos por post como un "MultipartFile"
 
@@ -68,8 +75,13 @@ public class ControladorSubidaArchivo {
         }catch (NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException | NoSePuedeSubirArchivoPorFallaException e) {
             model.addAttribute("mensaje", e.getMessage());
         }
+        //recargo la lista de archivos
+        List<String> archivos = servicioMostrarArchivosSubidos.listarArchivosPdf();
+        model.addAttribute("archivos", archivos);
         //retorno la vista con los datos del model map
         return new ModelAndView("subir-archivo", model);
 
-    }//fin del método
+    }//fin del metodo
+
+
 }//fin de la clase
