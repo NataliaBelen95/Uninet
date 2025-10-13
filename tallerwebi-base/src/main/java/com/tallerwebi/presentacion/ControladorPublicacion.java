@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,31 +46,28 @@ public class ControladorPublicacion {
 
     }
 
+    @PostMapping("/publicaciones")
+    public ModelAndView agregarPublicacion(
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam("archivos") MultipartFile archivo,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes) throws PublicacionFallida {
 
-    @RequestMapping(path = "/publicaciones", method = RequestMethod.POST)
-    public ModelAndView agregarPublicacion(@ModelAttribute("publicacion") Publicacion publicacion,
-                                           HttpServletRequest request,
-                                           RedirectAttributes redirectAttributes) throws PublicacionFallida {
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
-
-        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");//     if (datosUsuario != null) {
-        if(datosUsuario!=null) {
+        if (datosUsuario != null) {
             try {
-                Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId()); // ✅ usa ServicioLogin
-
-
-                servicioPublicacion.realizar(publicacion, usuario);
+                Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+                Publicacion publicacion = new Publicacion();
+                publicacion.setDescripcion(descripcion);
+                servicioPublicacion.realizar(publicacion, usuario, archivo);
             } catch (PublicacionFallida e) {
-
                 redirectAttributes.addFlashAttribute("errorPubli", e.getMessage());
-
             }
         }
 
-            return new ModelAndView("redirect:/home");
-        }
-
-
+        return new ModelAndView("redirect:/home");
+    }
 
 
 //

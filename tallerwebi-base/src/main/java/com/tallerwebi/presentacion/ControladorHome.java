@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 
 import com.tallerwebi.dominio.*;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,12 +40,18 @@ public class ControladorHome {
         model.addAttribute("usuario", usuario);
 
         List<Publicacion> publicaciones = servicioPublicacion.findAll();
+        for (Publicacion p : publicaciones) {
+            Hibernate.initialize(p.getArchivo());  // Evita LazyInitializationException para archivos
+            // Inicializar más colecciones si usas más lazy
+        }
+
         List<DatosPublicacion> datosPublicaciones = publicaciones.stream()
-                .map(publicacionMapper::toDto) //equivale a .map(p-> publicacionMapper.toDto(p))
+                .map(publicacionMapper::toDto)
                 .collect(Collectors.toList());
 
         model.addAttribute("datosPublicaciones", datosPublicaciones);
         return new ModelAndView("home", model);
     }
+
 }
 

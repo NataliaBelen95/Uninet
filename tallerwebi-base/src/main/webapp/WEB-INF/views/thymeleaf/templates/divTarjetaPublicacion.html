@@ -1,9 +1,55 @@
-<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}"
-     xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}" xmlns:th="http://www.w3.org/1999/xhtml">
     <article class="estructura">
-        <!-- Usuario y descripción -->
+        <!-- Usuario -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
-        <p class="texto" th:text="${dtopubli.descripcion}"></p>
+
+        <!-- Mostrar descripción solo si existe -->
+        <p class="texto" th:if="${dtopubli.descripcion != null and !#strings.isEmpty(dtopubli.descripcion)}"
+           th:text="${dtopubli.descripcion}"></p>
+
+
+
+        <!-- Mostrar archivo si hay -->
+        <div th:if="${dtopubli.archivoNombre != null}">
+            <div th:switch="${dtopubli.archivoTipo}">
+
+                <!-- Mostrar imágenes -->
+                <img th:case="'image/jpeg'" th:src="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
+                     style="max-width: 200px; max-height: 200px;" alt="Imagen" />
+                <img th:case="'image/png'" th:src="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
+                     style="max-width: 200px; max-height: 200px;" alt="Imagen" />
+
+                <!-- PDF -->
+                <div th:case="'application/pdf'" class="archivo-pdf" style="margin-top: 10px;">
+                    <p>
+                        &#128196; <strong>Archivo:</strong>
+                        <span th:text="${#strings.substringAfter(dtopubli.archivoNombre, '_')}">nombre.pdf</span>
+                    </p>
+
+                    <div class="acciones-archivo" style="margin-top: 5px;">
+                        <a th:href="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
+                           class="boton-descargar"
+                           style="margin-right: 10px; text-decoration: none; color: blue;"
+                           download>&#128229; Descargar PDF</a>
+
+                        <button type="button"
+                                class="ver-pdf-btn"
+                                th:data-id="${dtopubli.id}"
+                                th:data-url="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
+                                style="cursor: pointer; background-color: transparent; border: none; color: darkgreen;">
+                            &#128065; Ver PDF
+                        </button>
+                    </div>
+
+                    <div th:attr="id='pdf-container-' + ${dtopubli.id}" style="max-width: 100%; height: 400px; display: none; margin-top: 10px;">
+                        <canvas th:attr="id='pdf-viewer-' + ${dtopubli.id}" style="width: 100%; height: auto; border: 1px solid #ccc;"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Fecha -->
         <span th:text="${dtopubli.fechaPublicacion != null
                         ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm'))
                         : 'Sin fecha'}"></span>
@@ -65,4 +111,3 @@
         </div>
     </article>
 </div>
-

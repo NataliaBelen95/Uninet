@@ -26,7 +26,12 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
     @Override
     public List<Publicacion> listarTodas() {
         return sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT p FROM Publicacion p LEFT JOIN FETCH p.usuario LEFT JOIN FETCH p.comentarios", Publicacion.class)
+                .createQuery(
+                        "SELECT DISTINCT p FROM Publicacion p " +
+                                "LEFT JOIN FETCH p.usuario " +
+                                "LEFT JOIN FETCH p.comentarios " +
+                                "LEFT JOIN FETCH p.archivo a " +   // Cambio aquí: p.archivo en lugar de p.archivos
+                                "WHERE p.archivo IS NOT NULL", Publicacion.class) // Verificamos que haya archivo
                 .getResultList();
     }
 
