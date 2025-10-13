@@ -14,8 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+
+
+
 
 @Controller
 public class ControladorMiPerfil {
@@ -48,14 +53,14 @@ public class ControladorMiPerfil {
     @PostMapping("/miPerfil")
     @Transactional
     public ModelAndView actualizarPerfil(@ModelAttribute("usuario")  Usuario usuario, HttpServletRequest request) {
-       DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-       if(datosUsuario == null){
-           return new ModelAndView("miPerfil");
-       }
-       //Usuario usuarioEnBD = servicioUsuario.buscarPorEmail(datosUsuario.getEmail()); forma vieja
-       Usuario usuarioEnBD = servicioUsuario.buscarPorId(datosUsuario.getId());
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if(datosUsuario == null){
+            return new ModelAndView("miPerfil");
+        }
+        //Usuario usuarioEnBD = servicioUsuario.buscarPorEmail(datosUsuario.getEmail()); forma vieja
+        Usuario usuarioEnBD = servicioUsuario.buscarPorId(datosUsuario.getId());
 
-       //Acá actualizamos los campos editables
+        //Acá actualizamos los campos editables
         usuarioEnBD.setEmail(usuario.getEmail());
         usuarioEnBD.setEmailPersonal(usuario.getEmailPersonal());
         usuarioEnBD.setFechaNacimiento(usuario.getFechaNacimiento());
@@ -85,55 +90,71 @@ public class ControladorMiPerfil {
         return new ModelAndView("miPerfil", model);
     }
 
-
     @PostMapping("/miPerfil/foto")
-      @Transactional
+    @Transactional
     public ModelAndView subirFoto(@RequestParam("fotoPerfil") MultipartFile foto, HttpServletRequest request) {
-        DatosUsuario  datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
         ModelMap model = new ModelMap();
 
-        if(foto.isEmpty()){
+        if (foto.isEmpty()) {
             model.addAttribute("mensaje", "No seleccionaste ninguna imagen");
             return new ModelAndView("miPerfil", model);
         }
 
-        String nombreOriginal = foto.getOriginalFilename(); // ej: nombreOriginal = pepito.jpg
+        String nombreOriginal = foto.getOriginalFilename(); // ej: pepito.jpg
         String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf('.')).toLowerCase();
-        long pesoPermitido = 2 * 1024 * 1024; // Equivale a 2MB
+        long pesoPermitido = 2 * 1024 * 1024; // 2MB
         List<String> extensionesPermitidas = Arrays.asList(".png", ".jpg", ".jpeg", ".webp");
 
-        if(!extensionesPermitidas.contains(extension)){
+        if (!extensionesPermitidas.contains(extension)) {
             model.addAttribute("mensaje", "Formato no válido. Solo se aceptan: JPG, PNG, WEBP");
             return new ModelAndView("miPerfil", model);
         }
 
-        if(foto.getSize()>pesoPermitido){
+        if (foto.getSize() > pesoPermitido) {
             model.addAttribute("mensaje", "El archivo es demasiado grande (máx. 2MB)");
             return new ModelAndView("miPerfil", model);
         }
 
         try {
+            // Nombre único para evitar conflictos
             String nombreFinal = java.util.UUID.randomUUID().toString() + extension;
 
-            String rutaBase = request.getSession().getServletContext().getRealPath("/imagenes/perfiles");
-            java.io.File directorio =  new java.io.File(rutaBase);
-            if(!directorio.exists()){
-                directorio.mkdir();
+            // Mejor forma de obtener la ruta base absoluta para guardar la imagen
+            String appPath = request.getServletContext().getRealPath("");
+            String rutaBase = Paths.get(appPath, "resources", "core", "imagenes", "perfiles").toString();
+
+            File directorio = new File(rutaBase);
+            if (!directorio.exists()) {
+                directorio.mkdirs();  // crea toda la jerarquía de carpetas
             }
-            java.io.File destino = new java.io.File(rutaBase + nombreFinal);
+
+            File destino = new File(directorio, nombreFinal);
+
+            // Guardar archivo en disco
             foto.transferTo(destino);
 
-            usuario.setFotoPerfil("imagenes/perfiles/" + nombreFinal);
+            // Actualizar usuario con la ruta relativa para cargar en el front
+            usuario.setFotoPerfil("perfiles/" + nombreFinal);
+            datosUsuario.setFotoPerfil(usuario.getFotoPerfil());
             servicioUsuario.actualizar(usuario);
 
-        }catch (Exception e){
+            System.out.println("Archivo subido: " + nombreOriginal);
+            System.out.println("Ruta guardada: recursos/core/imagenes/perfiles/" + nombreFinal);
+            System.out.println("Usuario actualizado con foto: " + usuario.getFotoPerfil());
+
+            model.addAttribute("mensaje", "Foto subida correctamente");
+
+        } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("mensaje", "Error al cargar imagen");
         }
+
         model.addAttribute("usuario", usuario);
         return new ModelAndView("miPerfil", model);
     }
+
 
     @PostMapping("/miPerfil/eliminar-foto")
     @Transactional

@@ -38,43 +38,31 @@
 <main class="contenedor_general">
     <aside class="columnaUno">
         <div class="estructura">
-            <img class="user" th:src="@{/imagenes/user.png}">
+            <img class="user"
+                 th:src="@{/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
+                 alt="Foto de perfil">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
             <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
             <ul>
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
-        </div>
 
-        <!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
-        <a th:href="@{/subir-archivo}" class="btn_subir_archivos">Subir archivos</a>
 
-        <div>
-            <p>blablaba</p>
-            <p>blablaba</p>
-            <p>blablaba</p>
-            <a href="#" class="ver_mas">Conocer más...</a>
-        </div>
-        <div>
-            <ul>
-                <li>Archivos</li>
-                <li>Grupos</li>
-            </ul>
-        </div>
 
+        </div>
         <div class="estructura box_columnaUno">
             <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
             <a href=""><img th:src="@{/imagenes/guardados.png}"> Elementos guardados</a>
+            <!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
+            <a th:href="@{/subir-archivo}" class="btn_subir_archivos">Subir archivos</a>
             <!--<a href=""><img src="../../../resources/core/imagenes/grupos.png"> Grupos</a>
             <a href=""><img src="../../../resources/core/imagenes/guardados.png"> Elementos guardados</a>-->
-
         </div>
     </aside>
 
     <section class="columnaDos">
         <article class="estructura">
-
             <div th:replace="templates/form-publicacion :: form-publi(${publicacion})"></div>
         </article>
         <article class="box_ordenarPor">
@@ -85,10 +73,9 @@
                     <option value="p">Principal</option>
                     <option value="r">Recientes</option>
                 </select>
-
             </form>
         </article>
-            <!-- se reemplaza por el articulo que contiene c/u de las publis en divTarjeta -->
+        <!-- se reemplaza por el articulo que contiene c/u de las publis en divTarjeta -->
         <div th:each="dtopubli : ${datosPublicaciones}">
             <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})"></div>
         </div>
@@ -111,6 +98,10 @@
 <script type="module" th:src="@{/js/publicacionBtnFunciones.js}"></script>
 
 <script type="module" th:src="@{js/tema.js}"></script>
+
+
+
+
 
 </body>
 </html>

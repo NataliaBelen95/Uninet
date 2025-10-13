@@ -27,7 +27,7 @@ public class ControladorLogin {
 
     private RepositorioUsuario repositorioUsuario;
     private ServicioCarrera servicioCarrera;
-          /******     ***/
+    /******     ***/
 
     @Autowired
     public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario, ServicioCarrera servicioCarrera) {
@@ -72,8 +72,8 @@ public class ControladorLogin {
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
     public ModelAndView cerrarSesion(HttpServletRequest request) {
-       request.getSession().invalidate();
-       return new ModelAndView("redirect:/login");
+        request.getSession().invalidate();
+        return new ModelAndView("redirect:/login");
     }
 
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
@@ -117,4 +117,3 @@ public class ControladorLogin {
 
 
 }
-

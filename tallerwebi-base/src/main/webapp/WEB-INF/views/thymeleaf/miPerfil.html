@@ -43,6 +43,7 @@
             <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
                 <input id="foto" class="input-oculto" type="file" name="fotoPerfil" accept="image/*">
                 <label class="btn" for="foto">Cambiar foto</label>
+                <button type="submit" class="btn">Guardar</button>
             </form>
 
             <form th:action="@{/miPerfil/eliminar-foto}" method="post">
