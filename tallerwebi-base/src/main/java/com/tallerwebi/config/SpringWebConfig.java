@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,6 +15,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+
 
 @EnableWebMvc
 @Configuration
@@ -24,12 +26,15 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Autowired
     private ApplicationContext applicationContext;
 
+
+
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/core/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/imagenes/**").addResourceLocations("/resources/core/imagenes/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+        registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
@@ -44,7 +49,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         templateResolver.setSuffix(".html");
         // HTML is the default value, added here for the sake of clarity.
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        // Template cache is true by default. Set to false if you want
+        // Template cache is true by default. Set to false ifc you want
         // templates to be automatically updated when modified.
         templateResolver.setCacheable(true);
         return templateResolver;
@@ -75,11 +80,17 @@ public class SpringWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MultipartResolver multipartResolver() {
+    public MultipartResolver multipartResolverFotoPerfil() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setMaxUploadSize(5 * 1024 * 1024); // 5 MB por ejemplo
         multipartResolver.setDefaultEncoding("utf-8");
         return multipartResolver;
+    }
+
+//para que permita subir archivos pdf
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 
 }

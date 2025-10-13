@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cuestionario UNINET</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <link rel="stylesheet" href="../../../resources/core/css/home.css"/>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <a href="#"><img class="isologo" th:src="@{/imagenes/isologo.png}" alt="isologo"></a>
+        <div>
+            <a href="/spring/miPerfil">Mi Perfil</a>
+            <a href="/spring/miPerfil">Notificaciones</a>
+            <a href="/spring/miPerfil">Mensajes</a>
+        </div>
+    </nav>
+</header>
+<main class="contenedor_general">
+    <aside class="estructura columnaUno">
+        <div>
+            <img class="user" th:src="@{/imagenes/user.png}" alt="Img usuario">
+            <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
+            <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
+            <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
+            <ul>
+                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+            </ul>
+        </div>
+    </aside>
+    <section class="columnaDos">
+        <article class="estructura">
+            <h3>Subir archivos pdf</h3>
+            <form th:action="@{/subir-archivo}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="archivo" accept="application/pdf" required />
+                <button type="submit">Subir PDF</button>
+            </form>
+            <p th:if="${mensaje}" th:text="${mensaje}" style="color: green;"></p>
+        </article>
+    </section>
+
+
+</main>
+</body>
+</html>
