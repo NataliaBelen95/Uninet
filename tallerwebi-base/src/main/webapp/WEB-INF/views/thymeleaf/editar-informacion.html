@@ -1,3 +1,94 @@
-<html>
-<h1>editar-info</h1>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Editar perfil</title>
+
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
+    <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav th:replace="templates/nav :: nav"></nav>
+    </header>
+    <main class="contenedor_editar">
+        <section class="estructura">
+            <h1> Editar perfil</h1>
+            <div class="separador"></div>
+            <form th:action="@{/miPerfil}" th:object="${usuario}" method="post">
+                <div class="contenedor_campos">
+                    <div class="box_campo">
+                        <label for="dni">D.N.I</label>
+                        <input th:field="*{dni}" type="number" id="dni">
+                    </div>
+                    <div class="box_campo">
+                        <label for="pass">Contraseña</label>
+                        <input th:field="*{password}" type="password" id="pass">
+                    </div>
+                    <div class="box_campo">
+                        <label for="nac">Fecha de nacimiento</label>
+                        <input th:field="*{fechaNacimiento}" type="date" id="nac">
+                    </div>
+                    <div class="box_campo">
+                        <label for="genero">Género</label>
+                        <select th:field="*{genero.id}" id="genero">
+                            <option value="">Seleccione un género </option>
+                            <option th:each="g : ${generos}"
+                                    th:value="${g.id}"
+                                    th:text="${g.nombre}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="box_campo">
+                        <label for="mail">Email institucional</label>
+                        <input th:field="*{email}" type="email" id="mail" readonly>
+                    </div>
+                    <div class="box_campo">
+                        <label for="mailPersonal">Email personal</label>
+                        <input th:field="*{emailPersonal}" type="email" id="mailPersonal">
+                    </div>
+                    <div class="box_campo">
+                        <label for="tel">Teléfono</label>
+                        <input th:field="*{telefono}" type="tel" id="tel">
+                    </div>
+                    <div class="box_campo">
+                        <label for="dir">Dirección</label>
+                        <input th:field="*{direccion}" type="text" id="dir">
+                    </div>
+                    <div class="box_campo">
+                        <label for="localidad">Localidad</label>
+                        <input th:field="*{localidad}" type="text" id="localidad">
+                    </div>
+                    <div class="box_campo">
+                        <label for="prov">Provincia</label>
+                        <input th:field="*{provincia}" type="text" id="prov">
+                    </div>
+                    <div class="box_campo">
+                        <label for="cod">Código Postal</label>
+                        <input th:field="*{codigoPostal}" type="text" id="cod">
+                    </div>
+                </div>
+                <div>
+                    <p th:if="${mensaje}" style="color:green;" th:text="${mensaje}"></p>
+                </div>
+                <div class="contenedor_campos_btn">
+                    <button type="submit" class="btn">Guardar cambios</button>
+                    <a th:href="@{/miPerfil}" class="btn">Volver</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
 </html>

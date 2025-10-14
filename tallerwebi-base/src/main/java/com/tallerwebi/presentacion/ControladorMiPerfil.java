@@ -19,9 +19,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-
-
-
 @Controller
 public class ControladorMiPerfil {
 
@@ -49,6 +46,24 @@ public class ControladorMiPerfil {
 
         return new ModelAndView("miPerfil", model);
     }
+
+    @GetMapping("/editar-informacion")
+    @Transactional(readOnly = true)
+    public ModelAndView editarInformacion(HttpServletRequest request) {
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+
+        if (datosUsuario == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+        ModelMap model = new ModelMap();
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("generos", servicioGenero.listarGeneros());
+
+        return new ModelAndView("editar-informacion", model);
+    }
+
 
     @PostMapping("/miPerfil")
     @Transactional

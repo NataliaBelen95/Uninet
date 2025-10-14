@@ -27,27 +27,144 @@
     align-items: center;
     justify-content: center;
 }
-form{
+.user{
+    width: 8rem;
+    border-radius: 50%;
+}
+/* Estilo para el pop-up */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow: auto;
+    padding-top: 60px;
+}
+
+.popup-content {
+    background-color: var(--background-input);
+    border: 1px solid var(--background-input);
+    border-radius: var(--radius);
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.popup-cerrar {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    float: right;
+}
+
+.popup-cerrar:hover,
+.popup-cerrar:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Foto de perfil */
+.foto-preview {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* Separador entre los elementos */
+.separador {
+    background-color: var(--background-contenedor);
+    margin: 20px 0;
+}
+
+/* Contenedor de botones (Flexbox para los 3 bloques) */
+.box_botones {
+    display: flex;
+    justify-content: space-evenly; /* Asegura que haya espacio entre los elementos */
+    align-items: center;
+    width: 100%;
+}
+
+/* Cada ítem dentro de los botones (icono + texto) */
+.box-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Iconos más pequeños que los textos */
+.box-item img {
+    width: 2rem;
+    height: 2rem;
+}
+.box-item button img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.label-texto {
+    font-size: 1.2rem;
+    white-space: nowrap;
+}
+
+/* Estilos para los botones e iconos */
+.botones_acciones {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-botones {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; /* Esto asegura que haya el mismo espacio entre los elementos */
+    width: 100%;
+}
+
+/* Sección de editar perfil*/
+.contenedor_editar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    margin: 0 auto;
+    min-height: calc(100vh - 10rem);
+}
+.contenedor_editar form{
     display: flex;
     flex-direction: column;
 }
 .contenedor_campos{
     display:flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1rem;
+    padding-top: 1rem;
+    justify-content: space-between;
 }
 .box_campo{
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
     color: var(--text-ter);
     margin-bottom: 2rem;
-    width: 48%;
+    gap: 0.5rem;
+    flex: 1 1 calc(33.333% - 1rem);
+    min-width: 250px;
 }
-.box_campo input{
+.box_campo input, select{
       height: 2.5rem;
-      padding: 0 0.8rem;
-      font-size: 15px;
+      font-size: 1rem;
+      width: 100%;
 }
 
 .box_campo input::placeholder {
@@ -62,14 +179,50 @@ form{
     display: flex;
     justify-content: flex-end;
     gap: 3rem;
-    margin-top: 2rem;
 }
 .contenedor_campos_btn button{
-    width: 11rem;
     height: 3rem;
 }
-.user{
-    width: 8rem;
-    border-radius: 50%;
+.contenedor_campos_btn a{
+    height: 3rem;
+}
+
+/* Responsive editar perfil*/
+@media (max-width: 1200px) {
+  .box_campo {
+    flex: 1 1 calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .box_campo {
+    flex: 1 1 calc(50% - 1rem);
+  }
+
+  .contenedor_editar {
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .box_campo {
+    flex: 1 1 100%;
+  }
+
+  .contenedor_editar {
+    width: 95%;
+    padding: 0 1rem;
+  }
+
+  .contenedor_campos_btn {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .contenedor_campos_btn button,
+  .contenedor_campos_btn a {
+    width: 100%;
+  }
 }
 
