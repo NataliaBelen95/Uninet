@@ -185,6 +185,14 @@ select option:hover {
 .input-oculto{
     display: none;
 }
+.exito{
+    color: var(--verde);
+    font-weight: bold;
+}
+.error{
+    color: red;
+    font-weight: bold;
+}
 
 
 

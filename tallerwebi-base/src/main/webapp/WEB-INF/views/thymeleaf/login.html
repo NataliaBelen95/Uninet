@@ -33,7 +33,7 @@
             <input th:field="*{email}" id="email" type="email" placeholder="Email" required/>
             <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
             <button id="btn-login" class="btn" Type="Submit" disabled>Ingresar</button>
-            <a href="nuevo-usuario">Olvidaste la contraseña?</a>
+            <a th:href="@{/recuperar}">Olvidaste la contraseña?</a>
             <div class="separador"></div>
             <p th:if="${error != null}" th:text="'Error ' + ${error}" class="error" >
             </p>

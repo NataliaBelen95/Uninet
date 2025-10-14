@@ -38,4 +38,8 @@ public class ServicioUsuario {
        return repositorioUsuario.findByIdWithPublicaciones(id);
 
     }
+
+    public void actualizarContrasena(Usuario usuario, String nuevaContrasena) {
+        repositorioUsuario.actualizarContrasena(usuario, nuevaContrasena);
+    }
 }

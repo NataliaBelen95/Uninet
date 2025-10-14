@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva contraseña</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
+    <!--<link rel="stylesheet" href="/src/main/webapp/resources/core/css/variables.css">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/base.css">
+    <link rel="stylesheet" href="../../../resources/core/css/registrarse.css">-->
+</head>
+<body>
+<nav>
+    <img class="logo" th:src="@{/imagenes/logo.png}">
+    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
+</nav>
+<main role="main" class="contenedor">
+    <div id="loginbox" class="contenedor_form">
+        <form action="#" th:action="@{/recuperar}" method="POST" th:object="${datosRecuperarContrasenia}" accept-charset="UTF-8">
+            <h3>Nueva contraseña</h3>
+            <div class="separador"></div>
+            <input th:field="*{email}" id="email" placeholder="Email" required/>
+            <input th:field="*{nuevaContrasena}" type="password" id="passnew" placeholder="Contraseña nueva" required/>
+            <input th:field="*{repetirContrasena}" type="password" id="passrep" placeholder="Repetir contraseña" required/>
+            <button id="btn-registrarme" class="btn" Type="Submit">Actualizar</button>
+            <a href="login.html">Volver atrás</a>
+            <p th:if="${error != null}" class="error" th:text="${error}"></p>
+            <p th:if="${mensaje != null}" class="exito" th:text="${mensaje}"></p>
+        </form>
+    </div>
+</main>
+
+<script type="module" th:src="@{js/tema.js}"></script>
+</body>
+</html>

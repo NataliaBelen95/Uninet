@@ -8,7 +8,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -83,6 +82,17 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .setParameter("id", id)
                 .uniqueResult();
     }
+
+
+    @Override
+    public void actualizarContrasena(Usuario usuario, String nuevaContrasena) {
+        Session session = sessionFactory.getCurrentSession();
+
+        usuario.setPassword(nuevaContrasena);
+
+        session.update(usuario);
+    }
+
 
 }
 

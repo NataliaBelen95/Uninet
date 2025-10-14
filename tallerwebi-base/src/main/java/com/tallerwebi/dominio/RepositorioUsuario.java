@@ -16,4 +16,6 @@ public interface RepositorioUsuario {
     Usuario buscarPorId(long id);
     List<Usuario> buscarTodos();
     Usuario findByIdWithPublicaciones(long id);
+
+    void actualizarContrasena(Usuario usuario, String nuevaContrasena);
 }
