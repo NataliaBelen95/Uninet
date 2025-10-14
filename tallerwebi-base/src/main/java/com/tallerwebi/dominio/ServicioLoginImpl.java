@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.EmailNoInstitucional;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,14 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public void registrar(Usuario usuario) throws UsuarioExistente {
+    public void registrar(Usuario usuario) throws UsuarioExistente, EmailNoInstitucional {
+
+
+        /*String email = usuario.getEmail();
+
+        if (!email.endsWith("@unlam.edu.ar")) {
+            throw new EmailNoInstitucional("El email debe ser institucional");
+        }*/
         Usuario usuarioEncontrado = repositorioUsuario.buscar(usuario.getEmail());
         if (usuarioEncontrado != null) {
             throw new UsuarioExistente();
