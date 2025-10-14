@@ -11,9 +11,10 @@ a {
 .contenedor_general{
     display: grid;
     grid-template-columns: 0.7fr 1.8fr 0.7fr;
-    padding: 4rem;
+    padding: 2rem;
     gap: 3rem;
-    height: 100vh;
+    min-height: 100vh;
+    overflow-y: auto;
 }
 .estructura{
     border-radius: 1rem;
@@ -25,16 +26,19 @@ a {
 }
  /*Columna izquierda*/
 .user{
-    width: 8rem;
+    width: 10rem;
+    max-width: 100%;
     border-radius: 50%;
 }
 .columnaUno{
     display: flex;
     flex-direction: column;
     align-items: left;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: 1.5rem;
     gap: 1rem;
+    height: auto;
+    overflow: hidden;
 }
 .box_columnaUno{
     display: flex;
@@ -57,6 +61,12 @@ a {
     width: 2rem;
 }
  /*Columna central*/
+ .columnaDos{
+     display: flex;
+     flex-direction: column;
+     gap: 4rem;
+     height: auto;
+ }
  .box_ordenarPor{
     display: flex;
     align-items: center;
@@ -94,11 +104,6 @@ a {
   background-color: var(--background-contenedor);
   color: var(--texto);
 }
-.columnaDos{
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-}
 .box_comentario{
     display: flex;
     flex-direction: column;
@@ -114,7 +119,7 @@ a {
        transition: border-color 0.3s ease;
 }
 .box_comentario input:focus {
-  border: 1px solid #27AE60;
+  border: 1px solid var(--verde);
 }
 .box_comentario input::placeholder {
   color: #9E9E9E;
@@ -151,7 +156,10 @@ a {
 .columnaTres{
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     font-size: 1.5rem;
+    height: auto;
+    overflow: hidden;
 }
 .user2{
     width: 2rem;

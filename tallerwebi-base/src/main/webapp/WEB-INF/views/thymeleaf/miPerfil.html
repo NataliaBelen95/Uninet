@@ -24,21 +24,23 @@
     <nav th:replace="templates/nav :: nav"></nav>
 </header>
 <main class="contenedor_box_general">
-    <aside class="estructura contenedor_usuario" >
-        <img class="user"
-             th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
-             alt="Foto de perfil">
+    <aside class="contenedor_usuario" >
+        <div class="estructura">
+            <img class="user"
+                 th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
+                 alt="Foto de perfil">
 
-        <div class="contenedor_usuario_btn">
-            <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
-                <input id="foto" class="input-oculto" type="file" name="fotoPerfil" accept="image/*">
-                <label class="btn" for="foto">Cambiar foto</label>
-                <button type="submit" class="btn">Guardar</button>
-            </form>
+            <div class="contenedor_usuario_btn">
+                <form th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
+                    <input id="foto" class="input-oculto" type="file" name="fotoPerfil" accept="image/*">
+                    <label class="btn" for="foto">Cambiar foto</label>
+                    <button type="submit" class="btn">Guardar</button>
+                </form>
 
-            <form th:action="@{/miPerfil/eliminar-foto}" method="post">
-                <button type="submit" class="btn">Eliminar foto</button>
-            </form>
+                <form th:action="@{/miPerfil/eliminar-foto}" method="post">
+                    <button type="submit" class="btn">Eliminar foto</button>
+                </form>
+            </div>
         </div>
     </aside>
     <section class="estructura">
