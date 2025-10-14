@@ -12,11 +12,11 @@ import javax.persistence.*;
         @Column(length = 200, nullable = false)
         private String texto;
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+        @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "usuario_id", nullable = false)
         private Usuario usuario;
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+        @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "publicacion_id", nullable = false)
         private Publicacion publicacion;
 

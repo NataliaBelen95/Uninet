@@ -3,11 +3,14 @@
         <!-- Usuario -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
 
+        <form th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}" method="post">
+            <button class="delete-button" type="submit" th:unless="${dtopubli != null and usuario != null and dtopubli.usuarioId != usuario.id}">
+                <img th:src="@{/imagenes/borrarParaSiempre.png}" alt="deleteLogo" class="delete-logo"/>
+            </button>
+        </form>
+
         <!-- Mostrar descripción solo si existe -->
-        <p class="texto" th:if="${dtopubli.descripcion != null and !#strings.isEmpty(dtopubli.descripcion)}"
-           th:text="${dtopubli.descripcion}"></p>
-
-
+        <p class="texto" th:if="${dtopubli.descripcion != null and !#strings.isEmpty(dtopubli.descripcion)}" th:text="${dtopubli.descripcion}"></p>
 
         <!-- Mostrar archivo si hay -->
         <div th:if="${dtopubli.archivoNombre != null}">
@@ -21,31 +24,28 @@
 
                 <!-- PDF -->
                 <div th:case="'application/pdf'" class="archivo-pdf" style="margin-top: 10px;">
-                    <p>
-                        &#128196; <strong>Archivo:</strong>
-                        <span th:text="${#strings.substringAfter(dtopubli.archivoNombre, '_')}">nombre.pdf</span>
-                    </p>
+<!--                    <p>-->
+<!--                        &#128196; <strong>Archivo:</strong>-->
+<!--                        <span th:text="${#strings.substringAfter(dtopubli.archivoNombre, '_')}">nombre.pdf</span>-->
+<!--                    </p>-->
 
-                    <div class="acciones-archivo" style="margin-top: 5px;">
+                    <div class="acciones-archivo">
                         <a th:href="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
                            class="boton-descargar"
-                           style="margin-right: 10px; text-decoration: none; color: blue;"
                            download>&#128229; Descargar PDF</a>
 
                         <button type="button"
                                 class="ver-pdf-btn"
                                 th:data-id="${dtopubli.id}"
-                                th:data-url="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
-                                style="cursor: pointer; background-color: transparent; border: none; color: darkgreen;">
+                                th:data-url="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}">
                             &#128065; Ver PDF
                         </button>
                     </div>
 
-                    <div th:attr="id='pdf-container-' + ${dtopubli.id}" style="max-width: 100%; height: 400px; display: none; margin-top: 10px;">
-                        <canvas th:attr="id='pdf-viewer-' + ${dtopubli.id}" style="width: 100%; height: auto; border: 1px solid #ccc;"></canvas>
+                    <div th:attr="id='pdf-container-' + ${dtopubli.id}" class="pdf-container" style="display: none;">
+                        <canvas th:attr="id='pdf-viewer-' + ${dtopubli.id}"></canvas>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -84,6 +84,7 @@
                 <button class="botones_acciones comentarBtn" type="button" th:data-id="${dtopubli.id}">
                     <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
                 </button>
+
 
                 <!-- Formulario de comentar (oculto) -->
                 <div class="contenedor_comentar" th:id="'contenedor-comentar-' + ${dtopubli.id}" style="display:none;">

@@ -10,6 +10,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public class RepositorioComentarioImpl implements RepositorioComentario {
@@ -49,6 +51,15 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
                     .uniqueResult();
             return count != null ? count.intValue() : 0;
         }
+
+    @Override
+    public List<Comentario> findComentariosByPublicacionId(long publicacionId) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT c FROM Comentario c " +
+                        "WHERE c.publicacion.id = :id", Comentario.class)
+                .setParameter("id", publicacionId)
+                .getResultList();
+    }
 
 
 }

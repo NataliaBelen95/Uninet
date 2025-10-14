@@ -32,4 +32,10 @@ public class ServicioUsuario {
     public void actualizar(Usuario usuario) {
         repositorioUsuario.actualizar(usuario);
     }
+
+    @Transactional
+    public Usuario buscarUsuarioPorIdConPublicaciones(long id) {
+       return repositorioUsuario.findByIdWithPublicaciones(id);
+
+    }
 }

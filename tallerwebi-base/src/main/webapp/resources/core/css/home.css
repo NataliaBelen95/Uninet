@@ -18,6 +18,7 @@ a {
 .estructura{
     border-radius: 1rem;
     padding: 2rem;
+    position:relative;
 }
 .palabra{
     font-size: 2rem;
@@ -230,6 +231,49 @@ a {
     border-bottom: 1px solid #ccc;
     margin: 10px 0;
 }
+.delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.delete-logo {
+    width: 24px;
+    height: 24px;
+}
+
+/*pdf*/
+/* Asegura que el contenedor del canvas no se expanda más del tamaño del padre */
+.archivo-pdf {
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
+.archivo-pdf .acciones-archivo {
+    margin-bottom: 10px;
+}
+
+.archivo-pdf canvas {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    margin: 0 auto;
+}
+
+/* Contenedor con scroll si el PDF es muy largo */
+.archivo-pdf .pdf-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #aaa;
+    padding: 5px;
+}
+
 
 
 

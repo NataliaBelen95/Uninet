@@ -17,7 +17,7 @@ public class DatosPublicacion {
     private int cantComentarios;
     private String archivoNombre;  // Nombre del archivo
     private String archivoTipo;    // Tipo del archivo
-
+    private long usuarioId;
     // Getters and Setters
 
     public String getArchivoNombre() {
@@ -98,5 +98,13 @@ public class DatosPublicacion {
 
     public void setCantComentarios(int cantComentarios) {
         this.cantComentarios = cantComentarios;
+    }
+
+    public long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(long usuarioId) {
+        this.usuarioId = usuarioId;
     }
 }

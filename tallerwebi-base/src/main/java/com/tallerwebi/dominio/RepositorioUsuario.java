@@ -15,4 +15,5 @@ public interface RepositorioUsuario {
     void setearCarreraAUsuario(Usuario usuario, Carrera carrera);
     Usuario buscarPorId(long id);
     List<Usuario> buscarTodos();
+    Usuario findByIdWithPublicaciones(long id);
 }

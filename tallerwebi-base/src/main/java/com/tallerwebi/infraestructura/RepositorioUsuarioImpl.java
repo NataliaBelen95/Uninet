@@ -74,6 +74,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .list();
     }
 
+    @Override
+    public Usuario findByIdWithPublicaciones(long id) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT u FROM Usuario u " +
+                        "LEFT JOIN FETCH u.publicaciones p " +  // Cargar publicaciones del usuario
+                        "WHERE u.id = :id", Usuario.class)    // Filtrar por el id del usuario
+                .setParameter("id", id)
+                .uniqueResult();
+    }
+
 }
 
 

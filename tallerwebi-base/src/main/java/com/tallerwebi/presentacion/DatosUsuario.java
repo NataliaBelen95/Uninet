@@ -10,6 +10,7 @@ public class DatosUsuario {
     private String email;
     private Long id ;
     private String fotoPerfil;
+    private List<DatosPublicacion> dtopublicaciones;
 
     public String getFotoPerfil() {return fotoPerfil;}
     public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
@@ -28,4 +29,7 @@ public class DatosUsuario {
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id ;}
+
+    public List<DatosPublicacion> getDtopublicaciones() {return dtopublicaciones;}
+    public void setDtopublicaciones(List<DatosPublicacion> dtopublicaciones) {this.dtopublicaciones = dtopublicaciones;}
 }

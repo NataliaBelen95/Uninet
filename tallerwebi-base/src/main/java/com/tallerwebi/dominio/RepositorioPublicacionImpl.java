@@ -57,6 +57,16 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
         sessionFactory.getCurrentSession().delete(publicacion);
     }
+
+    @Override
+    public Publicacion obtenerPublicacionConComentarios(long id) {
+        return sessionFactory.getCurrentSession()
+                .createQuery(
+                        "SELECT p FROM Publicacion p LEFT JOIN FETCH p.comentarios WHERE p.id = :id",
+                        Publicacion.class)
+                .setParameter("id", id)
+                .uniqueResult();
+    }
 }
 
 

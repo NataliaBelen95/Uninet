@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 
+import java.util.List;
 
 public interface RepositorioComentario {
 
@@ -9,6 +10,6 @@ public interface RepositorioComentario {
     void eliminar(Comentario comentario);
     Comentario buscar(long id);
     int contarComentarioPorPublicacion(Publicacion publicacion);
-
+    List<Comentario> findComentariosByPublicacionId(long publicacionId);
 
 }
