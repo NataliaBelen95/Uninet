@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Subir PDF - UNINET</title>
+    <title>Herramientas IA - UNINET</title>
     <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,38 +36,46 @@
             <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
             <a href=""><img th:src="@{/imagenes/guardados.png}"> Elementos guardados</a>
             <!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
-            <a th:href="@{/subir-archivo}" class="btn_subir_archivos"><img th:src="@{/imagenes/pdf-icon.png}">Mis archivos</a>
+            <a th:href="@{/herramientas-IA.html}" class="btn_subir_archivos"><img th:src="@{/imagenes/pdf-icon.png}">Herramientas IA</a>
             <!--<a href=""><img src="../../../resources/core/imagenes/grupos.png"> Grupos</a>
             <a href=""><img src="../../../resources/core/imagenes/guardados.png"> Elementos guardados</a>-->
         </div>
     </aside>
     <section class="columnaDos">
-        <article class="estructura">
-            <h3>Mis archivos</h3>
-            <div class="archivos-subidos">
-                <ul>
-                    <li th:each="archivo : ${archivos}">
-                        <a th:href="@{'/archivos_pdf/' + ${archivo}}" target="_blank">
-                            <img th:src="@{/imagenes/pdf-icon.png}" alt="PDF" class="icono-pdf">
-                            <span th:text="${archivo}">Archivo.pdf</span>
-                        </a>
-                </ul>
-            </div>
-        </article>
+
         <article class="estructura">
             <h3>Subir archivos pdf</h3>
-            <form th:action="@{/subir-archivo}" method="POST" enctype="multipart/form-data">
+            <form th:action="@{/herramientas-IA.html}" method="POST" enctype="multipart/form-data">
                 <input type="file" name="archivo" accept="application/pdf" required />
                 <button type="submit">Subir PDF</button>
             </form>
             <p th:if="${mensaje}" th:text="${mensaje}" style="color: green;"></p>
         </article>
+        <article class="estructura">
+            <h3>Mis archivos subidos</h3>
+            <p>Selecciona el archivo con el que deseas generar el resumen</p>
+            <div class="archivos-subidos">
+                <form th:action="@{/herramientas-IA/resumen.html}" method="POST">
+                    <ul>
+                        <li class="lista-archivos" th:each="archivo,iterStat : ${archivos}">
+                                <input type="radio" name="archivoSeleccionado" th:id="'archivo__' + ${iterStat.index}" th:value="${archivo}" th:checked="${iterStat.index == 0}" />
+                            <img th:src="@{/imagenes/pdf-icon.png}" alt="PDF" class="icono-pdf">
+                            <label th:for="'archivo__' + ${iterStat.index}" >
+                                <a th:href="@{'/archivos_pdf/' + ${archivo}}" target="_blank" th:text="${archivo}"></a></a>
+                            </label>
+                        </li>
+                    </ul>
+                    <button type="submit">Generar resumen con IA</button>
+                </form>
+            </div>
+        </article>
 
         <article class="estructura">
-            <div>
-                <h3>Generar Resumen o cuestionario</h3>
-                <p> aca va la funcion de la IA</p>
-            </div>
+                    <h3>Resumen  generado a partir del pdf subido</h3>
+            <!--el pre mantiene los saltos de linea y los espacios
+            th:utext muestra el texto sin escaparlo, así los saltos de línea se ven como el usuario espera.-->
+                    <pre th:if="${resumen}" th:utext="${resumen}"></pre>
+                    <button>guardar como pdf</button>
         </article>
     </section>
 
@@ -84,7 +92,6 @@
             </div>
         </div>
     </aside>
-
 
 </main>
 

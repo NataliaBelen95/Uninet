@@ -39,6 +39,9 @@ public class SpringWebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivosPublicacion/");
         registry.addResourceHandler("/perfiles/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/perfiles/");
+        /*registry.addResourceHandler("/archivos_pdf/**")
+                .addResourceLocations("file:C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf/");*/
+
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
