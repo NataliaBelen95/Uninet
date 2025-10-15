@@ -26,8 +26,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Autowired
     private ApplicationContext applicationContext;
 
-
-
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/core/css/");
@@ -89,10 +87,10 @@ public class SpringWebConfig implements WebMvcConfigurer {
         return multipartResolver;
     }
 
-//para que permita subir archivos pdf
+/*para que permita subir archivos pdf
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
-    }
+    }*/
 
 }
