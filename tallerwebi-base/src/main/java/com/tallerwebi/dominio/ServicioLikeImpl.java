@@ -14,10 +14,6 @@ public class ServicioLikeImpl implements ServicioLike {
 
     @Override
     public void darLike(Usuario usuario, Publicacion publicacion) {
-        if (repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion)) {
-            return; // Ya dio like
-        }
-
         Like like = new Like();
         like.setUsuario(usuario);
         like.setPublicacion(publicacion);
@@ -30,7 +26,7 @@ public class ServicioLikeImpl implements ServicioLike {
     public void quitarLike(long id) {
         Like like = repositorioLike.buscarPorId(id);
         if (like != null) {
-            repositorioLike.eliminar(like);
+            repositorioLike.eliminar(like.getId());
         }
     }
 
@@ -40,8 +36,8 @@ public class ServicioLikeImpl implements ServicioLike {
     }
 
     @Override
-    public int contarLikes(Publicacion publicacion) {
-        return repositorioLike.contarPorPublicacion(publicacion);
+    public int contarLikes(long publiId) {
+        return repositorioLike.contarPorPublicacion(publiId);
     }
 
     @Override
