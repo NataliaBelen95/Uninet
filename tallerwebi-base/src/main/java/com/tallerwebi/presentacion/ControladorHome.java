@@ -47,7 +47,7 @@ public class ControladorHome {
         List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
         for (Publicacion publicacion : publicaciones) {
             DatosPublicacion dto = publicacionMapper.toDto(publicacion);
-            System.out.println("Publicacion usuarioId: " + dto.getUsuarioId());
+            //System.out.println("Publicacion usuarioId: " + dto.getUsuarioId());
             datosPublicaciones.add(dto);
         }
 
