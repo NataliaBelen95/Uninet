@@ -114,7 +114,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Argegada -->
+        <!-- Agregada -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -124,6 +124,34 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
+        </dependency>
+
+        <dependency>
+            <!-- proporciona clases de spring para hacer apps web y maneja utilidades para hacer llamadas a APIs externas-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+           <!--libreria de apache, permite hacer peticiones HTTP, nos sirve para conectarnos a la API de GEMINI-->
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
+
+        <dependency>
+            <!--libreria para trabajar con pdf en java, leer, extraer texto, modificar pdf,etc..-->
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.29</version> <!-- para leer PDFs -->
+        </dependency>
+
+        <dependency>
+            <!--Esa dependencia es Jackson Databind, y sirve para convertir entre JSON y objetos Java usando ObjectMapper.-->
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.20.0</version>
         </dependency>
 
     </dependencies>

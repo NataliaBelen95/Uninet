@@ -15,8 +15,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-@Service("ServicioSubirArchivo")
-public class ServicioSubirArchivoImpl implements ServicioSubirArchivo {
+@Service("ServicioSubirArchivoALaIA")
+public class ServicioSubirArchivoALaIAImpl implements ServicioSubirArchivoALaIA {
 
 
     @Override

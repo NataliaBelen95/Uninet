@@ -1,46 +1,47 @@
-
-/* Contenedor principal */
 .archivos-subidos {
-    display: flex;          /* hace que los elementos hijos estén en fila */
-    flex-wrap: wrap;        /* permite que pasen a la siguiente línea si no entran */
-    gap: 20px;              /* espacio entre cada "icono" */
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* Cada item de la lista */
+/* Lista con scroll solo */
 .archivos-subidos ul {
-    list-style: none;       /* quita los bullets */
+    list-style: none;
     margin: 0;
     padding: 0;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas fijas */
+    gap: 10px; /* menos espacio entre columnas */
+    max-height: calc(3 * 45px + 2 * 10px); /* 3 filas de altura aprox + gaps */
+    overflow-y: auto;  /* scroll vertical si hay más archivos */
+}
+/* Cada elemento de la lista (con su clase lista-archivos) */
+.lista-archivos{
     display: flex;
-    flex-wrap: wrap;        /* para que los <li> también se acomoden en fila */
-    gap: 20px;
+    align-items: center;      /* alineado al borde superior */
+    gap: 5px;                     /* radio + icono + texto más juntos */
+    padding: 2px 5px;             /* padding pequeño para no separar del borde */
 }
 
-/* Cada archivo individual */
-.archivos-subidos li {
-    display: flex;
-    flex-direction: column; /* icono arriba, texto debajo */
-    align-items: center;    /* centra horizontalmente */
-    width: 100px;           /* ancho fijo para cada "icono" */
-    text-align: center;
+/* Icono PDF */
+.lista-archivos img.icono-pdf {
+    width: 35px;
+    height: 35px;
 }
 
-/* Estilo del enlace */
-.archivos-subidos li a {
-    text-decoration: none;
-    color: var(--verde);
+/* Nombre del archivo */
+.lista-archivos label {
     font-size: 0.9rem;
+    color: var(--verde);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* Icono del PDF */
-.archivos-subidos li img.icono-pdf {
-    width: 64px;            /* tamaño tipo "icono mediano" */
-    height: 64px;
-    margin-bottom: 5px;
-}
-
-/* Hover efecto */
-.archivos-subidos li a:hover {
-    color: var(--verde-2);
+/* Radio button */
+.lista-archivos input[type="radio"] {
+    width: 20px;
+    transform: scale(1.1);
+    margin: 0; /* sin margen extra */
 }
