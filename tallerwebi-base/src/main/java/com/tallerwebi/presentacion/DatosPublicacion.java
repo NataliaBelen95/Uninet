@@ -1,41 +1,52 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.ArchivoPublicacion;
-import com.tallerwebi.dominio.Comentario;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
 public class DatosPublicacion {
+
+    @JsonProperty("nombreUsuario")
     private String nombreUsuario;
+
+    @JsonProperty("apellidoUsuario")
     private String apellidoUsuario;
+
+    @JsonProperty("descripcion")
     private String descripcion;
+
+    @JsonProperty("id")
     private long id;
+
+    @JsonProperty("cantLikes")
     private int cantLikes;
+
+    @JsonProperty("fechaPublicacion")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fechaPublicacion;
+
+    @JsonProperty("comentarios")
     private List<DatosComentario> comentarios;
+
+    @JsonProperty("cantComentarios")
     private int cantComentarios;
-    private String archivoNombre;  // Nombre del archivo
-    private String archivoTipo;    // Tipo del archivo
+
+    @JsonProperty("archivoNombre")
+    private String archivoNombre;
+
+    @JsonProperty("archivoTipo")
+    private String archivoTipo;
+
+    @JsonProperty("usuarioId")
     private long usuarioId;
-    // Getters and Setters
 
-    public String getArchivoNombre() {
-        return archivoNombre;
-    }
+    @JsonProperty("dioLike")
+    private Boolean dioLike;
 
-    public void setArchivoNombre(String archivoNombre) {
-        this.archivoNombre = archivoNombre;
-    }
 
-    public String getArchivoTipo() {
-        return archivoTipo;
-    }
-
-    public void setArchivoTipo(String archivoTipo) {
-        this.archivoTipo = archivoTipo;
-    }
-
+    // Getters and setters
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -67,6 +78,7 @@ public class DatosPublicacion {
     public void setId(long id) {
         this.id = id;
     }
+
 
     public int getCantLikes() {
         return cantLikes;
@@ -100,6 +112,22 @@ public class DatosPublicacion {
         this.cantComentarios = cantComentarios;
     }
 
+    public String getArchivoNombre() {
+        return archivoNombre;
+    }
+
+    public void setArchivoNombre(String archivoNombre) {
+        this.archivoNombre = archivoNombre;
+    }
+
+    public String getArchivoTipo() {
+        return archivoTipo;
+    }
+
+    public void setArchivoTipo(String archivoTipo) {
+        this.archivoTipo = archivoTipo;
+    }
+
     public long getUsuarioId() {
         return usuarioId;
     }
@@ -107,4 +135,7 @@ public class DatosPublicacion {
     public void setUsuarioId(long usuarioId) {
         this.usuarioId = usuarioId;
     }
+
+    public Boolean getDioLike() {return dioLike;}
+    public void setDioLike(Boolean yadioLike) {this.dioLike = yadioLike;}
 }
