@@ -52,6 +52,7 @@ public class ControladorHome {
         }
 
         model.addAttribute("datosPublicaciones", datosPublicaciones);
+        model.addAttribute("origen", "home");
         return new ModelAndView("home", model);
     }
 
