@@ -92,9 +92,9 @@ public class SpringWebConfig implements WebMvcConfigurer {
     }
 
 //para que permita subir archivos pdf
-   /* @Bean
-    public MultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }*/
+//    @Bean
+//    public MultipartResolver multipartResolver() {
+//        return new StandardServletMultipartResolver();
+//    }
 
 }
