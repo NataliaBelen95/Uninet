@@ -41,13 +41,15 @@ public class ControladorPublicacionTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         publicacionMapperMock = mock(PublicacionMapper.class);
         notificacionServiceMock = mock(NotificacionService.class);
+        servicioComentarioMock = mock(ServicioComentario.class);
 
         controladorPublicacion = new ControladorPublicacion(
                 servicioPublicacionMock,
                 servicioLikesMock,
                 servicioUsuarioMock,
                 publicacionMapperMock,
-                notificacionServiceMock
+                notificacionServiceMock,
+                servicioComentarioMock
         );
 
         requestMock = mock(HttpServletRequest.class);

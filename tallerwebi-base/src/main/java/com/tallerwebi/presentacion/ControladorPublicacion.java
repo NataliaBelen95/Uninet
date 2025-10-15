@@ -23,18 +23,21 @@ public class ControladorPublicacion {
     private final ServicioUsuario servicioUsuario;
     private final PublicacionMapper publicacionMapper;
     private final NotificacionService notificacionService;
+    private final ServicioComentario servicioComentario;
 
 
     @Autowired
     public ControladorPublicacion(ServicioPublicacion servicioPublicacion,
                                   ServicioLike servicioLike,
                                   ServicioUsuario servicioUsuario,
-                                  PublicacionMapper publicacionMapper, NotificacionService notificacionService) {
+                                  PublicacionMapper publicacionMapper, NotificacionService notificacionService,
+                                  ServicioComentario servicioComentario) {
         this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
         this.servicioUsuario = servicioUsuario;
         this.publicacionMapper = publicacionMapper;
         this.notificacionService = notificacionService;
+        this.servicioComentario = servicioComentario;
 
 
     }
@@ -80,30 +83,6 @@ public class ControladorPublicacion {
     }
 
 
-//
-//    @PostMapping("/publicacion/darLike/{id}")
-//    public ModelAndView darLike(@PathVariable Long id, HttpServletRequest request) {
-//        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-//
-//        if (datos != null) {
-//            Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
-//            Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
-//
-//            if (publicacion != null) {
-//                if (servicioLike.yaDioLike(usuario, publicacion)) {
-//
-//                    Like like = servicioLike.obtenerLike(usuario, publicacion);
-//                    if (like != null) {
-//                        servicioLike.quitarLike(like.getId());
-//                    }
-//                } else {
-//                    servicioLike.darLike(usuario, publicacion);
-//                }
-//            }
-//        }
-//
-//        return new ModelAndView("redirect:/home");
-//    }
 
     @PostMapping("/publicacion/eliminar/{id}")
     public ModelAndView eliminar(@PathVariable Long id, HttpServletRequest request) {
@@ -115,7 +94,7 @@ public class ControladorPublicacion {
                 if (publicacionAEliminar.getUsuario().getId().equals(datos.getId())) {
                     servicioPublicacion.eliminarPublicacionEntera(publicacionAEliminar);
 
-                    // Después de eliminar, redirigir a la página de la publicación o al home si ya no existe.
+                    // Después de eliminar, redirigir a la página de la publicación (ver si se puede poner mi perfil despues)
                     return new ModelAndView("redirect:/home");
                 } else {
                     return new ModelAndView("error").addObject("mensaje", "No tienes permisos para eliminar esta publicación.");
@@ -152,9 +131,9 @@ public class ControladorPublicacion {
             model.addAttribute("usuario", usuario); // necesario para mostrar el botón de eliminar
         }
 
-        model.addAttribute("comentarios", null);
-        model.addAttribute("cantlikes", 0);
-        model.addAttribute("cantComentarios", 0);
+        model.addAttribute("comentarios", servicioPublicacion.obtenerComentariosDePublicacion(publicacion.getId()));
+        model.addAttribute("cantlikes", servicioLike.contarLikes(publicacion.getId()));
+        model.addAttribute("cantComentarios", servicioComentario.contarComentarios(publicacion.getId()));
 
         return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, comentarios=${comentarios}, likes=${cantLikes}, cantComentarios=${cantComentarios})";
     }
