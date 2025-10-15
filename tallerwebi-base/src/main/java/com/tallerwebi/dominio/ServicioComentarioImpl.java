@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ServicioComentarioImpl implements ServicioComentario {
@@ -44,6 +46,11 @@ public class ServicioComentarioImpl implements ServicioComentario {
     public int contarComentarios(Publicacion publicacion) {
         return repositorioComentario.contarComentarioPorPublicacion(publicacion);
 
+    }
+
+    @Override
+    public List<Comentario> encontrarComentariosPorId(long id) {
+        return repositorioComentario.findComentariosByPublicacionId(id);
     }
 
 }

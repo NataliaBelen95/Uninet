@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 
 import com.tallerwebi.dominio.*;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,19 +33,28 @@ public class ControladorHome {
         ModelMap model = new ModelMap();
         HttpSession session = request.getSession();
 
+        // Obtener el usuario logueado
         DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return new ModelAndView("redirect:/login");
         }
         model.addAttribute("usuario", usuario);
 
+        // Ahora la lista de publicaciones ya trae los comentarios por estar con `EAGER` en la entidad
         List<Publicacion> publicaciones = servicioPublicacion.findAll();
-        List<DatosPublicacion> datosPublicaciones = publicaciones.stream()
-                .map(publicacionMapper::toDto) //equivale a .map(p-> publicacionMapper.toDto(p))
-                .collect(Collectors.toList());
+
+        // Mapear las publicaciones a DTOs
+        List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
+        for (Publicacion publicacion : publicaciones) {
+            DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+            System.out.println("Publicacion usuarioId: " + dto.getUsuarioId());
+            datosPublicaciones.add(dto);
+        }
 
         model.addAttribute("datosPublicaciones", datosPublicaciones);
         return new ModelAndView("home", model);
     }
+
+
 }
 

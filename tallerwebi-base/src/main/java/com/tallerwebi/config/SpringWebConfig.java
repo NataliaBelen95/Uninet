@@ -26,15 +26,19 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Autowired
     private ApplicationContext applicationContext;
 
+
+
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/core/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/imagenes/**").addResourceLocations("/resources/core/imagenes/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
-        registry.addResourceHandler("/archivos_pdf/**")
-                .addResourceLocations("file:C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf/");
-
+        registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
+        registry.addResourceHandler("/archivosPublicacion/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivosPublicacion/");
+        registry.addResourceHandler("/perfiles/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/perfiles/");
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
@@ -80,15 +84,15 @@ public class SpringWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MultipartResolver multipartResolverFotoPerfil() {
+    public MultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(5 * 1024 * 1024); // 5 MB por ejemplo
+        multipartResolver.setMaxUploadSize(10 * 1024 * 1024); // 10 MB por ejemplo
         multipartResolver.setDefaultEncoding("utf-8");
         return multipartResolver;
     }
 
-/*para que permita subir archivos pdf
-    @Bean
+//para que permita subir archivos pdf
+   /* @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }*/

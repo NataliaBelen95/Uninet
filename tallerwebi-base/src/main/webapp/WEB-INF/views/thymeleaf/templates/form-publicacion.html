@@ -3,8 +3,9 @@
 <body>
 
 
-<form  th:fragment="form-publi(publicacion)" class="box_comentario" method="POST" action="/spring/publicaciones">
-    <textarea name="descripcion" id="publicacion" placeholder="Escribe algo"></textarea>
+<form  th:fragment="form-publi(publicacion)" class="box_comentario" method="POST" action="/spring/publicaciones"  enctype="multipart/form-data">
+    <textarea name="descripcion" id="publicacion" placeholder="¿Qué estas pensando?"></textarea>
+    <input class="input-oculto" type="file" name="archivos" accept=".jpg,.jpeg,.png,.pdf" multiple />
     <p th:if="${errorPubli != null}" th:text="${errorPubli}" class="error"></p>
 
 

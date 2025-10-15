@@ -1,14 +1,12 @@
 package com.tallerwebi.presentacion;
 
 
-import com.tallerwebi.dominio.Comentario;
-import com.tallerwebi.dominio.Publicacion;
-import com.tallerwebi.dominio.ServicioComentario;
-import com.tallerwebi.dominio.ServicioLike;
+import com.tallerwebi.dominio.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PublicacionMapper {
@@ -23,6 +21,7 @@ public class PublicacionMapper {
 
     public DatosPublicacion toDto(Publicacion p) {
         DatosPublicacion dto = new DatosPublicacion();
+
         dto.setId(p.getId());
         dto.setDescripcion(p.getDescripcion());
         dto.setNombreUsuario(p.getUsuario().getNombre());
@@ -30,29 +29,36 @@ public class PublicacionMapper {
         dto.setCantLikes(servicioLike.contarLikes(p));
         dto.setCantComentarios(servicioComentario.contarComentarios(p));
         dto.setFechaPublicacion(p.getFechaPublicacion());
+        dto.setUsuarioId(p.getUsuario().getId());
+
+
+        // Debug print
+        System.out.println("Usuario ID: " + p.getUsuario().getId());
+        // Mapear comentarios
         List<DatosComentario> comentariosDto = new ArrayList<>();
         if (p.getComentarios() != null) {
             for (Comentario c : p.getComentarios()) {
                 comentariosDto.add(toComentarioDto(c));
             }
         }
-        dto.setComentariosDTO(comentariosDto);
+        dto.setComentarios(comentariosDto);
+
+        // Mapeo de archivo (sin usar DatosArchivoPublicacion)
+        if (p.getArchivo() != null) { // Verificamos si el archivo no es nulo
+            dto.setArchivoNombre(p.getArchivo().getNombreArchivo()); // Asignar nombre del archivo
+            dto.setArchivoTipo(p.getArchivo().getTipoContenido());   // Asignar tipo de archivo
+        }
 
         return dto;
     }
 
-    public DatosComentario toComentarioDto(Comentario c) {
-        DatosComentario dc = new DatosComentario();
-        dc.setTexto(c.getTexto());
-
-        if (c.getUsuario() != null) {
-            dc.setNombreUsuario(c.getUsuario().getNombre());
-            dc.setApellidoUsuario(c.getUsuario().getApellido());
-        } else {
-            dc.setNombreUsuario("Anónimo");
-            dc.setApellidoUsuario("");
-        }
-
-        return dc;
+    private DatosComentario toComentarioDto(Comentario c) {
+        DatosComentario comentarioDto = new DatosComentario();
+        comentarioDto.setTexto(c.getTexto());
+        comentarioDto.setNombreUsuario(c.getUsuario().getNombre());
+        comentarioDto.setApellidoUsuario(c.getUsuario().getApellido());
+        // Agregar otros campos necesarios de Comentario
+        return comentarioDto;
     }
 }
+

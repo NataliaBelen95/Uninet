@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,31 +46,28 @@ public class ControladorPublicacion {
 
     }
 
+    @PostMapping("/publicaciones")
+    public ModelAndView agregarPublicacion(
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam("archivos") MultipartFile archivo,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes) throws PublicacionFallida {
 
-    @RequestMapping(path = "/publicaciones", method = RequestMethod.POST)
-    public ModelAndView agregarPublicacion(@ModelAttribute("publicacion") Publicacion publicacion,
-                                           HttpServletRequest request,
-                                           RedirectAttributes redirectAttributes) throws PublicacionFallida {
+        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
-
-        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");//     if (datosUsuario != null) {
-        if(datosUsuario!=null) {
+        if (datosUsuario != null) {
             try {
-                Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId()); // ✅ usa ServicioLogin
-
-
-                servicioPublicacion.realizar(publicacion, usuario);
+                Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+                Publicacion publicacion = new Publicacion();
+                publicacion.setDescripcion(descripcion);
+                servicioPublicacion.realizar(publicacion, usuario, archivo);
             } catch (PublicacionFallida e) {
-
                 redirectAttributes.addFlashAttribute("errorPubli", e.getMessage());
-
             }
         }
 
-            return new ModelAndView("redirect:/home");
-        }
-
-
+        return new ModelAndView("redirect:/home");
+    }
 
 
 //
@@ -97,57 +95,66 @@ public class ControladorPublicacion {
 //
 //        return new ModelAndView("redirect:/home");
 //    }
+@PostMapping("/publicacion/darLike/{id}")
+@Transactional
+public String darLikeFragment(@PathVariable Long id, Model model, HttpServletRequest request) {
+    // Obtener el usuario logueado desde la sesión
+    DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
-    @PostMapping("/publicacion/darLike/{id}")
-    @Transactional
-    public String darLikeFragment(@PathVariable Long id, Model model, HttpServletRequest request) {
-        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+    if (datos != null) {
+        // Buscar el usuario y la publicación
+        Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+        Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
 
-        if (datos != null) {
-            Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
-            Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
-
-            if (publicacion != null) {
-                if (servicioLike.yaDioLike(usuario, publicacion)) {
-                    Like like = servicioLike.obtenerLike(usuario, publicacion);
-                    if (like != null) {
-                        servicioLike.quitarLike(like.getId());
-                    }
-                } else {
-                    servicioLike.darLike(usuario, publicacion);
+        if (publicacion != null) {
+            // Si el usuario ya dio like, lo quita
+            if (servicioLike.yaDioLike(usuario, publicacion)) {
+                Like like = servicioLike.obtenerLike(usuario, publicacion);
+                if (like != null) {
+                    servicioLike.quitarLike(like.getId());
                 }
-
-                DatosPublicacion dto = publicacionMapper.toDto(publicacion);
-                model.addAttribute("dtopubli", dto);
+            } else {
+                // Si el usuario no dio like, lo da
+                servicioLike.darLike(usuario, publicacion);
             }
-        }
 
-        return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli})";
+            // Convertir la publicación a DTO para actualizar la vista
+            DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+            model.addAttribute("dtopubli", dto);
+            model.addAttribute("usuario", usuario);  // Agregar usuario al modelo
+        }
     }
 
-
+    // Retornar solo el fragmento actualizado de la publicación
+    return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli})";
+}
     @PostMapping("/publicacion/comentar/{id}")
-    public ModelAndView comentar(@PathVariable Long id, HttpServletRequest request) {
+    @Transactional
+    public String comentar(@PathVariable Long id, HttpServletRequest request, Model model) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-
-
         if (datos != null) {
-            String textoComentario = request.getParameter("texto"); // <-- aquí obtienes el texto del formulario
+            Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+            String textoComentario = request.getParameter("texto");
+            Publicacion publicacion = servicioPublicacion.obtenerPublicacionConComentarios(id);
 
-            if (textoComentario != null && !textoComentario.trim().isEmpty()) {
-                Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
-                Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
+            if (publicacion != null && textoComentario != null && !textoComentario.trim().isEmpty()) {
+                servicioComentario.comentar(textoComentario, usuario, publicacion);
 
-                if (publicacion != null) {
-                    // Llama al servicio pasando el texto
-                    servicioComentario.comentar(textoComentario, usuario, publicacion);
-                }
+                // Traer nuevamente la publicación actualizada con comentarios
+                publicacion = servicioPublicacion.obtenerPublicacionConComentarios(id);
+
+                // Mapear y pasar los datos a la vista
+                DatosPublicacion dtopubli = publicacionMapper.toDto(publicacion);
+                List<Comentario> comentarios = servicioComentario.encontrarComentariosPorId(id);
+
+                model.addAttribute("dtopubli", dtopubli);
+                model.addAttribute("comentarios", comentarios);
+
+                // Devolver el fragmento Thymeleaf actualizado (comentarios + publicación)
+                return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli})";
             }
         }
-
-
-
-        return new ModelAndView("redirect:/home");
+        return "redirect:/login";
     }
 
 

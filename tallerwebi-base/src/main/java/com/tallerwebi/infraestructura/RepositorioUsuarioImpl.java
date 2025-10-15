@@ -8,7 +8,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -73,6 +72,27 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .createQuery("FROM Usuario", Usuario.class)
                 .list();
     }
+
+    @Override
+    public Usuario findByIdWithPublicaciones(long id) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT u FROM Usuario u " +
+                        "LEFT JOIN FETCH u.publicaciones p " +  // Cargar publicaciones del usuario
+                        "WHERE u.id = :id", Usuario.class)    // Filtrar por el id del usuario
+                .setParameter("id", id)
+                .uniqueResult();
+    }
+
+
+    @Override
+    public void actualizarContrasena(Usuario usuario, String nuevaContrasena) {
+        Session session = sessionFactory.getCurrentSession();
+
+        usuario.setPassword(nuevaContrasena);
+
+        session.update(usuario);
+    }
+
 
 }
 

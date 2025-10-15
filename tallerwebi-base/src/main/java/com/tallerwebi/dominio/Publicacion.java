@@ -4,7 +4,9 @@ package com.tallerwebi.dominio;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Publicacion {
@@ -12,7 +14,8 @@ public class Publicacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    @OneToOne(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private ArchivoPublicacion archivo;  // Ahora solo un archivo
 
     @Column(nullable = true, length = 200)
     private String descripcion;
@@ -31,7 +34,7 @@ public class Publicacion {
     private List<Like> likesDePublicacion = new ArrayList<>();
 
     /*relacion con entidad comentarios , una publicacion muchos comentarios, comentario a una publi*/
-    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comentario> comentarios;
 
     // getters y setters
@@ -91,5 +94,17 @@ public class Publicacion {
 
     public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public ArchivoPublicacion getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(ArchivoPublicacion archivo) {
+        this.archivo = archivo;
     }
 }

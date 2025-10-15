@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Home</title>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js"></script>
     <!--<th:block th:insert="template/head :: links-comunes"></th:block>-->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -25,21 +25,12 @@
 <body>
 <header>
     <nav th:replace="templates/nav :: nav"></nav>
-    <!--<nav class="navbar"> nav antiguo
-        <a href="#"><img class="isologo" src="../../../resources/core/imagenes/isologo.png"></a>
-        <div>
-            <a href="/spring/miPerfil">Mi Perfil</a>
-            <a href="/spring/miPerfil">Notificaciones</a>
-            <a href="/spring/miPerfil">Mensajes</a>
-            <a href="/spring/miPerfil">Cerrar sesión</a>
-        </div>
-    </nav>-->
 </header>
 <main class="contenedor_general">
     <aside class="columnaUno">
         <div class="estructura">
             <img class="user"
-                 th:src="@{/imagenes/{img}(img=${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'user.png'})}"
+                 th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
                  alt="Foto de perfil">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
@@ -47,9 +38,7 @@
             <ul>
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
-
-
-
+        </div>
         </div>
         <div class="estructura box_columnaUno">
             <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
@@ -83,27 +72,21 @@
         </div>
 
     </section>
-    <aside class="estructura columnaTres">
-        <div class="container_profile">
+    <aside class="columnaTres">
+        <div class="estructura">
             <h2>Aumnos cursando...</h2>
             <p>Ingeniería en Sistemas</p>
-        </div>
-        <div class="recomendaciones_users" >
-            <img class="user2" th:src="@{/imagenes/user2.png}">
-            <img class="user2" th:src="@{/imagenes/user2.png}">
-            <img class="user2" th:src="@{/imagenes/user2.png}">
-            <img class="user2" th:src="@{/imagenes/user2.png}">
-            <img class="user2" th:src="@{/imagenes/user2.png}">
+            <div class="recomendaciones_users" >
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+            </div>
         </div>
     </aside>
 </main>
 <script type="module" th:src="@{/js/publicacionBtnFunciones.js}"></script>
-
 <script type="module" th:src="@{js/tema.js}"></script>
-
-
-
-
-
 </body>
 </html>

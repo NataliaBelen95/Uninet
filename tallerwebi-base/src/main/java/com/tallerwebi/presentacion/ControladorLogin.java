@@ -80,6 +80,7 @@ public class ControladorLogin {
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
         model.put("todasLasCarreras", servicioCarrera.buscarTodas());
+
         try {
             usuario.setRol("USER");
             servicioLogin.registrar(usuario);
@@ -93,7 +94,6 @@ public class ControladorLogin {
 
             return new ModelAndView("nuevo-usuario", model);
         }
-
         // Redirigir al login si todo sale bien
         System.out.println("Registrando usuario: " + usuario.getEmail() + " - pass=" + usuario.getPassword());
         return new ModelAndView("redirect:/login");

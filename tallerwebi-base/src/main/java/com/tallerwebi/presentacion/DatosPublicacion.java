@@ -1,11 +1,11 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.ArchivoPublicacion;
 import com.tallerwebi.dominio.Comentario;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 public class DatosPublicacion {
     private String nombreUsuario;
     private String apellidoUsuario;
@@ -15,17 +15,31 @@ public class DatosPublicacion {
     private LocalDateTime fechaPublicacion;
     private List<DatosComentario> comentarios;
     private int cantComentarios;
+    private String archivoNombre;  // Nombre del archivo
+    private String archivoTipo;    // Tipo del archivo
+    private long usuarioId;
+    // Getters and Setters
 
+    public String getArchivoNombre() {
+        return archivoNombre;
+    }
 
-    public List<DatosComentario> getComentarios() {
-        return comentarios;
+    public void setArchivoNombre(String archivoNombre) {
+        this.archivoNombre = archivoNombre;
     }
-    public void setComentariosDTO(List<DatosComentario> comentarios) {
-        this.comentarios = comentarios;
+
+    public String getArchivoTipo() {
+        return archivoTipo;
     }
+
+    public void setArchivoTipo(String archivoTipo) {
+        this.archivoTipo = archivoTipo;
+    }
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }
+
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
@@ -41,18 +55,25 @@ public class DatosPublicacion {
     public String getDescripcion() {
         return descripcion;
     }
+
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    public void setId(long id) {this.id = id;}
-    public long getId() {return id;}
-
-    public void setCantLikes (int cantLikes) {
-        this.cantLikes = cantLikes;
+    public long getId() {
+        return id;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public int getCantLikes() {
         return cantLikes;
+    }
+
+    public void setCantLikes(int cantLikes) {
+        this.cantLikes = cantLikes;
     }
 
     public LocalDateTime getFechaPublicacion() {
@@ -63,11 +84,27 @@ public class DatosPublicacion {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public void setCantComentarios (int cantComentarios) {
-        this.cantComentarios = cantComentarios;
+    public List<DatosComentario> getComentarios() {
+        return comentarios;
     }
+
+    public void setComentarios(List<DatosComentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
     public int getCantComentarios() {
         return cantComentarios;
     }
-}
 
+    public void setCantComentarios(int cantComentarios) {
+        this.cantComentarios = cantComentarios;
+    }
+
+    public long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+}
