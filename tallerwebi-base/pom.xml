@@ -135,6 +135,15 @@
         </dependency>
 
 
+        <!-- NO BORRAR / DEPENDENCIAS WEBSOCKET -->
+        <!-- Dependencia para Spring WebSocket -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>5.2.22.RELEASE</version>
+        </dependency>
+
+
         <!-- Dependencia para Spring Messaging (STOMP) -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -153,7 +162,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version> <!-- Asegúrate de usar la última versión -->
+            <version>2.15.2</version>  <!--Asegúrate de usar la última versión-->
         </dependency>
 
 
@@ -181,12 +190,12 @@
             <version>2.0.29</version> <!-- para leer PDFs -->
         </dependency>
 
-        <dependency>
-            <!--Esa dependencia es Jackson Databind, y sirve para convertir entre JSON y objetos Java usando ObjectMapper.-->
+        <!--<dependency>
+            Esa dependencia es Jackson Databind, y sirve para convertir entre JSON y objetos Java usando ObjectMapper.
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.20.0</version>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 
