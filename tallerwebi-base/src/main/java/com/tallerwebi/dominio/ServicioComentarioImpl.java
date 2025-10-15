@@ -1,8 +1,6 @@
 package com.tallerwebi.dominio;
 
 
-import com.tallerwebi.infraestructura.RepositorioComentarioImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,20 +19,15 @@ public class ServicioComentarioImpl implements ServicioComentario {
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioPublicacion = repositorioPublicacion;
     }
-
     @Override
-    public void comentar(String texto,  Usuario usuario, Publicacion p) {
-        Usuario usuarioBuscado = repositorioUsuario.buscarPorId(usuario.getId());
-        Publicacion publicacionBuscado = repositorioPublicacion.buscarPorId(p.getId());
+    public Comentario comentar(String texto, Usuario usuario, Publicacion p) {
         Comentario comentario = new Comentario();
-        comentario.setUsuario(usuarioBuscado);
-        comentario.setPublicacion(publicacionBuscado);
         comentario.setTexto(texto);
+        comentario.setUsuario(usuario);
+        comentario.setPublicacion(p);
 
-        if(usuarioBuscado !=null && publicacionBuscado!=null){
-            repositorioComentario.guardar(comentario);
-        }
 
+        return repositorioComentario.guardar(comentario);
     }
 
     @Override
@@ -43,8 +36,9 @@ public class ServicioComentarioImpl implements ServicioComentario {
     }
 
     @Override
-    public int contarComentarios(Publicacion publicacion) {
-        return repositorioComentario.contarComentarioPorPublicacion(publicacion);
+    public int contarComentarios(long publiId) {
+     return repositorioComentario.contarComentarioPorPublicacion(publiId);
+
 
     }
 

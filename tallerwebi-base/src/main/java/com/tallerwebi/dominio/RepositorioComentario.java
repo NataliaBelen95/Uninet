@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface RepositorioComentario {
 
-    void guardar (Comentario comentario);
+    Comentario guardar (Comentario comentario);
 
     void eliminar(Comentario comentario);
     Comentario buscar(long id);
-    int contarComentarioPorPublicacion(Publicacion publicacion);
+    int contarComentarioPorPublicacion(long publicacion);
     List<Comentario> findComentariosByPublicacionId(long publicacionId);
 
 }
