@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
                    method: 'POST',
                    headers: {
                        'X-Requested-With': 'XMLHttpRequest',
-                       'Content-Type': 'application/json'
+
                    },
                })
                .then(response => {

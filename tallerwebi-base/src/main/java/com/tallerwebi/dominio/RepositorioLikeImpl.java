@@ -21,8 +21,16 @@ public class RepositorioLikeImpl implements RepositorioLike {
                 .setParameter("usuarioId", usuId)
                 .setParameter("publicacionId", publiId)
                 .uniqueResult();
+        //debug
+        if (count == null) {
+            System.err.println("⚠️ Count is null for usuarioId: " + usuId + " and publicacionId: " + publiId);
+        } else {
+            System.out.println("Likes count: " + count);
+        }
+
         return count != null && count > 0;
     }
+
 
     public int contarPorPublicacion(long publicacionId) {
         String hql = "SELECT COUNT(l) FROM Like l WHERE l.publicacion.id = :publicacionId";

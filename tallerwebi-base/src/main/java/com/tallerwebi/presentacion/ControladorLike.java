@@ -40,27 +40,26 @@ public class ControladorLike {
 
         if (datos != null) {
             try {
-                Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+                Usuario usuario = new Usuario();
+                usuario.setId(datos.getId());
                 Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
 
                 if (publicacion != null) {
-                    boolean yaDioLike = servicioLike.yaDioLike(usuario.getId(), publicacion.getId());
+                    boolean yaDioLike = servicioLike.yaDioLike(datos.getId(), publicacion.getId());
 
                     if (yaDioLike) {
                         Like like = servicioLike.obtenerLike(usuario.getId(), publicacion.getId());
                         if (like != null) {
                             servicioLike.quitarLike(like.getId());
-                        } else {
-                            System.err.println("⚠️ No se encontró el Like para eliminar.");
                         }
-
-                        servicioLike.darLike(usuario.getId(), publicacion.getId());
+                    } else {
+                        servicioLike.darLike(datos.getId(), publicacion.getId());
                     }
 
                     int cantLikes = servicioLike.contarLikes(publicacion.getId());
                     notificacionService.enviarMensaje("/topic/publicacion/" + publicacion.getId(), String.valueOf(cantLikes));
 
-                    DatosPublicacion dto = publicacionMapper.toDto(publicacion, usuario.getId());
+                    DatosPublicacion dto = publicacionMapper.toDto(publicacion, datos.getId());
                     dto.setDioLike(!yaDioLike);
 
                     model.addAttribute("dtopubli", dto);
