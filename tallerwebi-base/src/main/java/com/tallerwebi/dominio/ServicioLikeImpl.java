@@ -41,7 +41,7 @@ public class ServicioLikeImpl implements ServicioLike {
     }
 
     @Override
-    public Like obtenerLike(Usuario usuario, Publicacion publicacion) {
-        return repositorioLike.buscarPorUsuarioYPublicacion(usuario, publicacion);
+    public Like obtenerLike(long usuId, long publiId) {
+        return repositorioLike.buscarPorUsuarioYPublicacion(usuId, publiId);
     }
 }

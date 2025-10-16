@@ -64,12 +64,12 @@ public class RepositorioLikeImpl implements RepositorioLike {
     }
 
     @Override
-    public Like buscarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion) {
-        String hql = "FROM Like l WHERE l.usuario = :usuario AND l.publicacion = :publicacion";
+    public Like buscarPorUsuarioYPublicacion(long usuId, long publiId) {
+        String hql = "FROM Like l WHERE l.usuario.id = :usuarioId AND l.publicacion.id = :publicacionId";
         List<Like> resultado = sessionFactory.getCurrentSession()
                 .createQuery(hql, Like.class)
-                .setParameter("usuario", usuario)
-                .setParameter("publicacion", publicacion)
+                .setParameter("usuarioId", usuId)
+                .setParameter("publicacionId", publiId)
                 .getResultList();
 
         return resultado.isEmpty() ? null : resultado.get(0);

@@ -127,7 +127,7 @@ public class ControladorPublicacionTest {
         Publicacion publicacion = mock(Publicacion.class);
         Like likeMock = mock(Like.class);
 
-        when(servicioLikesMock.obtenerLike(usuario, publicacion)).thenReturn(likeMock);
+        when(servicioLikesMock.obtenerLike(usuario.getId(), publicacion.getId())).thenReturn(likeMock);
         when(likeMock.getId()).thenReturn(123L);
 
         // Act

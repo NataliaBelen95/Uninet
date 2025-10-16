@@ -47,7 +47,7 @@ public class ControladorLike {
                     boolean yaDioLike = servicioLike.yaDioLike(usuario, publicacion);
 
                     if (yaDioLike) {
-                        Like like = servicioLike.obtenerLike(usuario, publicacion);
+                        Like like = servicioLike.obtenerLike(usuario.getId(), publicacion.getId());
                         if (like != null) {
                             servicioLike.quitarLike(like.getId());
                         } else {
