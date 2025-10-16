@@ -35,7 +35,7 @@ public class ControladorLike {
 
     @PostMapping("/publicacion/darLike/{id}")
     @Transactional
-    public String darYQuitarLike(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String darYQuitarLike(@PathVariable long id, Model model, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
         if (datos != null) {
@@ -60,7 +60,7 @@ public class ControladorLike {
                     int cantLikes = servicioLike.contarLikes(publicacion.getId());
                     notificacionService.enviarMensaje("/topic/publicacion/" + publicacion.getId(), String.valueOf(cantLikes));
 
-                    DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+                    DatosPublicacion dto = publicacionMapper.toDto(publicacion, usuario.getId());
                     dto.setDioLike(!yaDioLike);
 
                     model.addAttribute("dtopubli", dto);

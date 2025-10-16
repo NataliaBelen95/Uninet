@@ -48,6 +48,7 @@ public class ControladorPublicacion {
                                            HttpServletRequest request,
                                            RedirectAttributes redirectAttributes) throws PublicacionFallida {
         DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        //System.out.println("datosUsuario: " + datosUsuario);
 
         if (datosUsuario != null) {
             try {
@@ -56,7 +57,7 @@ public class ControladorPublicacion {
                 Publicacion publicacion = new Publicacion();
                 publicacion.setDescripcion(descripcion);
                 servicioPublicacion.realizar(publicacion, usuario, archivo); // Crear la publicación
-                DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+                DatosPublicacion dto = publicacionMapper.toDto(publicacion, datosUsuario.getId());
 
                 // Enviar la notificación en tiempo real
                 notificacionService.enviarMensajePubli("/topic/publicaciones", dto);
@@ -85,13 +86,13 @@ public class ControladorPublicacion {
 
 
     @PostMapping("/publicacion/eliminar/{id}")
-    public ModelAndView eliminar(@PathVariable Long id, HttpServletRequest request) {
+    public ModelAndView eliminar(@PathVariable long id, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         Publicacion publicacionAEliminar = servicioPublicacion.obtenerPublicacionPorId(id);
 
         if (datos != null && publicacionAEliminar != null) {
             try {
-                if (publicacionAEliminar.getUsuario().getId().equals(datos.getId())) {
+                if (publicacionAEliminar.getUsuario().getId() == (datos.getId())) {
                     servicioPublicacion.eliminarPublicacionEntera(publicacionAEliminar);
 
                     // Después de eliminar, redirigir a la página de la publicación (ver si se puede poner mi perfil despues)
@@ -110,7 +111,7 @@ public class ControladorPublicacion {
     /*actualizacion tarjeta con datos nuevos*/
     @GetMapping("/publicacion/tarjeta/{id}")
     @Transactional
-    public String obtenerTarjetaPublicacion(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String obtenerTarjetaPublicacion(@PathVariable long id, Model model, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
         // Obtener la publicación
@@ -121,7 +122,7 @@ public class ControladorPublicacion {
             Hibernate.initialize(publicacion.getUsuario()); // Inicializa el usuario de la publicación
         }
 
-        DatosPublicacion dtopubli = publicacionMapper.toDto(publicacion);
+        DatosPublicacion dtopubli = publicacionMapper.toDto(publicacion, datos.getId());
 
         model.addAttribute("dtopubli", dtopubli);
 

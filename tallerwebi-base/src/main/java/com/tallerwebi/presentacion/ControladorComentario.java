@@ -37,7 +37,7 @@ public class ControladorComentario {
     @PostMapping("/publicacion/comentar/{id}")
     @Transactional
     public ResponseEntity<Map<String, Object>> comentar(
-            @PathVariable Long id,
+            @PathVariable long id,
             @RequestBody DatosComentario dto,
             HttpServletRequest request
     ) {
@@ -95,7 +95,7 @@ public class ControladorComentario {
 
 @GetMapping("/publicacion/comentarios/{id}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> obtenerComentarios(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> obtenerComentarios(@PathVariable long id) {
         List<Comentario> lista = servicioComentario.encontrarComentariosPorId(id);
 
     List<DatosComentario> comentariosDTO = lista.stream().map(comentario -> {
