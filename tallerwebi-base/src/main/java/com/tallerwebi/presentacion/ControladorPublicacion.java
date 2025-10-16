@@ -121,7 +121,6 @@ public class ControladorPublicacion {
             Hibernate.initialize(publicacion.getUsuario()); // Inicializa el usuario de la publicación
         }
 
-        // Convertir la publicación a DTO
         DatosPublicacion dtopubli = publicacionMapper.toDto(publicacion);
 
         model.addAttribute("dtopubli", dtopubli);

@@ -53,7 +53,7 @@ public class ControladorLike {
                         } else {
                             System.err.println("⚠️ No se encontró el Like para eliminar.");
                         }
-                    } else {
+
                         servicioLike.darLike(usuario, publicacion);
                     }
 
