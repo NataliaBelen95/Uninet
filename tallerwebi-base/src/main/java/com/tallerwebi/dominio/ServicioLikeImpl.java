@@ -11,12 +11,14 @@ public class ServicioLikeImpl implements ServicioLike {
 
     @Autowired
     private RepositorioLike repositorioLike;
+    private RepositorioUsuario repositorioUsuario;
+    private RepositorioPublicacion repositorioPublicacion;
 
     @Override
-    public void darLike(Usuario usuario, Publicacion publicacion) {
+    public void darLike(long usuId, long publiId) {
         Like like = new Like();
-        like.setUsuario(usuario);
-        like.setPublicacion(publicacion);
+        like.setUsuario(repositorioUsuario.buscarPorId(usuId));
+        like.setPublicacion(repositorioPublicacion.buscarPorId(publiId));
         like.setFecha(LocalDateTime.now());
 
         repositorioLike.guardar(like);
@@ -31,8 +33,8 @@ public class ServicioLikeImpl implements ServicioLike {
     }
 
     @Override
-    public boolean yaDioLike(Usuario usuario, Publicacion publicacion) {
-        return repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion);
+    public boolean yaDioLike(long usuId, long publiId) {
+        return repositorioLike.existePorUsuarioYPublicacion(usuId, publiId);
     }
 
     @Override

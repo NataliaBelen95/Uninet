@@ -14,12 +14,12 @@ public class RepositorioLikeImpl implements RepositorioLike {
     private SessionFactory sessionFactory;
 
     @Override
-    public boolean existePorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion) {
-        String hql = "SELECT COUNT(l) FROM Like l WHERE l.usuario = :usuario AND l.publicacion = :publicacion";
+    public boolean existePorUsuarioYPublicacion(long usuId, long publiId) {
+        String hql = "SELECT COUNT(l) FROM Like l WHERE l.usuario.id = :usuarioId AND l.publicacion.id = :publicacionId";
         Long count = (Long) sessionFactory.getCurrentSession()
                 .createQuery(hql)
-                .setParameter("usuario", usuario)
-                .setParameter("publicacion", publicacion)
+                .setParameter("usuarioId", usuId)
+                .setParameter("publicacionId", publiId)
                 .uniqueResult();
         return count != null && count > 0;
     }

@@ -44,7 +44,7 @@ public class ControladorLike {
                 Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
 
                 if (publicacion != null) {
-                    boolean yaDioLike = servicioLike.yaDioLike(usuario, publicacion);
+                    boolean yaDioLike = servicioLike.yaDioLike(usuario.getId(), publicacion.getId());
 
                     if (yaDioLike) {
                         Like like = servicioLike.obtenerLike(usuario.getId(), publicacion.getId());
@@ -54,7 +54,7 @@ public class ControladorLike {
                             System.err.println("⚠️ No se encontró el Like para eliminar.");
                         }
 
-                        servicioLike.darLike(usuario, publicacion);
+                        servicioLike.darLike(usuario.getId(), publicacion.getId());
                     }
 
                     int cantLikes = servicioLike.contarLikes(publicacion.getId());

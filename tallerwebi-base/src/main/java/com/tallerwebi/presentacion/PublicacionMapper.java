@@ -32,7 +32,7 @@ public class PublicacionMapper {
         dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
-        dto.setDioLike(servicioLike.yaDioLike(usuario, p));
+        dto.setDioLike(servicioLike.yaDioLike(usuario.getId(), p.getId()));
 
 
         // Debug print
