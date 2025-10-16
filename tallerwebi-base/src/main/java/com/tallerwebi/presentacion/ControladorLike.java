@@ -67,11 +67,11 @@ public class ControladorLike {
 
                     return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, cantidadLikes=${cantLikes})";
                 } else {
-                    System.err.println("⚠️ Publicación no encontrada.");
+                    System.err.println("Publicación no encontrada.");
                     return "error";
                 }
             } catch (Exception e) {
-                System.err.println("🔥 EXCEPCIÓN DETECTADA EN darLikeFragment:");
+                System.err.println("EXCEPCIÓN DETECTADA EN darLikeFragment:");
                 e.printStackTrace();  // <-- esto imprimirá el error real
                 throw e;  // importante para que Spring lo marque como rollback si es necesario
             }
