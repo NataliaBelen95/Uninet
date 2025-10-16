@@ -21,9 +21,11 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
 
 
     @Override
-    public Comentario guardar(Comentario comentario) {
+    public void guardar(Comentario comentario) {
+
         sessionFactory.getCurrentSession().save(comentario);
-        return comentario;
+
+
     }
 
 
@@ -40,16 +42,15 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
     }
 
     @Override
-    public int contarComentarioPorPublicacion(long idPubli) {
+    public int contarComentarioPorPublicacion(Publicacion publicacion) {
 
-        String hql = "SELECT COUNT(c) FROM Comentario c WHERE c.publicacion.id = :publicacionId";
-        Long count = (Long) sessionFactory.getCurrentSession()
-                .createQuery(hql)
-                .setParameter("publicacionId", idPubli)
-                .uniqueResult();
-
-        return (count != null) ? count.intValue() : 0; // Devolver 0 si count es null
-    }
+            String hql = "SELECT COUNT(l) FROM Comentario l WHERE l.publicacion = :publicacion";
+            Long count = (Long) sessionFactory.getCurrentSession()
+                    .createQuery(hql)
+                    .setParameter("publicacion", publicacion)
+                    .uniqueResult();
+            return count != null ? count.intValue() : 0;
+        }
 
     @Override
     public List<Comentario> findComentariosByPublicacionId(long publicacionId) {
@@ -58,15 +59,6 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
                         "WHERE c.publicacion.id = :id", Comentario.class)
                 .setParameter("id", publicacionId)
                 .getResultList();
-    }
-
-    @Override
-    public Usuario encontrarUsuarioQueHizoComentario(long comentarioId) {
-        String hql = "SELECT c.usuario FROM Comentario c WHERE c.id = :comentarioId";
-        return (Usuario) sessionFactory.getCurrentSession()
-                .createQuery(hql)
-                .setParameter("comentarioId", comentarioId)
-                .uniqueResult();
     }
 
 

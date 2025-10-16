@@ -7,10 +7,9 @@ import java.util.List;
 
 @Service
 public interface ServicioComentario {
-    Comentario comentar(String texto, Usuario usuario, Publicacion p);
+    void comentar(String texto, Usuario usuario, Publicacion p);
     void editarComentario(Comentario comentario);
-    int contarComentarios(long id);
+    int contarComentarios(Publicacion publicacion);
     List<Comentario> encontrarComentariosPorId(long id);
-    Usuario usuarioqueComento(long usuId);
 
 }

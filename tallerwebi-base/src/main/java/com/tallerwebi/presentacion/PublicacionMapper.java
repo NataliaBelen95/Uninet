@@ -13,8 +13,6 @@ public class PublicacionMapper {
 
     private final ServicioLike servicioLike;
     private final ServicioComentario servicioComentario;
-    private Usuario usuario;
-
 
     public PublicacionMapper(ServicioLike servicioLike, ServicioComentario servicioComentario) {
         this.servicioLike = servicioLike;
@@ -28,15 +26,14 @@ public class PublicacionMapper {
         dto.setDescripcion(p.getDescripcion());
         dto.setNombreUsuario(p.getUsuario().getNombre());
         dto.setApellidoUsuario(p.getUsuario().getApellido());
-        dto.setCantLikes(servicioLike.contarLikes(p.getId()));
-        dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
+        dto.setCantLikes(servicioLike.contarLikes(p));
+        dto.setCantComentarios(servicioComentario.contarComentarios(p));
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
-        dto.setDioLike(servicioLike.yaDioLike(usuario, p));
 
 
         // Debug print
-       // System.out.println("Usuario ID: " + p.getUsuario().getId());
+        System.out.println("Usuario ID: " + p.getUsuario().getId());
         // Mapear comentarios
         List<DatosComentario> comentariosDto = new ArrayList<>();
         if (p.getComentarios() != null) {

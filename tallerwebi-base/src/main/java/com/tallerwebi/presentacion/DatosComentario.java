@@ -1,16 +1,8 @@
 package com.tallerwebi.presentacion;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class DatosComentario {
-
-    @JsonProperty("texto")
     private String texto;
-
-    @JsonProperty("nombreUsuario")
     private String nombreUsuario;
-
-    @JsonProperty("apellidoUsuario")
     private String apellidoUsuario;
 
     // Getters y Setters

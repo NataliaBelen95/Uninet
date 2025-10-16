@@ -20,7 +20,6 @@ a {
     border-radius: 1rem;
     padding: 2rem;
     position:relative;
-    margin-bottom:1rem;
 }
 .palabra{
     font-size: 2rem;
@@ -192,24 +191,25 @@ a {
 .ver-comentariosBtn {
     margin-left: auto; /* empuja el botón al final */
 }
-/* Estilos para los comentarios */
- /* Estilo por defecto del contenedor de comentarios */
- .contenedor_comentarios {
-     display: none; /* Ocultos inicialmente */
-     flex-direction: column;
-     gap: 10px;
-     margin-top: 15px;
- }
+.contenedor_comentarios {
+      display: flex;
+      flex-direction: column;
 
- /* Cuando se añade la clase 'mostrar', hacemos visible el contenedor */
- .contenedor_comentarios.mostrar {
-     display: flex; /* Muestra el contenedor */
- }
+      gap: 10px;
+      margin-top: 15px;
+}
 
- /* Los comentarios estarán ocultos por defecto (solo visibles cuando se añada la clase 'mostrar') */
- .contenedor_comentarios .comentario {
-     display: block; /* Los comentarios estarán visibles dentro del contenedor */
- }
+
+
+.contenedor_comentarios .comentario {
+
+    margin-bottom: 10px;
+    align-self:flex-end;
+
+
+}
+
+
 .btn-like img {
   transition: filter 0.3s ease, opacity 0.3s ease;
 }
@@ -234,8 +234,6 @@ a {
     gap: 10px;
 }
 
-
-
 .linea-divisora {
     border: none;
     border-bottom: 1px solid #ccc;
@@ -255,14 +253,9 @@ a {
     width: 24px;
     height: 24px;
 }
-/*
 
-*/
-/*pdf*//*
-
-*/
-/* Asegura que el contenedor del canvas no se expanda más del tamaño del padre *//*
-
+/*pdf*/
+/* Asegura que el contenedor del canvas no se expanda más del tamaño del padre */
 .archivo-pdf {
     max-width: 100%;
     margin-bottom: 15px;
@@ -281,9 +274,7 @@ a {
     margin: 0 auto;
 }
 
-*/
-/* Contenedor con scroll si el PDF es muy largo *//*
-
+/* Contenedor con scroll si el PDF es muy largo */
 .archivo-pdf .pdf-container {
     max-height: 400px;
     overflow-y: auto;
@@ -293,7 +284,6 @@ a {
 
 
 
-*/
 
 
 /***/

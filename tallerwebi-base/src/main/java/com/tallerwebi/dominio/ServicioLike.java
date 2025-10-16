@@ -12,9 +12,9 @@ public interface ServicioLike {
 
     boolean yaDioLike(Usuario usuario, Publicacion publicacion);
 
-    int contarLikes(long publiId);
+    int contarLikes(Publicacion publicacion);
 
-    Like obtenerLike(long usuarioId, long publiId);
+    Like obtenerLike(Usuario usuario, Publicacion publicacion);
 }
 
 

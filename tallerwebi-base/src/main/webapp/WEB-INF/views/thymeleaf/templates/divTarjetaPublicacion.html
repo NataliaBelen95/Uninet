@@ -1,5 +1,5 @@
-<article th:if="${dtopubli != null}" th:fragment="tarjetaPublicacion(dtopubli)" class="estructura" th:id="'publicacion-' + ${dtopubli.id}" xmlns:th="http://www.w3.org/1999/xhtml">
-
+<div th:fragment="tarjetaPublicacion(dtopubli)" th:id="'publicacion-' + ${dtopubli.id}" xmlns:th="http://www.w3.org/1999/xhtml">
+    <article class="estructura">
         <!-- Usuario -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
 
@@ -24,6 +24,11 @@
 
                 <!-- PDF -->
                 <div th:case="'application/pdf'" class="archivo-pdf" style="margin-top: 10px;">
+<!--                    <p>-->
+<!--                        &#128196; <strong>Archivo:</strong>-->
+<!--                        <span th:text="${#strings.substringAfter(dtopubli.archivoNombre, '_')}">nombre.pdf</span>-->
+<!--                    </p>-->
+
                     <div class="acciones-archivo">
                         <a th:href="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
                            class="boton-descargar"
@@ -33,7 +38,7 @@
                                 class="ver-pdf-btn"
                                 th:data-id="${dtopubli.id}"
                                 th:data-url="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}">
-                            &#128065; Ver PDFgit add
+                            &#128065; Ver PDF
                         </button>
                     </div>
 
@@ -53,15 +58,16 @@
         <div class="contenedor_verComentarios">
             <div class="like-container">
                 <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
-                <span th:text="${dtopubli.cantLikes !=null ? dtopubli.cantLikes : 0}" th:id="'likes-' + ${dtopubli.id}"></span>
+                <span th:text="${dtopubli.cantLikes}" th:id="'likes-' + ${dtopubli.id}"></span>
             </div>
 
             <button class="botones_acciones ver-comentariosBtn"
                     type="button"
-                    th:data-id="${dtopubli.id}"
-                    th:text="${dtopubli.cantComentarios != null && dtopubli.cantComentarios == 1 ? '1 Comentario' : (dtopubli.cantComentarios > 1 ? dtopubli.cantComentarios + ' Comentarios' : 'No hay Comentarios')}">
+                    th:attr="data-id=${dtopubli.id}"
+                    th:text="${dtopubli.cantComentarios == 0 ? 'No hay comentarios'
+                      : (dtopubli.cantComentarios == 1 ? '1 comentario'
+                      : dtopubli.cantComentarios + ' comentarios')}">
             </button>
-
         </div>
 
         <hr class="linea-divisora"/>
@@ -96,17 +102,13 @@
         </div>
 
         <!-- Contenedor de comentarios -->
-    <div class="contenedor_comentarios"
-         th:id="'contenedor-comentarios-' + ${dtopubli.id}"
-         style="display: none;">
-        <div th:each="comentario : ${dtopubli.comentarios != null ? dtopubli.comentarios : {}}" class="comentario">
-            <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
-            <p th:text="${comentario.texto}"></p>
+        <div class="contenedor_comentarios"
+             th:id="'contenedor-comentarios-' + ${dtopubli.id}"
+             style="display: none;">
+            <div th:each="comentario : ${dtopubli.comentarios}" class="comentario">
+                <strong th:text="${comentario.nombreUsuario + ' ' + comentario.apellidoUsuario}"></strong>
+                <p th:text="${comentario.texto}"></p>
+            </div>
         </div>
-    </div>
-    <!-- Si dtopubli es null, mostrar un mensaje o una advertencia -->
-    <div th:unless="${dtopubli != null}">
-        <p>No hay publicaciones disponibles.</p>
-    </div>
     </article>
-
+</div>

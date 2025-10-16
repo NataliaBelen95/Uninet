@@ -1,10 +1,10 @@
 package com.tallerwebi.dominio;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,11 +24,12 @@ public class RepositorioLikeImpl implements RepositorioLike {
         return count != null && count > 0;
     }
 
-    public int contarPorPublicacion(long publicacionId) {
-        String hql = "SELECT COUNT(l) FROM Like l WHERE l.publicacion.id = :publicacionId";
+    @Override
+    public int contarPorPublicacion(Publicacion publicacion) {
+        String hql = "SELECT COUNT(l) FROM Like l WHERE l.publicacion = :publicacion";
         Long count = (Long) sessionFactory.getCurrentSession()
                 .createQuery(hql)
-                .setParameter("publicacionId", publicacionId)
+                .setParameter("publicacion", publicacion)
                 .uniqueResult();
         return count != null ? count.intValue() : 0;
     }
@@ -39,23 +40,9 @@ public class RepositorioLikeImpl implements RepositorioLike {
         return like;
     }
 
-
-    /*MIRAR ESTA FUNCION*/
     @Override
-    public void eliminar(long id) {
-        Session session = sessionFactory.getCurrentSession();
-        Like like = session.get(Like.class, id);
-
-        if (like != null) {
-            Publicacion publicacion = like.getPublicacion();
-            if (publicacion != null) {
-                publicacion.getLikesDePublicacion().remove(like);  // Quitar de la colección
-                like.setPublicacion(null);            // Romper la relación para evitar problemas
-            }
-            session.delete(like);
-        } else {
-            System.out.println("Like con id " + id + " no encontrado.");
-        }
+    public void eliminar(Like like) {
+        sessionFactory.getCurrentSession().delete(like);
     }
 
     @Override
@@ -64,12 +51,12 @@ public class RepositorioLikeImpl implements RepositorioLike {
     }
 
     @Override
-    public Like buscarPorUsuarioYPublicacion(long usuId, long publiId) {
-        String hql = "FROM Like l WHERE l.usuario.id = :usuarioId AND l.publicacion.id = :publicacionId";
+    public Like buscarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion) {
+        String hql = "FROM Like l WHERE l.usuario = :usuario AND l.publicacion = :publicacion";
         List<Like> resultado = sessionFactory.getCurrentSession()
                 .createQuery(hql, Like.class)
-                .setParameter("usuarioId", usuId)
-                .setParameter("publicacionId", publiId)
+                .setParameter("usuario", usuario)
+                .setParameter("publicacion", publicacion)
                 .getResultList();
 
         return resultado.isEmpty() ? null : resultado.get(0);
