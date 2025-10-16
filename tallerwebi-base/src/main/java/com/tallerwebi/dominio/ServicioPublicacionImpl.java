@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +33,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         this.repositorioPublicacion = repositorioPublicacion;
 
     }
+
     public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida {
 
         // Verificar si la descripción está vacía
@@ -107,7 +107,6 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
 
 
-
     @Override
     public Publicacion obtenerPublicacionPorId(long id) {
         return repositorio.buscarPorId(id);
@@ -126,11 +125,11 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     @Override
     public void eliminarPublicacionEntera(Publicacion publicacion) {
-        if(publicacion !=null) {
+        if (publicacion != null) {
 
             repositorio.eliminarPubli(publicacion);
         } else {
-            throw  new NoSeEncuentraPublicacion();
+            throw new NoSeEncuentraPublicacion();
         }
     }
 
@@ -140,13 +139,10 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
 
     @Override
-    public Publicacion obtenerPublicacionConComentarios(Long id) {
-        return repositorioPublicacion.obtenerPublicacionConComentarios(id);
+    public Publicacion obtenerPublicacion(Long id) {
+        return repositorioPublicacion.obtenerPublicacionCompleta(id);
     }
 
-    public List<Publicacion> findByUsuarioId(Long id) {
-        return repositorio.findByUsuarioId(id);
-    }
 
 
 }

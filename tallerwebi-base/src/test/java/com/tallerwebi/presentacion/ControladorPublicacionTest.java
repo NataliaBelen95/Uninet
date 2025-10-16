@@ -32,25 +32,28 @@ public class ControladorPublicacionTest {
     private ServicioComentario servicioComentarioMock;
     private RedirectAttributes redirectAttributesMock;
     private PublicacionMapper publicacionMapperMock;
+    private NotificacionService notificacionServiceMock;
 
     @BeforeEach
     public void init() {
         servicioPublicacionMock = mock(ServicioPublicacion.class);
         servicioLikesMock = mock(ServicioLike.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
-        servicioComentarioMock = mock(ServicioComentario.class);
         publicacionMapperMock = mock(PublicacionMapper.class);
+        notificacionServiceMock = mock(NotificacionService.class);
+        servicioComentarioMock = mock(ServicioComentario.class);
 
         controladorPublicacion = new ControladorPublicacion(
                 servicioPublicacionMock,
                 servicioLikesMock,
                 servicioUsuarioMock,
-                servicioComentarioMock,
-                publicacionMapperMock
+                publicacionMapperMock,
+                notificacionServiceMock,
+                servicioComentarioMock
         );
 
         requestMock = mock(HttpServletRequest.class);
-        redirectAttributesMock = mock(RedirectAttributes.class);
+
         sessionMock = mock(HttpSession.class);
 
         usuarioMock = mock(Usuario.class);
@@ -124,7 +127,7 @@ public class ControladorPublicacionTest {
         Publicacion publicacion = mock(Publicacion.class);
         Like likeMock = mock(Like.class);
 
-        when(servicioLikesMock.obtenerLike(usuario, publicacion)).thenReturn(likeMock);
+        when(servicioLikesMock.obtenerLike(usuario.getId(), publicacion.getId())).thenReturn(likeMock);
         when(likeMock.getId()).thenReturn(123L);
 
         // Act

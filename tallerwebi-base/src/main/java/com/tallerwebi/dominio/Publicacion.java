@@ -1,6 +1,9 @@
 package com.tallerwebi.dominio;
 
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ public class Publicacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private ArchivoPublicacion archivo;  // Ahora solo un archivo
 
     @Column(nullable = true, length = 200)
@@ -25,16 +28,18 @@ public class Publicacion {
 
 
 
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
   /*relacion con entidad like */
-    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Like> likesDePublicacion = new ArrayList<>();
 
     /*relacion con entidad comentarios , una publicacion muchos comentarios, comentario a una publi*/
-    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Comentario> comentarios;
 
     // getters y setters
@@ -107,4 +112,6 @@ public class Publicacion {
     public void setArchivo(ArchivoPublicacion archivo) {
         this.archivo = archivo;
     }
+
+
 }

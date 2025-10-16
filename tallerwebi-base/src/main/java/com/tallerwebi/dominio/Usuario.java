@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -63,6 +65,7 @@ public class Usuario {
 
     /*publicaciones del usuario**/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.LAZY)  /*si una publi queda sin padre usuario, se borra la publi*/
+    @Fetch(FetchMode.SUBSELECT)
     private List<Publicacion> publicaciones = new ArrayList<>();
 
     /*publicaciones guardadas del usuario**/
@@ -75,11 +78,10 @@ public class Usuario {
     private List<Publicacion> publicacionesGuardadas= new ArrayList<>();
 
     /*relacion con likes*/
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario")
     private List<Like> likesDados = new ArrayList<>();
 
-    /*relacion con comentario*/
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
 
     public Long getId() {
