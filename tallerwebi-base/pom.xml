@@ -28,7 +28,8 @@
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-all</artifactId>
-            <version>0.62.2</version> </dependency>
+            <version>0.62.2</version>
+        </dependency>
 
         <!--dependencia oficial de google gemini disponible en Maven central-->
         <dependency>
@@ -139,6 +140,7 @@
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
         </dependency>
+
         <!-- NO BORRAR / DEPENDENCIAS WEBSOCKET -->
         <!-- Dependencia para Spring WebSocket -->
         <dependency>
@@ -166,12 +168,8 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version> <!-- Asegúrate de usar la última versión -->
+            <version>2.15.2</version>  <!--Asegúrate de usar la última versión-->
         </dependency>
-
-
-        <!---FINAL DEPENDENCIA -->
-
 
         <dependency>
             <!-- proporciona clases de spring para hacer apps web y maneja utilidades para hacer llamadas a APIs externas-->
@@ -194,45 +192,7 @@
             <version>2.0.29</version> <!-- para leer PDFs -->
         </dependency>
 
-        <dependency>
-            <!--Esa dependencia es Jackson Databind, y sirve para convertir entre JSON y objetos Java usando ObjectMapper.-->
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.20.0</version>
-        </dependency>
-        <!-- NO BORRAR / DEPENDENCIAS WEBSOCKET -->
-        <!-- Dependencia para Spring WebSocket -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-websocket</artifactId>
-            <version>5.2.22.RELEASE</version>
-        </dependency>
-
-
-        <!-- Dependencia para Spring Messaging (STOMP) -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-messaging</artifactId>
-            <version>5.2.22.RELEASE</version>
-        </dependency>
-
-        <!-- WEBSOCKET DEPENDENCIAS SINAL-->
-        <!-- Jackson para JSR310 (Java 8 Date and Time API)-->
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.15.2</version> <!-- Usa la última versión disponible -->
-        </dependency>
-        <!-- Dependencia para manejar tipos de fecha/hora de Java 8 -->
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-databind</artifactId>-->
-<!--            <version>2.15.2</version> &lt;!&ndash; Asegúrate de usar la última versión &ndash;&gt;-->
-<!--        </dependency>-->
-
-
-        <!---FINAL DEPENDENCIA -->
-    </dependencies>
+        </dependencies>
 
     <build>
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RepositorioLike {
 
-    boolean existePorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
+    boolean existePorUsuarioYPublicacion(long usuarioId, long publiId);
 
     int contarPorPublicacion(long publiId);
 
@@ -14,6 +14,6 @@ public interface RepositorioLike {
     void eliminar(long id);
 
     Like buscarPorId(long id);
-
-    Like buscarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
+/*CAMBIOS A ID*/
+    Like buscarPorUsuarioYPublicacion(long usuarioId, long publiId);
 }

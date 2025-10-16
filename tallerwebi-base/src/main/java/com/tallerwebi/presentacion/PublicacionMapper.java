@@ -21,7 +21,7 @@ public class PublicacionMapper {
         this.servicioComentario = servicioComentario;
     }
 
-    public DatosPublicacion toDto(Publicacion p) {
+    public DatosPublicacion toDto(Publicacion p, long usuarioId) {
         DatosPublicacion dto = new DatosPublicacion();
 
         dto.setId(p.getId());
@@ -32,7 +32,7 @@ public class PublicacionMapper {
         dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
-        dto.setDioLike(servicioLike.yaDioLike(usuario, p));
+        dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
 
 
         // Debug print

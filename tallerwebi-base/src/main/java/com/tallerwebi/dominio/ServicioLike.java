@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 
 public interface ServicioLike {
 
-    void darLike(Usuario usuario, Publicacion publicacion);
+    void darLike(long usuarioId, long publicacionId);
 
     void quitarLike(long id);
 
-    boolean yaDioLike(Usuario usuario, Publicacion publicacion);
+    boolean yaDioLike(long usuarioId, long publicacionId);
 
     int contarLikes(long publiId);
 
-    Like obtenerLike(Usuario usuario, Publicacion publicacion);
+    Like obtenerLike(long usuarioId, long publiId);
 }
 
 

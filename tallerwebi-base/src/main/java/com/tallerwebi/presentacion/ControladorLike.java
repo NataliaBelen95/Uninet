@@ -35,32 +35,31 @@ public class ControladorLike {
 
     @PostMapping("/publicacion/darLike/{id}")
     @Transactional
-    public String darYQuitarLike(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String darYQuitarLike(@PathVariable long id, Model model, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
         if (datos != null) {
             try {
-                Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+                Usuario usuario = new Usuario();
+                usuario.setId(datos.getId());
                 Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
 
                 if (publicacion != null) {
-                    boolean yaDioLike = servicioLike.yaDioLike(usuario, publicacion);
+                    boolean yaDioLike = servicioLike.yaDioLike(datos.getId(), publicacion.getId());
 
                     if (yaDioLike) {
-                        Like like = servicioLike.obtenerLike(usuario, publicacion);
+                        Like like = servicioLike.obtenerLike(usuario.getId(), publicacion.getId());
                         if (like != null) {
                             servicioLike.quitarLike(like.getId());
-                        } else {
-                            System.err.println("⚠️ No se encontró el Like para eliminar.");
                         }
                     } else {
-                        servicioLike.darLike(usuario, publicacion);
+                        servicioLike.darLike(datos.getId(), publicacion.getId());
                     }
 
                     int cantLikes = servicioLike.contarLikes(publicacion.getId());
                     notificacionService.enviarMensaje("/topic/publicacion/" + publicacion.getId(), String.valueOf(cantLikes));
 
-                    DatosPublicacion dto = publicacionMapper.toDto(publicacion);
+                    DatosPublicacion dto = publicacionMapper.toDto(publicacion, datos.getId());
                     dto.setDioLike(!yaDioLike);
 
                     model.addAttribute("dtopubli", dto);
@@ -68,11 +67,11 @@ public class ControladorLike {
 
                     return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, cantidadLikes=${cantLikes})";
                 } else {
-                    System.err.println("⚠️ Publicación no encontrada.");
+                    System.err.println("Publicación no encontrada.");
                     return "error";
                 }
             } catch (Exception e) {
-                System.err.println("🔥 EXCEPCIÓN DETECTADA EN darLikeFragment:");
+                System.err.println("EXCEPCIÓN DETECTADA EN darLikeFragment:");
                 e.printStackTrace();  // <-- esto imprimirá el error real
                 throw e;  // importante para que Spring lo marque como rollback si es necesario
             }

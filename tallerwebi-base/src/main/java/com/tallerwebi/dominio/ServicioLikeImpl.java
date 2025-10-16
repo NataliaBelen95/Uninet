@@ -8,17 +8,33 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 public class ServicioLikeImpl implements ServicioLike {
+    private final RepositorioLike repositorioLike;
+    private final RepositorioUsuario repositorioUsuario;
+    private final RepositorioPublicacion repositorioPublicacion;
 
     @Autowired
-    private RepositorioLike repositorioLike;
+    public ServicioLikeImpl(RepositorioLike repositorioLike,RepositorioUsuario repositorioUsuario,RepositorioPublicacion repositorioPublicacion) {
+        this.repositorioLike = repositorioLike;
+        this.repositorioUsuario = repositorioUsuario;
+        this.repositorioPublicacion = repositorioPublicacion;
+
+    }
+
 
     @Override
-    public void darLike(Usuario usuario, Publicacion publicacion) {
+    public void darLike(long usuId, long publiId) {
         Like like = new Like();
-        like.setUsuario(usuario);
-        like.setPublicacion(publicacion);
-        like.setFecha(LocalDateTime.now());
 
+        // Buscar el usuario y la publicación por ID
+        Usuario usuario = repositorioUsuario.buscarPorId(usuId); // Busca al usuario por ID
+        Publicacion publicacion = repositorioPublicacion.buscarPorId(publiId); // Busca la publicación por ID
+
+        // Asignar los objetos completos a Like
+        like.setUsuario(usuario); // Asignar el objeto Usuario
+        like.setPublicacion(publicacion); // Asignar el objeto Publicacion
+        like.setFecha(LocalDateTime.now()); // Asignar la fecha del like
+
+        // Guardar el like en el repositorio
         repositorioLike.guardar(like);
     }
 
@@ -31,8 +47,8 @@ public class ServicioLikeImpl implements ServicioLike {
     }
 
     @Override
-    public boolean yaDioLike(Usuario usuario, Publicacion publicacion) {
-        return repositorioLike.existePorUsuarioYPublicacion(usuario, publicacion);
+    public boolean yaDioLike(long usuId, long publiId) {
+        return repositorioLike.existePorUsuarioYPublicacion(usuId, publiId);
     }
 
     @Override
@@ -41,7 +57,7 @@ public class ServicioLikeImpl implements ServicioLike {
     }
 
     @Override
-    public Like obtenerLike(Usuario usuario, Publicacion publicacion) {
-        return repositorioLike.buscarPorUsuarioYPublicacion(usuario, publicacion);
+    public Like obtenerLike(long usuId, long publiId) {
+        return repositorioLike.buscarPorUsuarioYPublicacion(usuId, publiId);
     }
 }
