@@ -5,7 +5,7 @@ import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
 import com.tallerwebi.presentacion.DatosUsuario;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface ServicioSubirArchivo {
+public interface ServicioSubirArchivoALaIA {
     String guardarArchivoPdf(MultipartFile archivo, DatosUsuario usuario)
             throws NoSePuedeSubirArchivoPorFallaException, NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 }

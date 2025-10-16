@@ -1,46 +1,121 @@
-
-/* Contenedor principal */
+.btn-ia{
+    width: auto;
+    margin: 10px;
+}
 .archivos-subidos {
-    display: flex;          /* hace que los elementos hijos estén en fila */
-    flex-wrap: wrap;        /* permite que pasen a la siguiente línea si no entran */
-    gap: 20px;              /* espacio entre cada "icono" */
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--background-input);
+    border: 1px solid var(--borde);
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius);
 }
 
-/* Cada item de la lista */
+/* Lista con scroll solo */
 .archivos-subidos ul {
-    list-style: none;       /* quita los bullets */
+    list-style: none;
     margin: 0;
     padding: 0;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas fijas */
+    gap: 10px; /* menos espacio entre columnas */
+    max-height: calc(3 * 45px + 2 * 10px); /* 3 filas de altura aprox + gaps */
+    overflow-y: auto;  /* scroll vertical si hay más archivos */
+}
+/* Cada elemento de la lista (con su clase lista-archivos) */
+.lista-archivos{
     display: flex;
-    flex-wrap: wrap;        /* para que los <li> también se acomoden en fila */
-    gap: 20px;
+    align-items: center;      /* alineado al borde superior */
+    gap: 5px;                     /* radio + icono + texto más juntos */
+    padding: 2px 5px;             /* padding pequeño para no separar del borde */
 }
 
-/* Cada archivo individual */
-.archivos-subidos li {
-    display: flex;
-    flex-direction: column; /* icono arriba, texto debajo */
-    align-items: center;    /* centra horizontalmente */
-    width: 100px;           /* ancho fijo para cada "icono" */
-    text-align: center;
+/* Icono PDF */
+.lista-archivos img.icono-pdf {
+    width: 35px;
+    height: 35px;
 }
 
-/* Estilo del enlace */
-.archivos-subidos li a {
-    text-decoration: none;
-    color: var(--verde);
+/* Nombre del archivo */
+.lista-archivos label {
     font-size: 0.9rem;
-}
 
-/* Icono del PDF */
-.archivos-subidos li img.icono-pdf {
-    width: 64px;            /* tamaño tipo "icono mediano" */
-    height: 64px;
-    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-
-/* Hover efecto */
-.archivos-subidos li a:hover {
+.lista-archivos label a{
+    color: var(--texto);
+    white-space: nowrap; /* Mantiene el texto en una sola línea */
+    display: block;
+    overflow: hidden; /* Oculta cualquier texto que se desborde del contenedor */
+    /* Agrega puntos suspensivos (...) al final del texto cortado */
+    text-overflow: ellipsis;
+    max-width: 170px;
+}
+.lista-archivos label a:hover{
     color: var(--verde-2);
 }
+
+/* Radio button */
+.lista-archivos input[type="radio"],
+.lista-archivos input[type="checkbox"] {
+    width: 20px;
+    transform: scale(1.1);
+    margin: 0; /* sin margen extra */
+}
+/* 1. Contenedor para el toggle de Modo Borrado */
+.modo-selector {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.modo-selector label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Espacio entre el checkbox y el texto */
+    /* Asegura que el texto no se rompa en varias líneas inútilmente */
+    white-space: nowrap;
+}
+
+/* Redefinir el tamaño del checkbox dentro de .modo-selector */
+.modo-selector input[type="checkbox"] {
+    width: 20px; /* Restaura el ancho normal */
+    height: 20px; /* Restaura la altura normal */
+    transform: scale(1); /* Deshace cualquier transformación si es necesario */
+    margin: 0;
+}
+
+/* 2. Contenedor para los botones y el checkbox de "seleccionar todos" */
+.botones-accion {
+    /* Define cómo se alinean el checkbox "seleccionar todos" y los botones */
+    display: flex;
+    justify-content: space-between; /* Espacia el checkbox del lado izquierdo y los botones del lado derecho */
+    align-items: center; /* Centra verticalmente los elementos */
+    margin-top: 20px;
+    padding-left: 5px; /* Ajuste para alinear con el inicio de la lista si es necesario */
+}
+
+/* 3. Estilo para el contenedor del checkbox de "seleccionar todos" (lado izquierdo) */
+.seleccionar-todos-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Asegura que no se vea cuando JS lo oculta, aunque JS maneja esto con 'style="display: none;"' */
+}
+
+/* 4. Estilos para los botones deshabilitados (opcional, pero mejora la UX) */
+#btnGenerarResumen:disabled, #btnBorrarSeleccionados:disabled {
+    opacity: 0.5; /* Hace que se vean atenuados */
+    cursor: not-allowed; /* Muestra un cursor de "prohibido" */
+}
+
+.resumen-ia-display{
+
+}
+
+

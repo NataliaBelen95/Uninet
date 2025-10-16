@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -19,7 +20,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
+@PropertySource("classpath:application.properties")
+@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura"})
 public class SpringWebConfig implements WebMvcConfigurer {
 
     // Spring + Thymeleaf need this
@@ -34,7 +36,10 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/imagenes/**").addResourceLocations("/resources/core/imagenes/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
-        registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
+        //registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
+       // registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf");
+        registry.addResourceHandler("/archivos_pdf/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivos_pdf/");
         registry.addResourceHandler("/archivosPublicacion/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivosPublicacion/");
         registry.addResourceHandler("/perfiles/**")
@@ -92,9 +97,9 @@ public class SpringWebConfig implements WebMvcConfigurer {
     }
 
 //para que permita subir archivos pdf
-   /* @Bean
-    public MultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }*/
+//    @Bean
+//    public MultipartResolver multipartResolver() {
+//        return new StandardServletMultipartResolver();
+//    }
 
 }
