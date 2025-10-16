@@ -31,7 +31,7 @@ public class PublicacionMapper {
         dto.setCantLikes(servicioLike.contarLikes(p.getId()));
         dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
-        dto.setUsuarioId(usuarioId);
+        dto.setUsuarioId(p.getUsuario().getId());
         dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
 
 

@@ -1,13 +1,20 @@
-<article th:if="${dtopubli != null}" th:fragment="tarjetaPublicacion(dtopubli)" class="estructura" th:id="'publicacion-' + ${dtopubli.id}" xmlns:th="http://www.w3.org/1999/xhtml">
+<article th:if="${dtopubli != null}"
+         th:fragment="tarjetaPublicacion(dtopubli, usuario)"
+         class="estructura"
+         th:id="'publicacion-' + ${dtopubli.id}"
+         xmlns:th="http://www.w3.org/1999/xhtml">
 
         <!-- Usuario -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
 
-        <form th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}" method="post">
-            <button class="delete-button" type="submit" th:unless="${dtopubli != null and usuario != null and dtopubli.usuarioId != usuario.id}">
-                <img th:src="@{/imagenes/borrarParaSiempre.png}" alt="deleteLogo" class="delete-logo"/>
-            </button>
-        </form>
+    <form th:if="${dtopubli != null and usuario != null and dtopubli.usuarioId.equals(usuario.id)}"
+          th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}"
+          method="post">
+        <button class="delete-button" type="submit">
+            <img th:src="@{/imagenes/borrarParaSiempre.png}" alt="deleteLogo" class="delete-logo"/>
+        </button>
+    </form>
+
 
         <!-- Mostrar descripción solo si existe -->
         <p class="texto" th:if="${dtopubli.descripcion != null and !#strings.isEmpty(dtopubli.descripcion)}" th:text="${dtopubli.descripcion}"></p>

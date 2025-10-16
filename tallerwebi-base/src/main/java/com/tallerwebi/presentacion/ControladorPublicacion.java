@@ -94,6 +94,8 @@ public class ControladorPublicacion {
             try {
                 if (publicacionAEliminar.getUsuario().getId() == (datos.getId())) {
                     servicioPublicacion.eliminarPublicacionEntera(publicacionAEliminar);
+                    System.out.println("ID usuario logueado: " + datos.getId());
+                    System.out.println("ID usuario dueño de la publicación: " + publicacionAEliminar.getUsuario().getId());
 
                     // Después de eliminar, redirigir a la página de la publicación (ver si se puede poner mi perfil despues)
                     return new ModelAndView("redirect:/home");
@@ -135,7 +137,7 @@ public class ControladorPublicacion {
         model.addAttribute("cantlikes", servicioLike.contarLikes(publicacion.getId()));
         model.addAttribute("cantComentarios", servicioComentario.contarComentarios(publicacion.getId()));
 
-        return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, comentarios=${comentarios}, likes=${cantLikes}, cantComentarios=${cantComentarios})";
+        return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, comentarios=${comentarios}, likes=${cantLikes}, cantComentarios=${cantComentarios}, usuario=${usuario})";
     }
 
 
