@@ -60,6 +60,15 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
                 .getResultList();
     }
 
+    @Override
+    public Usuario encontrarUsuarioQueHizoComentario(long comentarioId) {
+        String hql = "SELECT c.usuario FROM Comentario c WHERE c.id = :comentarioId";
+        return (Usuario) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("comentarioId", comentarioId)
+                .uniqueResult();
+    }
+
 
 }
 
