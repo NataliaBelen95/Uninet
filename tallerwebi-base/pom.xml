@@ -23,6 +23,18 @@
     </properties>
 
     <dependencies>
+        <!--libreria de markdown -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.62.2</version> </dependency>
+
+        <!--dependencia oficial de google gemini disponible en Maven central-->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-aiplatform</artifactId>
+            <version>3.4.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>

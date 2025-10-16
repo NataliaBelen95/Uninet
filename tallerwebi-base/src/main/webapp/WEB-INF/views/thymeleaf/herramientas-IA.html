@@ -47,35 +47,54 @@
             <h3>Subir archivos pdf</h3>
             <form th:action="@{/herramientas-IA.html}" method="POST" enctype="multipart/form-data">
                 <input type="file" name="archivo" accept="application/pdf" required />
-                <button type="submit">Subir PDF</button>
+                <button class="btn btn-ia" type="submit">Subir PDF</button>
             </form>
             <p th:if="${mensaje}" th:text="${mensaje}" style="color: green;"></p>
         </article>
         <article class="estructura">
-            <h3>Mis archivos subidos</h3>
-            <p>Selecciona el archivo con el que deseas generar el resumen</p>
+
+            <div class="modo-selector">
+                <h3>Mis archivos subidos</h3>
+                <label>
+                    <input type="checkbox" id="modoBorradoToggle">
+                    Seleccionar archivos para borrar
+                </label>
+            </div>
+
             <div class="archivos-subidos">
+                <p id="instruccion-principal">Selecciona el archivo con el que deseas generar el resumen</p>
                 <form th:action="@{/herramientas-IA/resumen.html}" method="POST">
                     <ul>
                         <li class="lista-archivos" th:each="archivo,iterStat : ${archivos}">
-                                <input type="radio" name="archivoSeleccionado" th:id="'archivo__' + ${iterStat.index}" th:value="${archivo}" th:checked="${iterStat.index == 0}" />
+
+                            <input type="radio" name="archivoSeleccionado" th:id="'archivo__' + ${iterStat.index}" th:value="${archivo}" th:checked="${iterStat.index == 0}" />
+                            <input type="checkbox" name="archivosABorrar" class="checkbox-borrado" th:id="'check__' + ${iterStat.index}" th:value="${archivo}" disabled style="display: none;"/>
+
                             <img th:src="@{/imagenes/pdf-icon.png}" alt="PDF" class="icono-pdf">
-                            <label th:for="'archivo__' + ${iterStat.index}" >
-                                <a th:href="@{'/archivos_pdf/' + ${archivo}}" target="_blank" th:text="${archivo}"></a></a>
+
+                            <label th:for="'radio__' + ${iterStat.index}" >
+                                <a th:href="@{'/archivos_pdf/' + ${archivo}}" target="_blank" th:text="${archivo}"></a>
                             </label>
+
                         </li>
                     </ul>
-                    <button type="submit">Generar resumen con IA</button>
+                    <div class="botones-accion">
+                        <div class="seleccionar-todos-container" style="display: none;">
+                            <input type="checkbox" id="seleccionarTodosCheck">
+                            <label for="seleccionarTodosCheck">Seleccionar todos</label>
+                        </div>
+                    <button class="btn btn-ia" type="submit">Generar resumen con IA</button>
+                    <button class="btn btn-ia" type="button" id="btnBorrarSeleccionados" disabled>Borrar seleccionados</button>
+                    </div>
                 </form>
             </div>
         </article>
 
         <article class="estructura">
-                    <h3>Resumen  generado a partir del pdf subido</h3>
-            <!--el pre mantiene los saltos de linea y los espacios
-            th:utext muestra el texto sin escaparlo, así los saltos de línea se ven como el usuario espera.-->
-                    <pre th:if="${resumen}" th:utext="${resumen}"></pre>
-                    <button>guardar como pdf</button>
+            <h3>Resumen generado a partir del pdf subido</h3>
+            <div class="resumen-ia-display" th:if="${resumen}" th:utext="${resumen}">
+            </div>
+            <button class="btn btn-ia" disabled>Guardar como pdf</button>
         </article>
     </section>
 
