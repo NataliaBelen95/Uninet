@@ -35,7 +35,7 @@ public class ServicioHacerResumenImpl implements ServicioHacerResumen {
     public String generarResumen(String texto) {
         try {
             // Creamos la request a Gemini
-            String prompt = "Generá un resumen detallado de este texto usando formato **Markdown** (con encabezados, negritas y listas) para hacerlo más legible. El resumen debe estar estructurado en secciones:\n" + texto;
+            String prompt = "Generá un resumen de este texto usando formato **Markdown** (con encabezados, negritas y listas) para hacerlo más legible. El resumen debe estar estructurado en secciones:\n" + texto;
 
             Map<String, Object> message = Map.of("parts", new Object[] {
                     Map.of("text", prompt) // Usa la variable prompt con la nueva instrucción
