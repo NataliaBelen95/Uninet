@@ -22,7 +22,14 @@
         <hsqldb.version>2.3.2</hsqldb.version>
     </properties>
 
+
     <dependencies>
+        <!--libreria de markdown -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.62.2</version> </dependency>
+
         <!--dependencia oficial de google gemini disponible en Maven central-->
         <dependency>
             <groupId>com.google.cloud</groupId>
