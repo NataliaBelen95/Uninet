@@ -19,7 +19,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
+@ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura"})
 public class SpringWebConfig implements WebMvcConfigurer {
 
     // Spring + Thymeleaf need this
@@ -34,14 +34,15 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/imagenes/**").addResourceLocations("/resources/core/imagenes/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
-        registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
+
+        registry.addResourceHandler("/archivos_pdf/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivos_pdf/");
+
         registry.addResourceHandler("/archivosPublicacion/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivosPublicacion/");
+
         registry.addResourceHandler("/perfiles/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/perfiles/");
-        /*registry.addResourceHandler("/archivos_pdf/**")
-                .addResourceLocations("file:C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf/");*/
-
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
@@ -94,10 +95,5 @@ public class SpringWebConfig implements WebMvcConfigurer {
         return multipartResolver;
     }
 
-//para que permita subir archivos pdf
-   /* @Bean
-    public MultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }*/
 
 }
