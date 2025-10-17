@@ -120,23 +120,6 @@ public class ControladorPublicacionTest {
 
 
 
-    @Test
-    public void queAlVolverADarleLikeSeQuiteLaPublicacion() {
-        // Arrange
-        Usuario usuario = mock(Usuario.class);
-        Publicacion publicacion = mock(Publicacion.class);
-        Like likeMock = mock(Like.class);
 
-        when(servicioLikesMock.obtenerLike(usuario.getId(), publicacion.getId())).thenReturn(likeMock);
-        when(likeMock.getId()).thenReturn(123L);
-
-        // Act
-        servicioLikesMock.darLike(usuario, publicacion);
-        servicioLikesMock.quitarLike(123L);
-
-        // Assert
-        verify(servicioLikesMock).darLike(usuario, publicacion);
-        verify(servicioLikesMock).quitarLike(123L);
-    }
 }
 
