@@ -1,5 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.ComponentClienteGemini;
+import com.tallerwebi.dominio.ServicioHacerResumen;
 import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePudoGenerarResumenDelPDFException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -12,7 +14,7 @@ import com.vladsch.flexmark.parser.Parser;
 
 @Service
 public class ServicioHacerResumenImpl implements ServicioHacerResumen {
-    private final ComponentClienteGemini  componentClienteGemini;
+    private final ComponentClienteGemini componentClienteGemini;
 
     public ServicioHacerResumenImpl(ComponentClienteGemini componentClienteGemini) {
         this.componentClienteGemini = componentClienteGemini;
