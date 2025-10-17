@@ -112,7 +112,7 @@ public class ControladorPublicacion {
 
     /*actualizacion tarjeta con datos nuevos*/
     @GetMapping("/publicacion/tarjeta/{id}")
-    @Transactional
+    //@Transactional
     public String obtenerTarjetaPublicacion(@PathVariable long id, Model model, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 

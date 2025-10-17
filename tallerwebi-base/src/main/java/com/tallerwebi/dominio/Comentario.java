@@ -1,8 +1,9 @@
 package com.tallerwebi.dominio;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-    @Entity
+@Entity
     public class Comentario {
 
         @Id
@@ -11,6 +12,8 @@ import javax.persistence.*;
 
         @Column(length = 200, nullable = false)
         private String texto;
+
+        private LocalDateTime fechaComentario;
 
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "usuario_id", nullable = false)
@@ -51,4 +54,9 @@ import javax.persistence.*;
         public void setPublicacion(Publicacion publicacion) {
             this.publicacion = publicacion;
         }
+
+        public LocalDateTime getFechaComentario() {
+            return fechaComentario;
+        }
+        public void setFechaComentario(LocalDateTime fechaComentario) {}
     }

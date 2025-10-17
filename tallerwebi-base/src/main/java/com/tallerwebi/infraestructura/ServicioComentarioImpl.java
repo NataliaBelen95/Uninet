@@ -2,6 +2,7 @@ package com.tallerwebi.infraestructura;
 
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.presentacion.DatosComentario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +22,9 @@ public class ServicioComentarioImpl implements ServicioComentario {
         this.repositorioPublicacion = repositorioPublicacion;
     }
     @Override
-    public Comentario comentar(String texto, Usuario usuario, Publicacion p) {
+    public Comentario comentar(DatosComentario dto, Usuario usuario, Publicacion p) {
         Comentario comentario = new Comentario();
-        comentario.setTexto(texto);
+        comentario.setTexto(dto.getTexto());
         comentario.setUsuario(usuario);
         comentario.setPublicacion(p);
 

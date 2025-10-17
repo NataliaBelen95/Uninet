@@ -2,6 +2,8 @@ package com.tallerwebi.presentacion;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDate;
+
 public class DatosComentario {
 
     @JsonProperty("texto")
@@ -12,6 +14,9 @@ public class DatosComentario {
 
     @JsonProperty("apellidoUsuario")
     private String apellidoUsuario;
+
+    @JsonProperty("fechaComentario")
+    private LocalDate fechaComentario;
 
     // Getters y Setters
     public String getTexto() {
@@ -37,4 +42,9 @@ public class DatosComentario {
     public void setApellidoUsuario(String apellidoUsuario) {
         this.apellidoUsuario = apellidoUsuario;
     }
+
+    public LocalDate getFechaComentario() {
+        return fechaComentario;
+    }
+    public void setFechaComentario(LocalDate fechaComentario) {}
 }
