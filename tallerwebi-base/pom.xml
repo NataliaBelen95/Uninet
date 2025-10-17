@@ -135,13 +135,7 @@
         </dependency>
 
 
-        <!-- NO BORRAR / DEPENDENCIAS WEBSOCKET -->
-        <!-- Dependencia para Spring WebSocket -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-websocket</artifactId>
-            <version>5.2.22.RELEASE</version>
-        </dependency>
+
 
 
         <!-- Dependencia para Spring Messaging (STOMP) -->

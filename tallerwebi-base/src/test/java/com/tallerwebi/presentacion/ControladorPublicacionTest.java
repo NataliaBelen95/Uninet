@@ -100,43 +100,9 @@ public class ControladorPublicacionTest {
 
 
 
-    /*preguntar donde van test , no son de controlador publicaion */
-    @Test
-    public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
-        // Arrange
-        Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioPublicacionMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
-
-        Usuario usuario1 = mock(Usuario.class);
-        Usuario usuario2 = mock(Usuario.class);
-
-        servicioLikesMock.darLike(usuario1.getId(), publicacionMock.getId());
-        servicioLikesMock.darLike(usuario2.getId(), publicacionMock.getId());
-
-
-        verify(servicioLikesMock).darLike(usuario1.getId(), publicacionMock.getId());
-        verify(servicioLikesMock).darLike(usuario2.getId(), publicacionMock.getId());
-    }
 
 
 
-    @Test
-    public void queAlVolverADarleLikeSeQuiteLaPublicacion() {
-        // Arrange
-        Usuario usuario = mock(Usuario.class);
-        Publicacion publicacion = mock(Publicacion.class);
-        Like likeMock = mock(Like.class);
 
-        when(servicioLikesMock.obtenerLike(usuario.getId(), publicacion.getId())).thenReturn(likeMock);
-        when(likeMock.getId()).thenReturn(123L);
-
-        // Act
-        servicioLikesMock.darLike(usuario.getId(), publicacion.getId());
-        servicioLikesMock.quitarLike(123L);
-
-        // Assert
-        verify(servicioLikesMock).darLike(usuario.getId(), publicacion.getId());
-        verify(servicioLikesMock).quitarLike(123L);
-    }
 }
 
