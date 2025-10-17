@@ -1,8 +1,5 @@
-package com.tallerwebi.infraestructura;
+package com.tallerwebi.dominio;
 
-import com.tallerwebi.dominio.Publicacion;
-import com.tallerwebi.dominio.RepositorioPublicacion;
-import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

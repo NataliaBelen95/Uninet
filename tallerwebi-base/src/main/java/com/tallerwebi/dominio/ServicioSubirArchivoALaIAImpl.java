@@ -1,7 +1,6 @@
-package com.tallerwebi.infraestructura;
+package com.tallerwebi.dominio;
 
 
-import com.tallerwebi.dominio.ServicioSubirArchivoALaIA;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
 

@@ -1,6 +1,5 @@
-package com.tallerwebi.infraestructura;
+package com.tallerwebi.dominio;
 
-import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

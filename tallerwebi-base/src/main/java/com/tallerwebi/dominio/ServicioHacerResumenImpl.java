@@ -1,7 +1,5 @@
-package com.tallerwebi.infraestructura;
+package com.tallerwebi.dominio;
 
-import com.tallerwebi.dominio.ComponentClienteGemini;
-import com.tallerwebi.dominio.ServicioHacerResumen;
 import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePudoGenerarResumenDelPDFException;
 import org.apache.pdfbox.pdmodel.PDDocument;
