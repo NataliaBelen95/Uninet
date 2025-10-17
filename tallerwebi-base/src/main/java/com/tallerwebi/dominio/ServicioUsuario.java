@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional  // Esto asegura que cualquier operación de Hibernate funcione con sesión y transacción
 public class ServicioUsuario {
     private final RepositorioUsuario repositorioUsuario;
 

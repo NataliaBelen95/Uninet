@@ -87,13 +87,15 @@ public class ControladorHerramientasIA {
     }//fin del metodo
 
     @PostMapping("/herramientas-IA/resumen")
-    public ModelAndView generarResumenPdf(@SessionAttribute("usuarioLogueado") DatosUsuario usuario, @RequestParam("archivoSeleccionado") String nombreArchivo) {
+    public ModelAndView generarResumenPdf(@SessionAttribute("usuarioLogueado") DatosUsuario usuario, @RequestParam("archivoSeleccionado") String nombreArchivoSeleccionado) {
 
         ModelMap model = new ModelMap();
         model.addAttribute("usuario", usuario);
 
+        // La ruta de la carpeta que usan todos los servicios
+        String rutaCarpeta = System.getProperty("user.dir") + "/archivos_pdf/";
         // Construimos la ruta absoluta del archivo
-        String rutaArchivo = "C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf/" + nombreArchivo;
+        String rutaArchivo = rutaCarpeta + nombreArchivoSeleccionado;
 
         try {
             File archivo = new File(rutaArchivo);

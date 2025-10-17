@@ -197,6 +197,7 @@ public class ControladorMiPerfil {
 
                 // Elimina la ruta en la base
                 usuario.setFotoPerfil(null);
+                datosUsuario.setFotoPerfil(null);
                 servicioUsuario.actualizar(usuario);
             }
 

@@ -1,7 +1,15 @@
+.btn-ia{
+    width: auto;
+    margin: 10px;
+}
 .archivos-subidos {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    background-color: var(--background-input);
+    border: 1px solid var(--borde);
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius);
 }
 
 /* Lista con scroll solo */
@@ -33,15 +41,81 @@
 /* Nombre del archivo */
 .lista-archivos label {
     font-size: 0.9rem;
-    color: var(--verde);
+
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.lista-archivos label a{
+    color: var(--texto);
+    white-space: nowrap; /* Mantiene el texto en una sola línea */
+    display: block;
+    overflow: hidden; /* Oculta cualquier texto que se desborde del contenedor */
+    /* Agrega puntos suspensivos (...) al final del texto cortado */
+    text-overflow: ellipsis;
+    max-width: 170px;
+}
+.lista-archivos label a:hover{
+    color: var(--verde-2);
+}
 
 /* Radio button */
-.lista-archivos input[type="radio"] {
+.lista-archivos input[type="radio"],
+.lista-archivos input[type="checkbox"] {
     width: 20px;
     transform: scale(1.1);
     margin: 0; /* sin margen extra */
 }
+/* 1. Contenedor para el toggle de Modo Borrado */
+.modo-selector {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.modo-selector label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Espacio entre el checkbox y el texto */
+    /* Asegura que el texto no se rompa en varias líneas inútilmente */
+    white-space: nowrap;
+}
+
+/* Redefinir el tamaño del checkbox dentro de .modo-selector */
+.modo-selector input[type="checkbox"] {
+    width: 20px; /* Restaura el ancho normal */
+    height: 20px; /* Restaura la altura normal */
+    transform: scale(1); /* Deshace cualquier transformación si es necesario */
+    margin: 0;
+}
+
+/* 2. Contenedor para los botones y el checkbox de "seleccionar todos" */
+.botones-accion {
+    /* Define cómo se alinean el checkbox "seleccionar todos" y los botones */
+    display: flex;
+    justify-content: space-between; /* Espacia el checkbox del lado izquierdo y los botones del lado derecho */
+    align-items: center; /* Centra verticalmente los elementos */
+    margin-top: 20px;
+    padding-left: 5px; /* Ajuste para alinear con el inicio de la lista si es necesario */
+}
+
+/* 3. Estilo para el contenedor del checkbox de "seleccionar todos" (lado izquierdo) */
+.seleccionar-todos-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Asegura que no se vea cuando JS lo oculta, aunque JS maneja esto con 'style="display: none;"' */
+}
+
+/* 4. Estilos para los botones deshabilitados (opcional, pero mejora la UX) */
+#btnGenerarResumen:disabled, #btnBorrarSeleccionados:disabled {
+    opacity: 0.5; /* Hace que se vean atenuados */
+    cursor: not-allowed; /* Muestra un cursor de "prohibido" */
+}
+
+.resumen-ia-display{
+
+}
+
+
