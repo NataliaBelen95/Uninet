@@ -1,12 +1,13 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.Publicacion;
+import com.tallerwebi.dominio.RepositorioPublicacion;
+import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 @Repository
 public class RepositorioPublicacionImpl implements RepositorioPublicacion {

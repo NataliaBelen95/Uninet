@@ -65,6 +65,7 @@ public class ControladorPublicacionTest {
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
     }
+
     @Test
     public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
         // Preparación
@@ -98,28 +99,4 @@ public class ControladorPublicacionTest {
     }
 
 
-
-
-    /*preguntar donde van test , no son de controlador publicaion */
-    @Test
-    public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
-        // Arrange
-        Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioPublicacionMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
-
-        Usuario usuario1 = mock(Usuario.class);
-        Usuario usuario2 = mock(Usuario.class);
-
-        servicioLikesMock.darLike(usuario1, publicacionMock);
-        servicioLikesMock.darLike(usuario2, publicacionMock);
-
-
-        verify(servicioLikesMock).darLike(usuario1, publicacionMock);
-        verify(servicioLikesMock).darLike(usuario2, publicacionMock);
-    }
-
-
-
-
 }
-

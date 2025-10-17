@@ -71,7 +71,7 @@
         </article>
         <div id="contenedor-publicaciones">
             <th:block th:each="dtopubli : ${datosPublicaciones}">
-                <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli})"></div>
+                <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
             </th:block>
         </div>
 

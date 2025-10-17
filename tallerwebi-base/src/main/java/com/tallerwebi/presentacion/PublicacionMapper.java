@@ -4,6 +4,8 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import org.springframework.stereotype.Component;
 
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +23,7 @@ public class PublicacionMapper {
         this.servicioComentario = servicioComentario;
     }
 
-    public DatosPublicacion toDto(Publicacion p) {
+    public DatosPublicacion toDto(Publicacion p, long usuarioId) {
         DatosPublicacion dto = new DatosPublicacion();
 
         dto.setId(p.getId());
@@ -32,7 +34,7 @@ public class PublicacionMapper {
         dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
-        dto.setDioLike(servicioLike.yaDioLike(usuario, p));
+        dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
 
 
         // Debug print
@@ -55,11 +57,12 @@ public class PublicacionMapper {
         return dto;
     }
 
-    private DatosComentario toComentarioDto(Comentario c) {
+    public DatosComentario toComentarioDto(Comentario c) {
         DatosComentario comentarioDto = new DatosComentario();
         comentarioDto.setTexto(c.getTexto());
         comentarioDto.setNombreUsuario(c.getUsuario().getNombre());
         comentarioDto.setApellidoUsuario(c.getUsuario().getApellido());
+        //comentarioDto.setFechaComentario(LocalDateTime.now());
         // Agregar otros campos necesarios de Comentario
         return comentarioDto;
     }

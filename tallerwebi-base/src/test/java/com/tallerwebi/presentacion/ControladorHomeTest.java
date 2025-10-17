@@ -109,8 +109,8 @@ public class ControladorHomeTest {
         dto2.setDescripcion("Publicación 2");
         dto2.setCantLikes(3);
 
-        when(publicacionMapperMock.toDto(pub1)).thenReturn(dto1);
-        when(publicacionMapperMock.toDto(pub2)).thenReturn(dto2);
+        when(publicacionMapperMock.toDto(pub1, usuarioLogueado.getId())).thenReturn(dto1);
+        when(publicacionMapperMock.toDto(pub2, usuarioLogueado.getId())).thenReturn(dto2);
 
         // Instanciar el controlador con mocks
         ControladorHome controlador = new ControladorHome(servicioPublicacionMock, servicioLikeMock, publicacionMapperMock);
