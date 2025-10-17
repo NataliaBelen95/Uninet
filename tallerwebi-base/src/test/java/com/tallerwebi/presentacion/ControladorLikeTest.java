@@ -1,39 +1,28 @@
 package com.tallerwebi.presentacion;
 
-import com.google.cloud.aiplatform.v1.Model;
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import org.apache.http.impl.BHttpConnectionBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-
 
 public class ControladorLikeTest {
 
-    private ControladorPublicacion controladorPublicacion;
     private ServicioPublicacion servicioPublicacionMock;
     private ServicioLike servicioLikesMock;
-    private ServicioLogin servicioLoginMock;
-    private HttpServletRequest requestMock;
-    private HttpSession sessionMock;
-    private Usuario usuarioMock;
-    private DatosUsuario datosUsuarioMock;
     private ServicioUsuario servicioUsuarioMock;
-    private ServicioComentario servicioComentarioMock;
-    private RedirectAttributes redirectAttributesMock;
     private PublicacionMapper publicacionMapperMock;
     private NotificacionService notificacionServiceMock;
+    private HttpServletRequest requestMock;
+    private HttpSession sessionMock;
+    private DatosUsuario datosUsuarioMock;
+    private ControladorLike controladorLike;
 
     @BeforeEach
     public void init() {
@@ -42,32 +31,57 @@ public class ControladorLikeTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         publicacionMapperMock = mock(PublicacionMapper.class);
         notificacionServiceMock = mock(NotificacionService.class);
-        servicioComentarioMock = mock(ServicioComentario.class);
 
-        controladorPublicacion = new ControladorPublicacion(
+        controladorLike = new ControladorLike(
                 servicioPublicacionMock,
                 servicioLikesMock,
                 servicioUsuarioMock,
                 publicacionMapperMock,
-                notificacionServiceMock,
-                servicioComentarioMock
+                notificacionServiceMock
         );
 
         requestMock = mock(HttpServletRequest.class);
-
         sessionMock = mock(HttpSession.class);
-
-        usuarioMock = mock(Usuario.class);
-        when(usuarioMock.getId()).thenReturn(42L);
-
         datosUsuarioMock = mock(DatosUsuario.class);
-        when(datosUsuarioMock.getId()).thenReturn(42L);
 
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
-    }
-    @Test
-    public void deberiaDevolverLaCantindadDeLikeYDtoDeLaPublicacionCuandoObtengoUnIdDeUnaPublicacionQueNoLeDiLike() {
+        when(datosUsuarioMock.getId()).thenReturn(10L);
     }
 
+    @Test
+    public void deberiaDevolverLaCantindadDeLikeYDtoDeLaPublicacionCuandoObtengoUnIdDeUnaPublicacionQueNoLeDiLike() {
+        Long idEjemplo = 1L;
+
+        Usuario usuario = new Usuario();
+        usuario.setId(10L);
+
+        Publicacion publicacion = new Publicacion();
+        publicacion.setId(idEjemplo);
+
+        DatosPublicacion dto = new DatosPublicacion();
+
+        when(servicioUsuarioMock.buscarPorId(10L)).thenReturn(usuario);
+        when(servicioPublicacionMock.obtenerPublicacionPorId(idEjemplo)).thenReturn(publicacion);
+        when(servicioLikesMock.yaDioLike(usuario, publicacion)).thenReturn(false);
+        when(publicacionMapperMock.toDto(publicacion)).thenReturn(dto);
+        when(servicioLikesMock.contarLikes(idEjemplo)).thenReturn(5);
+
+        Model modelMock = mock(Model.class);
+
+        // Llamada al mtodo day y quitar like
+        String resultado = controladorLike.darYQuitarLike(idEjemplo, modelMock, requestMock);
+
+        verify(servicioPublicacionMock).obtenerPublicacionPorId(idEjemplo);
+        verify(servicioLikesMock).yaDioLike(usuario, publicacion);
+        verify(servicioLikesMock).darLike(usuario, publicacion);
+        verify(servicioLikesMock).contarLikes(idEjemplo);
+        verify(publicacionMapperMock).toDto(publicacion);
+        verify(notificacionServiceMock).enviarMensaje("/topic/publicacion/" + idEjemplo, "5");
+        verify(modelMock).addAttribute("dtopubli", dto);
+        verify(modelMock).addAttribute("cantLikes", 5);
+
+        assertEquals("templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, cantidadLikes=${cantLikes})", resultado);
+        assertTrue(dto.getDioLike());
+    }
 }
