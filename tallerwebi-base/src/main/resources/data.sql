@@ -38,3 +38,6 @@ SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
 -- Géneros
 INSERT INTO genero (nombre) VALUES ('Femenino'), ('Masculino'), ('Otro'), ('Prefiero no decirlo');
 
+ALTER TABLE Publicacion
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_general_ci;

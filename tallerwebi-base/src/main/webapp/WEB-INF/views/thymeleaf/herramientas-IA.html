@@ -94,6 +94,14 @@
             <h3>Resumen generado a partir del pdf subido</h3>
             <div class="resumen-ia-display" th:if="${resumen}" th:utext="${resumen}">
             </div>
+            <!-- para compartir -->
+            <form th:action="@{/herramientas-IA/compartir-resumen}" method="post" accept-charset="UTF-8">
+                <textarea name="resumen" th:text="${resumen}" hidden></textarea>
+                <input type="hidden" name="archivoNombre" th:value="${archivoNombre}" />
+                <button type="submit">Compartir resumen</button>
+            </form>
+            <!---->
+
             <button class="btn btn-ia" disabled>Guardar como pdf</button>
         </article>
     </section>

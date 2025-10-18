@@ -1,13 +1,14 @@
 package com.tallerwebi.presentacion;
 
 
-import com.tallerwebi.dominio.ServicioHacerResumen;
-import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
-import com.tallerwebi.dominio.ServicioSubirArchivoALaIA;
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePudoGenerarResumenDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
+import com.tallerwebi.infraestructura.ServicioConvertirTextoApdf;
+import com.tallerwebi.infraestructura.ServicioConvertirTextoApdfImpl;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 
 @Controller
@@ -30,10 +34,12 @@ public class ControladorHerramientasIA {
     private final ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos;
     private final ServicioHacerResumen servicioHacerResumen;
 
-    public ControladorHerramientasIA(ServicioSubirArchivoALaIA servicioSubirArchivoALaIA, ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos,ServicioHacerResumen servicioHacerResumen) {
+
+    public ControladorHerramientasIA(ServicioSubirArchivoALaIA servicioSubirArchivoALaIA, ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos, ServicioHacerResumen servicioHacerResumen) {
         this.servicioSubirArchivoALaIA = servicioSubirArchivoALaIA;
         this.servicioMostrarArchivosSubidos = servicioMostrarArchivosSubidos;
         this.servicioHacerResumen = servicioHacerResumen;
+
     }
 
     //con este mostramos los datos del usuario en la página
@@ -111,10 +117,11 @@ public class ControladorHerramientasIA {
             // 🔍 IMPRIMÍS EL RESUMEN EN CONSOLA
             System.out.println("Resumen generado:");
             System.out.println(resumen); // Acá ves si está vacío, cortado, etc.
-//agrego el resumen al model
+           //agrego el resumen al model
             model.addAttribute("resumen", resumen);
             model.addAttribute("mensaje", "Resumen generado exitosamente.");
-
+            //agrego Nombre al mode//
+            model.addAttribute("archivoNombre", nombreArchivoSeleccionado);
         } catch (NoSePudoExtraerElTextoDelPDFException | NoSePudoGenerarResumenDelPDFException e) {
             model.addAttribute("mensaje", e.getMessage());
         }
@@ -125,4 +132,5 @@ public class ControladorHerramientasIA {
 
         return new ModelAndView("herramientas-IA", model);
     }
+
 }//fin de la clase

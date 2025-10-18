@@ -3,11 +3,17 @@ package com.tallerwebi.infraestructura;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.NoSeEncuentraPublicacion;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
+import com.tallerwebi.presentacion.DatosUsuario;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,21 +23,22 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
+import org.springframework.mock.web.MockMultipartFile;
 @Service("servicioPublicado")
 @Transactional
 public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
     private final RepositorioComentario repositorioComentario;
-
+    private final ServicioUsuario servicioUsuario;
     private final RepositorioPublicacion repositorioPublicacion;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion, ServicioUsuario servicioUsuario) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
         this.repositorioPublicacion = repositorioPublicacion;
+        this.servicioUsuario = servicioUsuario;
 
     }
 
@@ -136,6 +143,47 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     @Override
     public Publicacion obtenerPublicacion(long id) {
         return repositorioPublicacion.obtenerPublicacionCompleta(id);
+    }
+
+    @Override
+    public void compartirResumen(DatosUsuario dtoUsuario, String resumen, String nombreArchivo) throws PublicacionFallida {
+        Usuario usuario = servicioUsuario.buscarPorId(dtoUsuario.getId());
+
+        Publicacion publicacion = new Publicacion();
+
+       if (resumen != null && !resumen.trim().isEmpty()) {
+            publicacion.setDescripcion("📄 Resumen generado por IA:\n\n" + resumen);
+        }
+
+       MultipartFile archivo = null;
+
+        if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+            String rutaArchivo = System.getProperty("user.dir") + "/archivos_pdf/" + nombreArchivo;
+            File file = new File(rutaArchivo);
+
+            if (!file.exists()) {
+                throw new PublicacionFallida("El archivo PDF original no existe.");
+            }
+
+            try {
+                Path path = file.toPath();
+                String tipoContenido = Files.probeContentType(path);
+                byte[] contenido = Files.readAllBytes(path);
+
+                archivo = new MockMultipartFile(
+                       nombreArchivo,
+                        nombreArchivo,
+                        tipoContenido,
+                       contenido
+                );
+            } catch (IOException e) {
+                throw new PublicacionFallida("Error al leer el archivo para compartirlo.");
+            }
+        }
+
+       // Usar el método ya existente para validar y guardar la publicación
+       realizar(publicacion, usuario, archivo);
+
     }
 
 }
