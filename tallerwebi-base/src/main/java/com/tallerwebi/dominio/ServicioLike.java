@@ -15,6 +15,8 @@ public interface ServicioLike {
     int contarLikes(long publiId);
 
     Like obtenerLike(long usuarioId, long publiId);
+
+    void toggleLike(long usuarioId, long publicacionId);
 }
 
 

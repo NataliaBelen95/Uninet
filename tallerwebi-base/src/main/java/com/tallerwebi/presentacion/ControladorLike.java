@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,51 +35,32 @@ public class ControladorLike {
         }
 
     @PostMapping("/publicacion/darLike/{id}")
-    @Transactional
     public String darYQuitarLike(@PathVariable long id, Model model, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
         if (datos != null) {
-            try {
-                Usuario usuario = new Usuario();
-                usuario.setId(datos.getId());
-                Publicacion publicacion = servicioPublicacion.obtenerPublicacionPorId(id);
+            try {                          //usuarioid, publiid
+                servicioLike.toggleLike(datos.getId(), id);
 
-                if (publicacion != null) {
-                    boolean yaDioLike = servicioLike.yaDioLike(datos.getId(), publicacion.getId());
+                int cantLikes = servicioLike.contarLikes(id);
+                notificacionService.enviarMensaje("/topic/publicacion/" + id, String.valueOf(cantLikes));
 
-                    if (yaDioLike) {
-                        Like like = servicioLike.obtenerLike(usuario.getId(), publicacion.getId());
-                        if (like != null) {
-                            servicioLike.quitarLike(like.getId());
-                        }
-                    } else {
-                        servicioLike.darLike(datos.getId(), publicacion.getId());
-                    }
+                Publicacion publicacion = servicioPublicacion.obtenerPublicacion(id);
 
-                    int cantLikes = servicioLike.contarLikes(publicacion.getId());
-                    notificacionService.enviarMensaje("/topic/publicacion/" + publicacion.getId(), String.valueOf(cantLikes));
-
-                    DatosPublicacion dto = publicacionMapper.toDto(publicacion, datos.getId());
-                    dto.setDioLike(!yaDioLike);
-
-                    model.addAttribute("dtopubli", dto);
-                    model.addAttribute("cantLikes", cantLikes);
-
-                    return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, cantidadLikes=${cantLikes})";
-                } else {
-                    System.err.println("Publicación no encontrada.");
-                    return "error";
-                }
+                DatosPublicacion dto = publicacionMapper.toDto(publicacion, datos.getId());
+                dto.setDioLike(servicioLike.yaDioLike(datos.getId(), id)); // actualizar el estado real
+                Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+                model.addAttribute("dtopubli", dto);
+                model.addAttribute("cantLikes", cantLikes);
+                model.addAttribute("usuario", usuario);
+                return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, usuario=${usuario})";
             } catch (Exception e) {
                 System.err.println("EXCEPCIÓN DETECTADA EN darLikeFragment:");
-                e.printStackTrace();  // <-- esto imprimirá el error real
-                throw e;  // importante para que Spring lo marque como rollback si es necesario
+                e.printStackTrace();
+                throw e;
             }
         }
-
         return "error";
     }
-
 
     }

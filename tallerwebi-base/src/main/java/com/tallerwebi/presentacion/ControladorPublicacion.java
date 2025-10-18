@@ -88,7 +88,7 @@ public class ControladorPublicacion {
     @PostMapping("/publicacion/eliminar/{id}")
     public ModelAndView eliminar(@PathVariable long id, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        Publicacion publicacionAEliminar = servicioPublicacion.obtenerPublicacionPorId(id);
+        Publicacion publicacionAEliminar = servicioPublicacion.obtenerPublicacion(id);
 
         if (datos != null && publicacionAEliminar != null) {
             try {
@@ -134,7 +134,7 @@ public class ControladorPublicacion {
         }
 
         model.addAttribute("comentarios", servicioPublicacion.obtenerComentariosDePublicacion(publicacion.getId()));
-        model.addAttribute("cantlikes", servicioLike.contarLikes(publicacion.getId()));
+        model.addAttribute("cantLikes", servicioLike.contarLikes(publicacion.getId()));
         model.addAttribute("cantComentarios", servicioComentario.contarComentarios(publicacion.getId()));
 
         return "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, comentarios=${comentarios}, likes=${cantLikes}, cantComentarios=${cantComentarios}, usuario=${usuario})";

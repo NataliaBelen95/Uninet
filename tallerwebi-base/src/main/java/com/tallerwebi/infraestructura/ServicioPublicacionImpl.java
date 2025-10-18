@@ -107,12 +107,6 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         repositorio.guardar(publicacion);
     }
 
-
-    @Override
-    public Publicacion obtenerPublicacionPorId(long id) {
-        return repositorio.buscarPorId(id);
-    }
-
     @Override
     public List<Publicacion> findAll() {
         return repositorio.listarTodas();
@@ -120,7 +114,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     @Override
     public int obtenerCantidadDeLikes(long id) {
-        Publicacion p = obtenerPublicacionPorId(id);
+        Publicacion p = obtenerPublicacion(id);
         return p.getLikes();
     }
 
@@ -140,10 +134,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
 
     @Override
-    public Publicacion obtenerPublicacion(Long id) {
+    public Publicacion obtenerPublicacion(long id) {
         return repositorioPublicacion.obtenerPublicacionCompleta(id);
     }
-
-
 
 }

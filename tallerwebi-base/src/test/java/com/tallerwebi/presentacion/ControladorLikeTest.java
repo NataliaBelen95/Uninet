@@ -59,11 +59,14 @@ public class ControladorLikeTest {
         Publicacion publicacion = new Publicacion();
         publicacion.setId(idEjemplo);
 
-        DatosPublicacion dto = new DatosPublicacion();
+        DatosPublicacion dto = new DatosPublicacion(); // crea DTO real
+        dto.setDioLike(false); // inicia en false
+
 
         when(servicioUsuarioMock.buscarPorId(10L)).thenReturn(usuario);
-        when(servicioPublicacionMock.obtenerPublicacionPorId(idEjemplo)).thenReturn(publicacion);
-        when(servicioLikesMock.yaDioLike(usuario.getId(), publicacion.getId())).thenReturn(false);
+        when(servicioPublicacionMock.obtenerPublicacion(idEjemplo)).thenReturn(publicacion);
+        when(servicioLikesMock.yaDioLike(usuario.getId(), publicacion.getId())).thenReturn(true);
+
         when(publicacionMapperMock.toDto(publicacion, usuario.getId())).thenReturn(dto);
         when(servicioLikesMock.contarLikes(idEjemplo)).thenReturn(5);
 
@@ -72,16 +75,20 @@ public class ControladorLikeTest {
         // Llamada al mtodo day y quitar like
         String resultado = controladorLike.darYQuitarLike(idEjemplo, modelMock, requestMock);
 
-        verify(servicioPublicacionMock).obtenerPublicacionPorId(idEjemplo);
-        verify(servicioLikesMock).yaDioLike(usuario.getId(), publicacion.getId());
-        verify(servicioLikesMock).darLike(usuario.getId(), publicacion.getId());
+        verify(servicioPublicacionMock).obtenerPublicacion(idEjemplo);
+        verify(servicioLikesMock).toggleLike(usuario.getId(), idEjemplo);
+        //ya llamo a toggle
+        //verify(servicioLikesMock).darLike(usuario.getId(), publicacion.getId());
+        verify(servicioLikesMock).toggleLike(usuario.getId(), idEjemplo);
         verify(servicioLikesMock).contarLikes(idEjemplo);
         verify(publicacionMapperMock).toDto(publicacion, usuario.getId());
+
         verify(notificacionServiceMock).enviarMensaje("/topic/publicacion/" + idEjemplo, "5");
         verify(modelMock).addAttribute("dtopubli", dto);
         verify(modelMock).addAttribute("cantLikes", 5);
+        verify(modelMock).addAttribute("usuario", usuario);
 
-        assertEquals("templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, cantidadLikes=${cantLikes})", resultado);
+        assertEquals( "templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${dtopubli}, usuario=${usuario})", resultado);
         assertTrue(dto.getDioLike());
     }
 }
