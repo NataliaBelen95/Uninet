@@ -5,7 +5,7 @@ import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
-import com.tallerwebi.infraestructura.ServicioConvertirTextoApdf;
+import com.tallerwebi.infraestructura.ServicioSubirResumenAPublicacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

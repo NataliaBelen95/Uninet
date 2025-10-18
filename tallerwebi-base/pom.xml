@@ -85,14 +85,13 @@
             <version>${servletapi.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-<!--            PARA USAR MULTIpartFile no solo en test-->
-            <!--            <scope>test</scope>-->
+            <scope>test</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

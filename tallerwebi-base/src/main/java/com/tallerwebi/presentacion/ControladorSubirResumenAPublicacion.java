@@ -1,18 +1,21 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.infraestructura.ServicioConvertirTextoApdf;
+import com.tallerwebi.dominio.excepcion.PublicacionFallida;
+import com.tallerwebi.infraestructura.ServicioSubirResumenAPublicacion;
+import com.tallerwebi.infraestructura.ServicioSubirResumenAPublicacion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;  // CORRECTO PARA PRODUCCIÓN
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -21,25 +24,23 @@ import java.util.UUID;
 @Controller
 public class ControladorSubirResumenAPublicacion {
     private ServicioUsuario servicioUsuario;
-    private ServicioConvertirTextoApdf servicioConvertirTextoApdf  ;
+    private ServicioSubirResumenAPublicacion servicioSubirResumenAPublicacion  ;
     private ServicioPublicacion servicioPublicacion;
     private ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos;
 
     @Autowired
-    public ControladorSubirResumenAPublicacion(ServicioUsuario servicioUsuario, ServicioConvertirTextoApdf ServicioConvertirTextoApdf,
-                                               ServicioPublicacion ServicioPublicacion, ServicioMostrarArchivosSubidos ServicioMostrarArchivosSubidos) {
+    public ControladorSubirResumenAPublicacion(ServicioUsuario servicioUsuario, ServicioSubirResumenAPublicacion servicioSubirResumenAPublicacion, ServicioMostrarArchivosSubidos ServicioMostrarArchivosSubidos, ServicioPublicacion  servicioPublicacion) {
         this.servicioUsuario = servicioUsuario;
-        this.servicioConvertirTextoApdf= ServicioConvertirTextoApdf;
-        this.servicioPublicacion = ServicioPublicacion;
+        this.servicioSubirResumenAPublicacion= servicioSubirResumenAPublicacion;
+        this.servicioPublicacion = servicioPublicacion;
         this.servicioMostrarArchivosSubidos = ServicioMostrarArchivosSubidos;
     }
-
-
     @PostMapping("/herramientas-IA/compartir-resumen")
     public ModelAndView compartirResumenComoPublicacion(
             @SessionAttribute("usuarioLogueado") DatosUsuario usuario,
-            @RequestParam("resumen") String resumen,
-            @RequestParam("archivoNombre") String nombreArchivoOriginal) {
+            @RequestParam("resumen") String resumen,  // Recibimos el resumen en formato texto (HTML)
+            @RequestParam("archivoNombre") String nombreArchivoOriginal,  // El nombre del archivo, si ya existe
+            @RequestParam(value = "archivo", required = false) MultipartFile archivo) {  // Recibimos el archivo HTML como MultipartFile
 
         ModelMap model = new ModelMap();
         model.addAttribute("usuario", usuario);
@@ -47,66 +48,43 @@ public class ControladorSubirResumenAPublicacion {
         try {
             Usuario user = servicioUsuario.buscarPorId(usuario.getId());
 
-            Publicacion publicacion = new Publicacion();
+            MultipartFile archivoAdjunto = archivo;  // El archivo que se sube con la solicitud
 
-            MultipartFile archivoAdjunto;
-
-            // Si el resumen es mayor a 200 caracteres, lo convertimos en PDF
-            if (resumen.length() > 200) {
-                // Generamos PDF con el resumen
+            if (archivo == null || archivo.isEmpty()) {
+                // Si no se especifica un archivo, generamos el PDF del resumen HTML
                 String nombrePdfGenerado = "resumen_" + UUID.randomUUID() + ".pdf";
-                File pdfGenerado = servicioConvertirTextoApdf.generarPdf(resumen, nombrePdfGenerado);
 
+                // Generamos el PDF a partir del resumen HTML
+                File pdfGenerado = servicioSubirResumenAPublicacion.generarPdf(resumen, nombrePdfGenerado);
 
-                // Convertimos el archivo PDF en MultipartFile
-                Path path = pdfGenerado.toPath();
-                String tipoContenido = Files.probeContentType(path);
-                byte[] contenido = Files.readAllBytes(path);
-                archivoAdjunto = new MockMultipartFile(nombrePdfGenerado, nombrePdfGenerado, tipoContenido, contenido);
+                // Convertimos el archivo PDF a MultipartFile para que sea subido
+                archivoAdjunto = servicioSubirResumenAPublicacion.obtenerArchivoPdf(nombrePdfGenerado);
 
-                // Descripción corta indicando que hay un resumen en el archivo
-                publicacion.setDescripcion("📄 Resumen adjunto en PDF.");
+                model.addAttribute("mensaje", "Resumen generado y compartido como PDF.");
             } else {
-                // Si es corto, se puede poner como texto en la publicación
-                publicacion.setDescripcion("📄 Resumen generado por IA:\n\n" + resumen);
-
-                // También podés adjuntar el archivo original si querés (opcional)
-                // Acá lo leemos si `nombreArchivoOriginal` tiene valor
-                archivoAdjunto = null;
-                if (nombreArchivoOriginal != null && !nombreArchivoOriginal.isEmpty()) {
-                    String rutaArchivo = System.getProperty("user.dir") + "/archivos_pdf/" + nombreArchivoOriginal;
-                    File file = new File(rutaArchivo);
-
-                    if (!file.exists()) {
-                        model.addAttribute("mensaje", "El archivo original no existe para compartir.");
-                        return new ModelAndView("herramientas-IA", model);
-                    }
-
-                    Path path = file.toPath();
-                    String tipoContenido = Files.probeContentType(path);
-                    byte[] contenido = Files.readAllBytes(path);
-                    archivoAdjunto = new MockMultipartFile(
-                            nombreArchivoOriginal,
-                            nombreArchivoOriginal,
-                            tipoContenido,
-                            contenido
-                    );
-                }
+                // Si ya existe el archivo HTML, lo buscamos en la carpeta /archivos_html
+                // Asegúrate de que el archivo HTML esté guardado en el directorio adecuado
+                archivoAdjunto = servicioSubirResumenAPublicacion.obtenerArchivoPdf(nombreArchivoOriginal);  // Método para obtener el archivo ya existente
+                model.addAttribute("mensaje", "Resumen original como archivo PDF.");
             }
 
-            // Publicamos
+            // Crear la publicación con el archivo adjunto
+            Publicacion publicacion = new Publicacion();
+            publicacion.setDescripcion("📄 Resumen adjunto como archivo PDF.");
             servicioPublicacion.realizar(publicacion, user, archivoAdjunto);
 
-            model.addAttribute("mensaje", "Resumen compartido como publicación.");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("mensaje", "Error al compartir el resumen: " + e.getMessage());
+        } catch (PublicacionFallida e) {
+            model.addAttribute("mensaje", "Error al realizar la publicación: " + e.getMessage());
+        } catch (IOException e) {
+            model.addAttribute("mensaje", "Error al procesar el archivo: " + e.getMessage());
         }
 
+        // Listar los archivos PDF disponibles
         List<String> archivos = servicioMostrarArchivosSubidos.listarArchivosPdf();
         model.addAttribute("archivos", archivos);
 
         return new ModelAndView("herramientas-IA", model);
     }
+
+
 }

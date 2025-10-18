@@ -74,6 +74,17 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
         return publicacion;
     }
+     //ver si existe por hash Para que no se repita E impida Crear Una publi nueva
+    @Override
+    public boolean existeHashResumen(String hash, Long usuarioId) {
+        Long count = sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(p) FROM Publicacion p WHERE p.hashResumen = :hash AND p.usuario.id = :usuarioId", Long.class)
+                .setParameter("hash", hash)
+                .setParameter("usuarioId", usuarioId)
+                .uniqueResult();
+
+        return count != null && count > 0;
+    }
 }
 
 
