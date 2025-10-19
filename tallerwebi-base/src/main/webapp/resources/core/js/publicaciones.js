@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JS listo y cargado");
 
+
     // Configuración de PDF.js
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
 
@@ -159,8 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Adjuntar archivo desde input
-        const botonAdjuntar = document.querySelector('button[name="archivo"]');
-        const inputArchivo = document.querySelector('input[name="archivos"]');
+       const botonAdjuntar = document.getElementById('botonAdjuntar');
+          const inputArchivo = document.getElementById('inputArchivo');
 
         if (botonAdjuntar && inputArchivo) {
             botonAdjuntar.addEventListener('click', () => {

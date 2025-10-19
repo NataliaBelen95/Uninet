@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tu título</title>
+</head>
 <body>
 
 <form th:fragment="form-publi(publicacion)" class="box_comentario" method="POST" action="/spring/publicaciones" enctype="multipart/form-data">
     <textarea name="descripcion" id="publicacion" placeholder="¿Qué estas pensando?"></textarea>
-    <input class="input-oculto" type="file" name="archivos" accept=".jpg,.jpeg,.png,.pdf" multiple />
+    <!-- Input oculto que se completa si venís de una vista como 'subir-resumen' -->
+    <input type="hidden" name="archivoNombre" th:value="${archivoPdfPath}" />
+    <input class="input-oculto" type="file" id="inputArchivo"  name="archivo" accept=".jpg,.jpeg,.png,.pdf" multiple />
     <p th:if="${errorPubli != null}" th:text="${errorPubli}" class="error"></p>
 
     <div class="box_botones_acciones">
-        <button name="archivo" class="botones_acciones" type="button">
+        <button id="botonAdjuntar" name="archivo" class="botones_acciones" type="button">
             <img th:src="@{/imagenes/adjuntar.png}" alt="Adjuntar" />
         </button>
         <button type="button" class="botones_acciones">

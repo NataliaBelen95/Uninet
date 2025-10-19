@@ -92,24 +92,22 @@
 
         <article class="estructura">
             <h3>Resumen generado a partir del pdf subido</h3>
-            <div class="resumen-ia-display" th:if="${resumen}" th:utext="${resumen}">
+            <div class="resumen-ia-display" th:if="${resumen}" th:text="${resumen}">
             </div>
-            <!--compartir-->
-            <form th:action="@{/herramientas-IA/compartir-resumen}" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
-                <!-- Este es el resumen que se pasa desde la IA -->
-                <textarea name="resumen" th:text="${resumen}" hidden></textarea>
 
-                <!-- Nombre del archivo HTML generado -->
-                <input type="hidden" name="archivoNombre" th:value="${archivoNombre}" />
+            <!--compartir resumen, esto lo carga en la viste html de compartir-->
+            <form th:action="@{/subir-resumen}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="resumen" th:value="${resumen}" />
 
-                <!-- Campo para subir el archivo HTML -->
-                <input type="file" name="archivo" accept=".html" />
-
-                <button type="submit">Compartir resumen</button>
+                <button type="submit" class="btn btn-primary" th:disabled="${resumen == null or #strings.isEmpty(resumen)}">
+                    Compartir resumen
+                </button>
             </form>
-
-
-            <button class="btn btn-ia" disabled>Guardar como pdf</button>
+            <!-- -->
+            <form th:action="@{/descargar-resumen-pdf}" method="post" enctype="multipart/form-data" target="_blank">
+                <textarea name="resumenHtml" style="display:none;" th:text="${resumen}"></textarea>
+                <button type="submit" class="btn btn-primary">Descargar resumen PDF</button>
+            </form>
         </article>
     </section>
 

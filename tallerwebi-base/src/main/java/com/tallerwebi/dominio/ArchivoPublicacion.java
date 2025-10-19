@@ -18,9 +18,9 @@ public class ArchivoPublicacion {
 
     private String tipoContenido;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publicacion_id")
-    private Publicacion publicacion;  // Relación con Publicacion
+    @OneToOne
+    @JoinColumn(name = "publicacion_id") // aquí se crea la columna en ArchivoPublicacion
+    private Publicacion publicacion;
 
     // Getters y setters
     public Long getId() {

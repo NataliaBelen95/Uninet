@@ -17,8 +17,10 @@ public class Publicacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private ArchivoPublicacion archivo;  // Ahora solo un archivo
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "archivo_id") // FK en la tabla Publicacion
+    private ArchivoPublicacion archivo;
 
     @Column(nullable = true, length = 200)
     private String descripcion;

@@ -48,7 +48,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         this.servicioUsuario = servicioUsuario;
 
     }
-
+@Override
     public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida {
 
         boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
@@ -67,9 +67,6 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         publicacion.setFechaPublicacion(LocalDateTime.now());
         publicacion.setUsuario(usuario);
 
-        if (publicacion.getArchivo() != null) {
-            throw new PublicacionFallida("Ya existe un archivo asociado a esta publicación");
-        }
 
         if (archivo != null && !archivo.isEmpty()) {
             String tipo = archivo.getContentType();
@@ -100,6 +97,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
         repositorio.guardar(publicacion);
     }
+
 
     @Override
     public List<Publicacion> findAll() {
@@ -132,40 +130,51 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorioPublicacion.obtenerPublicacionCompleta(id);
     }
 
-
     @Override
-    public void compartirResumen(DatosUsuario dtoUsuario, String resumen, String nombreArchivo) throws PublicacionFallida {
-        // Buscar al usuario
-        Usuario usuario = servicioUsuario.buscarPorId(dtoUsuario.getId());
+    public void realizar(Publicacion publicacion, Usuario usuario, File archivo) throws PublicacionFallida, IOException {
+        boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
+        boolean sinArchivo = archivo == null || !archivo.exists();
 
-        Publicacion publicacion = new Publicacion();
-
-        // Si hay resumen, lo agregamos a la publicación
-        if (resumen != null && !resumen.trim().isEmpty()) {
-            publicacion.setDescripcion("📄 Resumen generado por IA:\n\n" + resumen);
-        }
-
-        File archivo = null;
-
-        // Si hay un nombre de archivo, buscamos el archivo correspondiente
-        if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
-            String rutaArchivo = System.getProperty("user.dir") + "/archivos_pdf/" + nombreArchivo;
-            archivo = new File(rutaArchivo);
-
-            // Si el archivo no existe, lanzamos una excepción
-            if (!archivo.exists()) {
-                throw new PublicacionFallida("El archivo PDF original no existe.");
-            }
-        }
-
-        // Si no hay ni descripción ni archivo, no podemos publicar
-        if ((publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty())
-                && (archivo == null)) {
+        if (descripcionVacia && sinArchivo) {
             throw new PublicacionFallida("La publicación debe tener texto o al menos un archivo adjunto");
         }
 
-        // Realizamos la publicación con los datos que tenemos (publicación, usuario y archivo)
-        realizar(publicacion, usuario, (MultipartFile) archivo);
+        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
+            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
+        }
+
+        publicacion.setFechaPublicacion(LocalDateTime.now());
+        publicacion.setUsuario(usuario);
+
+
+
+        if (archivo != null && archivo.exists()) {
+            String tipo = Files.probeContentType(archivo.toPath());
+            if (tipo == null || !tipo.equals("application/pdf")) {
+                throw new PublicacionFallida("Solo se permiten archivos PDF generados automáticamente");
+            }
+
+            String nombreOriginal = archivo.getName();
+            String nombreArchivo = UUID.randomUUID() + "_" + nombreOriginal;
+            Path rutaArchivo = Paths.get(System.getProperty("user.dir"), "archivosPublicacion", nombreArchivo);
+
+            try {
+                Files.createDirectories(rutaArchivo.getParent());
+                Files.copy(archivo.toPath(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new PublicacionFallida("Error al guardar archivo: " + nombreOriginal);
+            }
+
+            ArchivoPublicacion archivoPub = new ArchivoPublicacion();
+            archivoPub.setNombreArchivo(nombreArchivo);
+            archivoPub.setRutaArchivo(rutaArchivo.toString());
+            archivoPub.setTipoContenido(tipo);
+            archivoPub.setPublicacion(publicacion);
+
+            publicacion.setArchivo(archivoPub);
+        }
+
+        repositorio.guardar(publicacion);
     }
 
 

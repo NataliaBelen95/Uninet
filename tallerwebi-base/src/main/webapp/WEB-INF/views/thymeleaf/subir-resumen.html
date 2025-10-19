@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Herramientas IA</title>
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <link rel="stylesheet" th:href="@{/css/archivos-subidos.css}"/>
+
+</head>
+<body>
+<header>
+    <nav th:replace="templates/nav :: nav"></nav>
+</header>
+<main class="contenedor_general">
+    <aside class="columnaUno">
+        <div class="estructura">
+            <img class="user"
+                 th:src="${usuario != null && usuario.fotoPerfil != null} ? @{/${usuario.fotoPerfil}} : @{/imagenes/user.png}"
+                 alt="Foto de perfil">
+            <h2 class="palabra" th:if="${usuario != null}" th:text="${usuario.nombre}"></h2>
+            <h2 class="palabra" th:if="${usuario != null}" th:text="${usuario.apellido}"></h2>
+            <ul>
+                <li class="titulo" th:text="${usuario != null and usuario.carrera != null} ? usuario.carrera.nombre : 'Sin carrera'">Carrera</li>
+            </ul>
+        </div>
+        <div class="estructura box_columnaUno">
+            <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
+            <a href=""><img th:src="@{/imagenes/guardados.png}"> Elementos guardados</a>
+            <!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
+            <a th:href="@{/herramientas-IA.html}" class="btn_subir_archivos"><img th:src="@{/imagenes/pdf-icon.png}">Herramientas IA</a>
+            <!--<a href=""><img src="../../../resources/core/imagenes/grupos.png"> Grupos</a>
+            <a href=""><img src="../../../resources/core/imagenes/guardados.png"> Elementos guardados</a>-->
+        </div>
+    </aside>
+    <section class="columnaDos">
+
+        <article class="estructura">
+            <a th:href="@{/archivos_pdf/{archivo}(archivo=${archivoPdfPath})}" target="_blank">
+                <img src="/img/pdf-icon.png" alt="PDF" />
+                Ver PDF generado
+            </a>
+            <form th:action="@{/publicaciones}" method="post">
+                <textarea name="descripcion" placeholder="Agrega una descripción..."></textarea>
+                <input type="hidden" name="archivoNombre" th:value="${archivoPdfPath}" />
+                <!-- No hay input file porque ya está el archivo generado -->
+                <button type="submit">Publicar</button>
+            </form>
+        </article>
+
+
+    </section>
+
+    <aside class="columnaTres">
+        <div class="estructura">
+            <h2>Alumnos cursando...</h2>
+            <p>Ingeniería en Sistemas</p>
+            <div class="recomendaciones_users" >
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+                <img class="user2" th:src="@{/imagenes/user2.png}">
+            </div>
+        </div>
+    </aside>
+
+</main>
+
+<script type="module" th:src="@{js/tema.js}"></script>
+
+</body>
+</html>

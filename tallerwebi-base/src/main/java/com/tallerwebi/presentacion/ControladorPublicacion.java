@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 public class ControladorPublicacion {
@@ -41,45 +43,54 @@ public class ControladorPublicacion {
 
 
     }
-
     @PostMapping("/publicaciones")
     public ModelAndView agregarPublicacion(@RequestParam("descripcion") String descripcion,
-                                           @RequestParam("archivos") MultipartFile archivo,
+                                           @RequestParam(value = "archivo", required = false) MultipartFile archivo,
+                                           @RequestParam(value = "archivoNombre", required = false) String archivoNombre,
                                            HttpServletRequest request,
-                                           RedirectAttributes redirectAttributes) throws PublicacionFallida {
+                                           RedirectAttributes redirectAttributes) throws PublicacionFallida, IOException {
         DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        //System.out.println("datosUsuario: " + datosUsuario);
 
-        if (datosUsuario != null) {
-            try {
-                // Obtener el usuario logueado
-                Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
-                Publicacion publicacion = new Publicacion();
-                publicacion.setDescripcion(descripcion);
-                servicioPublicacion.realizar(publicacion, usuario, archivo); // Crear la publicación
-                DatosPublicacion dto = publicacionMapper.toDto(publicacion, datosUsuario.getId());
-
-                // Enviar la notificación en tiempo real
-                notificacionService.enviarMensajePubli("/topic/publicaciones", dto);
-
-                // Obtener la URL de donde el usuario vino (referer)
-                String referer = request.getHeader("Referer");
-
-                // Si el referer contiene "/perfil/", redirige al perfil, sino a la home
-                if (referer != null && referer.contains("/perfil/")) {
-                    // Redirigir al perfil del usuario
-                    return new ModelAndView("redirect:/perfil/" + usuario.getId());
-                } else {
-                    // Redirigir a la home
-                    return new ModelAndView("redirect:/home");
-                }
-
-            } catch (PublicacionFallida e) {
-                redirectAttributes.addFlashAttribute("errorPubli", e.getMessage());
-            }
+        if (datosUsuario == null) {
+            return new ModelAndView("redirect:/login");
         }
 
-        // Si no hay usuario o hubo algún error, redirigir a la home
+        try {
+            Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+            Publicacion publicacion = new Publicacion();
+            publicacion.setDescripcion(descripcion);
+
+            if (archivo != null && !archivo.isEmpty()) {
+                // Caso: usuario sube archivo desde disco
+                servicioPublicacion.realizar(publicacion, usuario, archivo);
+            } else if (archivoNombre != null && !archivoNombre.isEmpty()) {
+                // Caso: usuario publicó un resumen generado que ya está en el servidor
+                File archivoEnServidor = new File(System.getProperty("user.dir") + "/archivos_pdf/" + archivoNombre);
+                if (!archivoEnServidor.exists()) {
+                    throw new PublicacionFallida("El archivo especificado no existe en el servidor");
+                }
+                servicioPublicacion.realizar(publicacion, usuario, archivoEnServidor);
+            } else {
+                // Caso: sólo texto, sin archivo
+                servicioPublicacion.realizar(publicacion, usuario, (MultipartFile) null);
+            }
+
+            DatosPublicacion dto = publicacionMapper.toDto(publicacion, datosUsuario.getId());
+            notificacionService.enviarMensajePubli("/topic/publicaciones", dto);
+
+            String referer = request.getHeader("Referer");
+            if (referer != null && referer.contains("/perfil/")) {
+                return new ModelAndView("redirect:/perfil/" + usuario.getId());
+            } else {
+                return new ModelAndView("redirect:/home");
+            }
+
+        } catch (PublicacionFallida e) {
+            redirectAttributes.addFlashAttribute("errorPubli", e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return new ModelAndView("redirect:/home");
     }
 

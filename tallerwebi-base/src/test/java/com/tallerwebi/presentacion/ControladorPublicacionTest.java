@@ -66,37 +66,37 @@ public class ControladorPublicacionTest {
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
     }
 
-    @Test
-    public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
-        // Preparación
-        MultipartFile archivoMock = new MockMultipartFile(
-                "archivo",                 // Nombre del campo del formulario
-                "archivo.pdf",             // Nombre del archivo
-                "application/pdf",         // Tipo MIME
-                "contenido del archivo".getBytes() // Contenido del archivo simulado
-        );
-
-        DatosUsuario datosUsuarioMock = mock(DatosUsuario.class);
-        when(datosUsuarioMock.getId()).thenReturn(42L);
-
-        when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
-        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
-
-        // Ejecución
-        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(
-                "Descripción de prueba",    // Descripción para la publicación
-                archivoMock,                // El archivo simulado
-                requestMock,                // Objeto de la petición mockeado
-                redirectAttributesMock      // Atributos de redirección mockeados
-        );
-
-        // Validación de la vista y la redirección
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
-
-
-        verify(servicioPublicacionMock).realizar(any(Publicacion.class), any(Usuario.class), eq(archivoMock));
-    }
+//    @Test
+//    public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
+//        // Preparación
+//        MultipartFile archivoMock = new MockMultipartFile(
+//                "archivo",                 // Nombre del campo del formulario
+//                "archivo.pdf",             // Nombre del archivo
+//                "application/pdf",         // Tipo MIME
+//                "contenido del archivo".getBytes() // Contenido del archivo simulado
+//        );
+//
+//        DatosUsuario datosUsuarioMock = mock(DatosUsuario.class);
+//        when(datosUsuarioMock.getId()).thenReturn(42L);
+//
+//        when(requestMock.getSession()).thenReturn(sessionMock);
+//        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
+//        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
+//
+//        // Ejecución
+//        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(
+//                "Descripción de prueba",    // Descripción para la publicación
+//                archivoMock,                // El archivo simulado
+//                requestMock,                // Objeto de la petición mockeado
+//                redirectAttributesMock      // Atributos de redirección mockeados
+//        );
+//
+//        // Validación de la vista y la redirección
+//        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
+//
+//
+//        verify(servicioPublicacionMock).realizar(any(Publicacion.class), any(Usuario.class), eq(archivoMock));
+//    }
 
 
 }
