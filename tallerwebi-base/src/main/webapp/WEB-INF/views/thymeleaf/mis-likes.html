@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Mis Likes</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+
+</head>
+
+<body>
+
+<header>
+    <nav th:replace="templates/nav :: nav"></nav>
+</header>
+<main>
+     <h2>Mis MG</h2>
+    <div th:each="pub : ${publicaciones}" xmlns:th="http://www.w3.org/1999/xhtml">
+        <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${pub}, usuario=${usuario})"></div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script type="module" th:src="@{/js/publicaciones.js}"></script>
+
+</body>
+</html>

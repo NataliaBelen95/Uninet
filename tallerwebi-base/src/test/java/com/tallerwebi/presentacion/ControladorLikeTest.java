@@ -23,6 +23,7 @@ public class ControladorLikeTest {
     private HttpSession sessionMock;
     private DatosUsuario datosUsuarioMock;
     private ControladorLike controladorLike;
+    private UsuarioMapper usuarioMapperMock;
 
     @BeforeEach
     public void init() {
@@ -31,13 +32,15 @@ public class ControladorLikeTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         publicacionMapperMock = mock(PublicacionMapper.class);
         notificacionServiceMock = mock(NotificacionService.class);
+        usuarioMapperMock = mock(UsuarioMapper.class);
 
         controladorLike = new ControladorLike(
                 servicioPublicacionMock,
                 servicioLikesMock,
                 servicioUsuarioMock,
                 publicacionMapperMock,
-                notificacionServiceMock
+                notificacionServiceMock,
+                usuarioMapperMock
         );
 
         requestMock = mock(HttpServletRequest.class);

@@ -6,10 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -19,17 +23,20 @@ public class ControladorLike {
     private final ServicioUsuario servicioUsuario;
     private final PublicacionMapper publicacionMapper;
     private final NotificacionService notificacionService;
+    private final UsuarioMapper usuarioMapper;
 
     @Autowired
         public  ControladorLike(ServicioPublicacion servicioPublicacion,
                                       ServicioLike servicioLike,
                                       ServicioUsuario servicioUsuario,
-                                      PublicacionMapper publicacionMapper, NotificacionService notificacionService) {
+                                      PublicacionMapper publicacionMapper, NotificacionService notificacionService,
+                                      UsuarioMapper usuarioMapper) {
             this.servicioPublicacion = servicioPublicacion;
             this.servicioLike = servicioLike;
             this.servicioUsuario = servicioUsuario;
             this.publicacionMapper = publicacionMapper;
             this.notificacionService = notificacionService;
+            this.usuarioMapper = usuarioMapper;
 
 
         }
@@ -61,6 +68,27 @@ public class ControladorLike {
             }
         }
         return "error";
+    }
+    @GetMapping("/mis-likes")
+    public ModelAndView mostrarMisLikes(HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        // Traer todas las publicaciones donde el usuario dio like
+        List<Publicacion> publicacionesConLike =
+                servicioPublicacion.obtenerPorLikeDeUsuario(datos.getId());
+
+        // Mapear a DTO
+        List<DatosPublicacion> dtos = publicacionesConLike.stream()
+                .map(p -> publicacionMapper.toDto(p, datos.getId()))
+                .collect(Collectors.toList());
+
+        ModelAndView mav = new ModelAndView("mis-likes");
+        mav.addObject("publicaciones", dtos); // ojo, no usuario → Thymeleaf mostrará publicaciones
+        mav.addObject("usuario", datos);
+        return mav;
     }
 
     }

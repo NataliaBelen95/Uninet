@@ -84,6 +84,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+
+
     public long getId() {
         return id;
     }
@@ -210,6 +213,8 @@ public class Usuario {
 
     public LocalDate getFechaNacimiento() {return fechaNacimiento;    }
     public void setFechaNacimiento(LocalDate fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;    }
+
+
 }
 
 

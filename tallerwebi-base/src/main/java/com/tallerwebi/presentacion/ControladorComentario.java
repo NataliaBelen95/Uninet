@@ -75,7 +75,7 @@ public class ControladorComentario {
         response.put("cantidadComentarios", cantidadComentarios);
         response.put("cantidadLikes", cantidadLikes);
         return response;
-    }
+    } //manejar los if en otros lados.
 
 
     @GetMapping("/publicacion/comentarios/{id}")

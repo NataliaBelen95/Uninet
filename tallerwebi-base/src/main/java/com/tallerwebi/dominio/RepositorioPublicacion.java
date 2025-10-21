@@ -15,4 +15,6 @@ public interface RepositorioPublicacion {
     void eliminarPubli(Publicacion publicacion);
     Publicacion obtenerPublicacionCompleta(long id);
     boolean existeHashResumen(String hash, Long usuarioId);
+    List<Publicacion> obtenerPublicacionesConLikeDeUsuario(Long usuarioId);
+
 }

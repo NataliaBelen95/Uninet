@@ -1,19 +1,21 @@
-package com.tallerwebi.presentacion;
-import com.tallerwebi.dominio.Usuario;
-import org.springframework.stereotype.Component;
+package com.tallerwebi.dominio;
+
+
+import com.tallerwebi.presentacion.DatosUsuario;
+import com.tallerwebi.presentacion.PublicacionMapper;
 
 import java.util.stream.Collectors;
 
-@Component
+
 public class UsuarioMapper {
 
     private final PublicacionMapper publicacionMapper;
-
     public UsuarioMapper(PublicacionMapper publicacionMapper) {
         this.publicacionMapper = publicacionMapper;
     }
 
-    public DatosUsuario toDto(Usuario usuario) {
+
+    public  DatosUsuario toDTO(Usuario usuario) {
         DatosUsuario dto = new DatosUsuario();
 
         dto.setId(usuario.getId());
@@ -23,7 +25,7 @@ public class UsuarioMapper {
         dto.setCarrera(usuario.getCarrera());
         dto.setFotoPerfil(usuario.getFotoPerfil());
 
-        // 🟢 Publicaciones propias
+        // Publicaciones propias
         if (usuario.getPublicaciones() != null) {
             dto.setDtopublicaciones(
                     usuario.getPublicaciones().stream()

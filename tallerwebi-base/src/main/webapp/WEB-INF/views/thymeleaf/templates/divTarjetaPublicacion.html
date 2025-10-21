@@ -69,6 +69,7 @@
                     th:text="${dtopubli.cantComentarios != null && dtopubli.cantComentarios == 1 ? '1 Comentario' : (dtopubli.cantComentarios > 1 ? dtopubli.cantComentarios + ' Comentarios' : 'No hay Comentarios')}">
             </button>
 
+
         </div>
 
         <hr class="linea-divisora"/>
@@ -85,7 +86,6 @@
                 <button class="botones_acciones comentarBtn" type="button" th:data-id="${dtopubli.id}">
                     <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
                 </button>
-
 
                 <!-- Formulario de comentar (oculto) -->
                 <div class="contenedor_comentar" th:id="'contenedor-comentar-' + ${dtopubli.id}" style="display:none;">

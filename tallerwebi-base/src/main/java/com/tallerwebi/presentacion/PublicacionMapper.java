@@ -48,12 +48,10 @@ public class PublicacionMapper {
         }
         dto.setComentarios(comentariosDto);
 
-        // Mapeo de archivo (sin usar DatosArchivoPublicacion)
         if (p.getArchivo() != null) { // Verificamos si el archivo no es nulo
             dto.setArchivoNombre(p.getArchivo().getNombreArchivo()); // Asignar nombre del archivo
             dto.setArchivoTipo(p.getArchivo().getTipoContenido());   // Asignar tipo de archivo
         }
-
         return dto;
     }
 

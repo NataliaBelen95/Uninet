@@ -130,6 +130,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorioPublicacion.obtenerPublicacionCompleta(id);
     }
 
+
+
     @Override
     public void realizar(Publicacion publicacion, Usuario usuario, File archivo) throws PublicacionFallida, IOException {
         boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
@@ -175,6 +177,11 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         }
 
         repositorio.guardar(publicacion);
+    }
+
+    @Override
+    public List<Publicacion> obtenerPorLikeDeUsuario(long id) {
+        return repositorioPublicacion.obtenerPublicacionesConLikeDeUsuario(id);
     }
 
 

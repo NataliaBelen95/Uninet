@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Carrera;
 
+import java.util.ArrayList;
 import java.util.List;
 public class DatosUsuario {
     private String nombre;
@@ -11,6 +12,7 @@ public class DatosUsuario {
     private long id ;
     private String fotoPerfil;
     private List<DatosPublicacion> dtopublicaciones;
+    private List<DatosPublicacion> likesGuardados;
 
     public String getFotoPerfil() {return fotoPerfil;}
     public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
@@ -32,4 +34,9 @@ public class DatosUsuario {
 
     public List<DatosPublicacion> getDtopublicaciones() {return dtopublicaciones;}
     public void setDtopublicaciones(List<DatosPublicacion> dtopublicaciones) {this.dtopublicaciones = dtopublicaciones;}
+
+    public List<DatosPublicacion> getLikesGuardados() {return likesGuardados;}
+    public void setLikesGuardados(List<DatosPublicacion> guardados) {
+        this.likesGuardados = guardados;
+    }
 }
