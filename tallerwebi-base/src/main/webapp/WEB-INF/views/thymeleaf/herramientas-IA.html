@@ -106,7 +106,7 @@
             <!-- -->
             <form th:action="@{/descargar-resumen-pdf}" method="post" enctype="multipart/form-data" target="_blank">
                 <textarea name="resumenHtml" style="display:none;" th:text="${resumen}"></textarea>
-                <button type="submit" class="btn btn-primary">Descargar resumen PDF</button>
+                <button type="submit" class="btn btn-primary" th:disabled="${resumen == null or #strings.isEmpty(resumen)}">Descargar resumen PDF</button>
             </form>
         </article>
     </section>
