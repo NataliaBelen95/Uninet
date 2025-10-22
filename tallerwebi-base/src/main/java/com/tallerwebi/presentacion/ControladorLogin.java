@@ -58,7 +58,7 @@ public class ControladorLogin {
             datosUsuario.setEmail(usuarioBuscado.getEmail());
             datosUsuario.setCarrera(usuarioBuscado.getCarrera());
             datosUsuario.setId(usuarioBuscado.getId());
-
+            datosUsuario.setFotoPerfil(usuarioBuscado.getFotoPerfil());
 
             request.getSession().setAttribute("usuarioLogueado", datosUsuario);
             request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
