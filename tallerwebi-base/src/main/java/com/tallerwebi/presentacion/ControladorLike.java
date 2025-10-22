@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -24,19 +25,22 @@ public class ControladorLike {
     private final PublicacionMapper publicacionMapper;
     private final NotificacionService notificacionService;
     private final UsuarioMapper usuarioMapper;
+    private final ServicioNotificacion servicioNotificacion;
 
     @Autowired
         public  ControladorLike(ServicioPublicacion servicioPublicacion,
                                       ServicioLike servicioLike,
                                       ServicioUsuario servicioUsuario,
                                       PublicacionMapper publicacionMapper, NotificacionService notificacionService,
-                                      UsuarioMapper usuarioMapper) {
+                                      UsuarioMapper usuarioMapper,
+                                      ServicioNotificacion servicioNotificacion) {
             this.servicioPublicacion = servicioPublicacion;
             this.servicioLike = servicioLike;
             this.servicioUsuario = servicioUsuario;
             this.publicacionMapper = publicacionMapper;
             this.notificacionService = notificacionService;
             this.usuarioMapper = usuarioMapper;
+            this.servicioNotificacion = servicioNotificacion;
 
 
         }
@@ -57,6 +61,20 @@ public class ControladorLike {
                 DatosPublicacion dto = publicacionMapper.toDto(publicacion, datos.getId());
                 dto.setDioLike(servicioLike.yaDioLike(datos.getId(), id)); // actualizar el estado real
                 Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
+
+                Usuario receptor = publicacion.getUsuario();
+                // ✅ Crear notificación solo si dio like (no si quitó)
+
+                if (dto.getDioLike() && !Objects.equals(usuario.getId(), receptor.getId())) {
+                    servicioNotificacion.crear(
+                            receptor,
+                            usuario,
+                            publicacion,
+                            TipoNotificacion.LIKE
+                    );
+                }
+
+
                 model.addAttribute("dtopubli", dto);
                 model.addAttribute("cantLikes", cantLikes);
                 model.addAttribute("usuario", usuario);
