@@ -8,7 +8,7 @@ public class DatosUsuario {
     private String apellido;
     private Carrera carrera; // ahora pasamos la entidad completa
     private String email;
-    private Long id ;
+    private long id ;
     private String fotoPerfil;
     private List<DatosPublicacion> dtopublicaciones;
 

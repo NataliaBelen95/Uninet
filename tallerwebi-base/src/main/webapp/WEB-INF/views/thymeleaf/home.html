@@ -7,6 +7,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js"></script>
     <!--<th:block th:insert="template/head :: links-comunes"></th:block>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <!--parawebsocket-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -66,15 +69,19 @@
                 </select>
             </form>
         </article>
-        <!-- se reemplaza por el articulo que contiene c/u de las publis en divTarjeta -->
-        <div th:each="dtopubli : ${datosPublicaciones}">
-            <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli})"></div>
+        <div id="contenedor-publicaciones">
+            <th:block th:each="dtopubli : ${datosPublicaciones}">
+                <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
+            </th:block>
         </div>
+
+
+
 
     </section>
     <aside class="columnaTres">
         <div class="estructura">
-            <h2>Aumnos cursando...</h2>
+            <h2>Alumnos cursando...</h2>
             <p>Ingeniería en Sistemas</p>
             <div class="recomendaciones_users" >
                 <img class="user2" th:src="@{/imagenes/user2.png}">
@@ -86,7 +93,7 @@
         </div>
     </aside>
 </main>
-<script type="module" th:src="@{/js/publicacionBtnFunciones.js}"></script>
+<script type="module" th:src="@{/js/publicaciones.js}"></script>
 <script type="module" th:src="@{js/tema.js}"></script>
 </body>
 </html>

@@ -107,12 +107,12 @@ public class ControladorPublicacionTest {
         Usuario usuario1 = mock(Usuario.class);
         Usuario usuario2 = mock(Usuario.class);
 
-        servicioLikesMock.darLike(usuario1, publicacionMock);
-        servicioLikesMock.darLike(usuario2, publicacionMock);
+        servicioLikesMock.darLike(usuario1.getId(), publicacionMock.getId());
+        servicioLikesMock.darLike(usuario2.getId(), publicacionMock.getId());
 
 
-        verify(servicioLikesMock).darLike(usuario1, publicacionMock);
-        verify(servicioLikesMock).darLike(usuario2, publicacionMock);
+        verify(servicioLikesMock).darLike(usuario1.getId(), publicacionMock.getId());
+        verify(servicioLikesMock).darLike(usuario2.getId(), publicacionMock.getId());
     }
 
 
@@ -128,11 +128,11 @@ public class ControladorPublicacionTest {
         when(likeMock.getId()).thenReturn(123L);
 
         // Act
-        servicioLikesMock.darLike(usuario, publicacion);
+        servicioLikesMock.darLike(usuario.getId(), publicacion.getId());
         servicioLikesMock.quitarLike(123L);
 
         // Assert
-        verify(servicioLikesMock).darLike(usuario, publicacion);
+        verify(servicioLikesMock).darLike(usuario.getId(), publicacion.getId());
         verify(servicioLikesMock).quitarLike(123L);
     }
 }

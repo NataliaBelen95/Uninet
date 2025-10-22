@@ -1,11 +1,13 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.Publicacion;
+import com.tallerwebi.dominio.RepositorioPublicacion;
+import com.tallerwebi.dominio.Usuario;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 @Repository
 public class RepositorioPublicacionImpl implements RepositorioPublicacion {
@@ -57,15 +59,20 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
         sessionFactory.getCurrentSession().delete(publicacion);
     }
-
     @Override
-    public Publicacion obtenerPublicacionConComentarios(long id) {
-        return sessionFactory.getCurrentSession()
-                .createQuery(
-                        "SELECT p FROM Publicacion p LEFT JOIN FETCH p.comentarios WHERE p.id = :id",
-                        Publicacion.class)
+    public Publicacion obtenerPublicacionCompleta(long id) {
+        Publicacion publicacion = sessionFactory.getCurrentSession()
+                .createQuery("SELECT p FROM Publicacion p " +
+                        "LEFT JOIN FETCH p.usuario " + // esto está bien
+                        "WHERE p.id = :id", Publicacion.class)
                 .setParameter("id", id)
                 .uniqueResult();
+
+        // Inicializás manualmente las colecciones para evitar LazyInitializationException
+        Hibernate.initialize(publicacion.getComentarios());
+        Hibernate.initialize(publicacion.getLikesDePublicacion());
+
+        return publicacion;
     }
 }
 

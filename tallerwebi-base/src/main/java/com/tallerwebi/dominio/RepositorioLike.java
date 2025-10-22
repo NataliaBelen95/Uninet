@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RepositorioLike {
 
-    boolean existePorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
+    boolean existePorUsuarioYPublicacion(long usuarioId, long publiId);
 
     int contarPorPublicacion(Publicacion publicacion);
 

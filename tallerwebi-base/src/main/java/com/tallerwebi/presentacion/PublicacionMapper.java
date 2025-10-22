@@ -4,6 +4,8 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import org.springframework.stereotype.Component;
 
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,27 +15,30 @@ public class PublicacionMapper {
 
     private final ServicioLike servicioLike;
     private final ServicioComentario servicioComentario;
+    private Usuario usuario;
+
 
     public PublicacionMapper(ServicioLike servicioLike, ServicioComentario servicioComentario) {
         this.servicioLike = servicioLike;
         this.servicioComentario = servicioComentario;
     }
 
-    public DatosPublicacion toDto(Publicacion p) {
+    public DatosPublicacion toDto(Publicacion p, long usuarioId) {
         DatosPublicacion dto = new DatosPublicacion();
 
         dto.setId(p.getId());
         dto.setDescripcion(p.getDescripcion());
         dto.setNombreUsuario(p.getUsuario().getNombre());
         dto.setApellidoUsuario(p.getUsuario().getApellido());
-        dto.setCantLikes(servicioLike.contarLikes(p));
-        dto.setCantComentarios(servicioComentario.contarComentarios(p));
+        dto.setCantLikes(servicioLike.contarLikes(p.getId()));
+        dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
+        dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
 
 
         // Debug print
-        System.out.println("Usuario ID: " + p.getUsuario().getId());
+       // System.out.println("Usuario ID: " + p.getUsuario().getId());
         // Mapear comentarios
         List<DatosComentario> comentariosDto = new ArrayList<>();
         if (p.getComentarios() != null) {
@@ -52,11 +57,12 @@ public class PublicacionMapper {
         return dto;
     }
 
-    private DatosComentario toComentarioDto(Comentario c) {
+    public DatosComentario toComentarioDto(Comentario c) {
         DatosComentario comentarioDto = new DatosComentario();
         comentarioDto.setTexto(c.getTexto());
         comentarioDto.setNombreUsuario(c.getUsuario().getNombre());
         comentarioDto.setApellidoUsuario(c.getUsuario().getApellido());
+        //comentarioDto.setFechaComentario(LocalDateTime.now());
         // Agregar otros campos necesarios de Comentario
         return comentarioDto;
     }
