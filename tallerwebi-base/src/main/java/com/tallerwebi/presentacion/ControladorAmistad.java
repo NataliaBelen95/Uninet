@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;  // Asegúrate de que esta línea esté presente
+import java.util.List;
 
 @Controller
 @RequestMapping("/amistad")
@@ -27,9 +27,9 @@ public class ControladorAmistad {
     }
     @GetMapping("/usuarios")
     public String mostrarUsuarios(Model model) {
-        List<Usuario> usuarios = servicioUsuario.obtenerTodosLosUsuarios(); // Método que devuelve todos los usuarios
+        List<Usuario> usuarios = servicioUsuario.obtenerTodosLosUsuarios();
         model.addAttribute("usuarios", usuarios);
-        return "usuarios"; // Vista Thymeleaf donde se renderiza la lista
+        return "usuarios";
     }
 
 
@@ -40,7 +40,7 @@ public class ControladorAmistad {
         Usuario receptor = repositorioUsuario.buscarPorId(idReceptor);
 
         servicioAmistad.enviarSolicitud(solicitante, receptor);
-        return "redirect:/usuarios"; // o donde se muestren los usuarios
+        return "redirect:/usuarios";
     }
 
     @PostMapping("/aceptar/{idSolicitud}")
@@ -65,12 +65,20 @@ public class ControladorAmistad {
     }
 
     @GetMapping("/amigos")
-    @Transactional
     public String listarAmigos(HttpServletRequest request, ModelMap model) {
+        // Obtén el usuario desde la sesión
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         Usuario usuario = repositorioUsuario.buscarPorId(datos.getId());
 
+        // Asegúrate de que el objeto usuario no sea null
+        if (usuario != null) {
+            model.put("usuario", usuario);
+        }
+
+        // Lógica para listar amigos
         model.put("amigos", servicioAmistad.listarAmigos(usuario));
+
         return "lista-amigos";
     }
+
 }

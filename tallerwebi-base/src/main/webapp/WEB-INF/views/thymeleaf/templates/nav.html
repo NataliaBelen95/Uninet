@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<!--<link rel="stylesheet" href="../../../../resources/core/css/variables.css"/>
-<link rel="stylesheet" href="../../../../resources/core/css/base.css"/>
-<link rel="stylesheet" href="../../../../resources/core/css/home.css"/>-->
 <body>
 <nav th:fragment="nav" class="navbar">
     <a href="/spring/home"><img class="isologo" th:src="@{/imagenes/isologo.png}"></a>
@@ -12,6 +9,8 @@
                 <button id="btn-tema" class="boton-tema"><img class="isologo" th:src="@{/imagenes/modo-oscuro.png}"></button>
             </li>
             <li><a href="/spring/miPerfil">Notificaciones</a></li>
+            <!-- Enlace "Mis amigos" -->
+            <li><a href="/spring/amistad/amigos">Mis amigos</a></li>
             <li><a href="/spring/miPerfil">Mensajes</a></li>
             <li class="menu-perfil">
                 <a href="#" class="menu-titulo">Mi Perfil</a>
@@ -27,30 +26,5 @@
         </ul>
     </div>
 </nav>
-<!--<nav th:fragment="nav" class="navbar">
-    <a href="#"><img class="isologo" src="../../../../resources/core/imagenes/isologo.png" alt="Isologo"></a>
-    <div>
-        <ul class="menu">
-            <li>
-                <button id="btn-tema" class="boton-tema">
-                    <img class="icono-tema" src="../../../../resources/core/imagenes/modo-oscuro.png" alt="Cambiar tema">
-                </button>
-            </li>
-            <li><a href="/spring/miPerfil">Notificaciones</a></li>
-            <li><a href="/spring/miPerfil">Mensajes</a></li>
-            <li class="menu-perfil">
-                <a href="#" class="menu-titulo">Mi Perfil</a>
-                <ul class="submenu">
-                    <li><a href="/spring/miPerfil">Ver mi perfil</a></li>
-                    <li>
-                        <form th:action="@{/logout}" method="post">
-                            <button type="submit" class="link-btn">Cerrar sesión</button>
-                        </form>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>-->
 </body>
 </html>
