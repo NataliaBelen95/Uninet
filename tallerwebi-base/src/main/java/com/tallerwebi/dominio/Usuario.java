@@ -59,6 +59,14 @@ public class Usuario {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaNacimiento;
 
+
+    @Column(nullable = true)
+    private String codigoConfirmacion;
+
+    @Column(nullable = true)
+    private boolean confirmado = false;
+
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "genero_id", nullable = true) //El name es lo que conecta ambas tablas Usuario1-NGenero, o sea que es la fk
     private Genero genero;
@@ -126,6 +134,14 @@ public class Usuario {
     public void activar() {
         activo = true;
     }
+
+    // getters y setters de los nuevos campos
+    public String getCodigoConfirmacion() { return codigoConfirmacion; }
+    public void setCodigoConfirmacion(String codigoConfirmacion) { this.codigoConfirmacion = codigoConfirmacion; }
+
+    public boolean isConfirmado() { return confirmado; }
+    public void setConfirmado(boolean confirmado) { this.confirmado = confirmado; }
+
 
     public void setNombre(String nombre) {
         this.nombre = nombre;

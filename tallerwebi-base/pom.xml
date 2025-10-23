@@ -23,6 +23,31 @@
     </properties>
 
     <dependencies>
+
+        <!-- API de JavaMail -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+        <!-- Soporte de Spring para enviar mails -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
+
+
+        <!-- Soporte de Spring para enviar mails -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
         <!--libreria de markdown -->
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>

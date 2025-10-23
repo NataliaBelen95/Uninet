@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Validar Código</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>UniNet</title>
+
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <!--<link rel="stylesheet" href="/src/main/webapp/resources/core/css/variables.css">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/base.css">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/login.css">-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+</head>
+<body>
+<nav>
+    <img class="logo" th:src="@{/imagenes/logo.png}">
+    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
+</nav>
+
+<!-- Contenedor principal de la página -->
+<main role="main" class="contenedor">
+    <div class="contenedor_form" id="loginbox" style="margin-top:50px;">
+        <form th:action="@{/validar-codigo}" method="POST" class="contenedor_form">
+            <h3>Validar tu registro</h3>
+            <p>Te enviamos un código al correo <span th:text="${email}"></span></p>
+
+            <!-- Campo oculto para el email -->
+            <input type="hidden" name="email" th:value="${email}" />
+
+            <!-- Input para el código de confirmación -->
+            <label for="codigo">Código de confirmación:</label>
+            <input type="text" id="codigo" name="codigo" required placeholder="Ingresa el código" />
+
+            <!-- Botón para enviar el formulario -->
+            <button type="submit" class="btn">Confirmar</button>
+
+            <!-- Mostrar mensaje de error si existe -->
+            <p th:text="${error}" class="error"></p>
+        </form>
+
+        <!-- Separador -->
+        <div class="separador"></div>
+
+        <!-- Enlace para volver al login -->
+        <a class="btn" id="btn-login" href="login">Volver al login</a>
+    </div>
+</main>
+</body>
+<script type="module" th:src="@{js/tema.js}"></script>
+<script type="module" th:src="@{js/login.js}"></script>
+</html>

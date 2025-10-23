@@ -4,23 +4,24 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
 
+    @Autowired
+    private MailService mailService;
 
     /* hacer un controlador Home y ordenar Luego ***/
     @Autowired
@@ -76,6 +77,7 @@ public class ControladorLogin {
         return new ModelAndView("redirect:/login");
     }
 
+
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
@@ -83,22 +85,51 @@ public class ControladorLogin {
 
         try {
             usuario.setRol("USER");
+            // Generar código de confirmación
+            String codigo = mailService.generarCodigoConfirmacion();
+            usuario.setCodigoConfirmacion(codigo);
+            usuario.setConfirmado(false);
+
+            // Guardar usuario en DB
             servicioLogin.registrar(usuario);
 
+            // Enviar mail con código
+            String asunto = "Confirma tu registro";
+            String texto = "Tu código de confirmación es: " + codigo;
+            mailService.enviarMail(usuario.getEmail(), asunto, texto);
+
+            // Redirigir a la pantalla para validar código
+            model.put("email", usuario.getEmail());
+            return new ModelAndView("validar-codigo", model);
 
         } catch (UsuarioExistente e) {
             model.put("error", "El usuario ya existe");
             return new ModelAndView("nuevo-usuario", model);
         } catch (Exception e) {
             model.put("error", "Error al registrar el nuevo usuario");
-
             return new ModelAndView("nuevo-usuario", model);
         }
-        // Redirigir al login si todo sale bien
-        System.out.println("Registrando usuario: " + usuario.getEmail() + " - pass=" + usuario.getPassword());
-        return new ModelAndView("redirect:/login");
-
     }
+
+    @RequestMapping(path = "/validar-codigo", method = RequestMethod.POST)
+    @Transactional
+    public ModelAndView validarCodigo(@RequestParam("email") String email,
+                                      @RequestParam("codigo") String codigo) {
+        ModelMap model = new ModelMap();
+        Usuario usuario = repositorioUsuario.buscar(email); // tu método para buscar usuario
+
+        if (usuario.getCodigoConfirmacion().equals(codigo)) {
+            usuario.setConfirmado(true);
+            repositorioUsuario.guardar(usuario);
+            return new ModelAndView("redirect:/login");
+        } else {
+            model.put("error", "Código incorrecto");
+            model.put("email", email);
+            return new ModelAndView("validar-codigo", model);
+        }
+    }
+
+
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();
