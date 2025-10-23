@@ -10,10 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository("repositoryUsuario")
 
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
+    @Override
+    public List<Usuario> findAll() {
+        return List.of();
+    }
 
     private SessionFactory sessionFactory;
 
@@ -92,6 +97,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
         session.update(usuario);
     }
+
 
 
 }

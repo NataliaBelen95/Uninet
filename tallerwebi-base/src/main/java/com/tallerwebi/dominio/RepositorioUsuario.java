@@ -4,6 +4,7 @@ package com.tallerwebi.dominio;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RepositorioUsuario {
@@ -18,4 +19,5 @@ public interface RepositorioUsuario {
     Usuario findByIdWithPublicaciones(long id);
     void actualizarContrasena(Usuario usuario, String nuevaContrasena);
 
+    List<Usuario> findAll();
 }

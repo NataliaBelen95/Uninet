@@ -28,9 +28,15 @@ INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (4, 4); -- Tecnicatur
 -- 4️⃣ Crear usuarios y asignarles carrera por id
 INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
 VALUES (NULL, 'test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez',38065944, 1, '1990-01-01', true);
+INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
+VALUES (123, 'fran@unlam.edu.ar', '123', 'ADMIN', true, 'Franco', 'Vargas',41062869, 1, '1998-04-24', true);
+INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
+VALUES (124, 'nat@unlam.edu.ar', '123', 'ADMIN', true, 'Nat', 'alia',41123869, 1, '1998-08-29', true);
 
 INSERT INTO Usuario(id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
 VALUES (NULL, 'admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, '1990-01-01', true);
+
+
 
 -- 5️⃣ Validar que no haya usuarios duplicados
 SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
