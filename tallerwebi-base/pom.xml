@@ -85,7 +85,6 @@
             <version>${servletapi.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -178,14 +177,11 @@
         </dependency>
 
         <dependency>
-           <!--libreria de apache, permite hacer peticiones HTTP, nos sirve para conectarnos a la API de GEMINI-->
+            <!--libreria de apache, permite hacer peticiones HTTP, nos sirve para conectarnos a la API de GEMINI-->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
         </dependency>
-
-        <!---FINAL DEPENDENCIA -->
-
 
         <dependency>
             <!-- proporciona clases de spring para hacer apps web y maneja utilidades para hacer llamadas a APIs externas-->
@@ -195,7 +191,7 @@
         </dependency>
 
         <dependency>
-           <!--libreria de apache, permite hacer peticiones HTTP, nos sirve para conectarnos a la API de GEMINI-->
+            <!--libreria de apache, permite hacer peticiones HTTP, nos sirve para conectarnos a la API de GEMINI-->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
@@ -214,6 +210,14 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.20.0</version>
         </dependency>-->
+
+        <!--convertir a lindo pdf-->
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>1.0.10</version>
+        </dependency>
+
 
     </dependencies>
 

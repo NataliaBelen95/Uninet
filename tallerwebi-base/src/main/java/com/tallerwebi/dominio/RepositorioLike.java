@@ -7,13 +7,13 @@ public interface RepositorioLike {
 
     boolean existePorUsuarioYPublicacion(long usuarioId, long publiId);
 
-    int contarPorPublicacion(Publicacion publicacion);
+    int contarPorPublicacion(long publiId);
 
     Like guardar(Like like);
 
-    void eliminar(Like like);
+    void eliminar(long id);
 
     Like buscarPorId(long id);
-
-    Like buscarPorUsuarioYPublicacion(Usuario usuario, Publicacion publicacion);
+    /*CAMBIOS A ID*/
+    Like buscarPorUsuarioYPublicacion(long usuarioId, long publiId);
 }

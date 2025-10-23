@@ -1,34 +1,39 @@
 package com.tallerwebi.presentacion;
-
 import com.tallerwebi.dominio.Usuario;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class UsuarioMapper {
 
-    public DatosUsuario toDatosUsuario(Usuario usuario) {
-        DatosUsuario datosUsuario = new DatosUsuario();
-        datosUsuario.setId(usuario.getId());
-        datosUsuario.setNombre(usuario.getNombre());
-        datosUsuario.setApellido(usuario.getApellido());
-        datosUsuario.setEmail(usuario.getEmail());
-        datosUsuario.setCarrera(usuario.getCarrera());
+    private final PublicacionMapper publicacionMapper;
 
-        return datosUsuario;
-
+    public UsuarioMapper(PublicacionMapper publicacionMapper) {
+        this.publicacionMapper = publicacionMapper;
     }
 
-    public Usuario aEntidad(DatosUsuario dto) {
-        Usuario usuario = new Usuario();
-        usuario.setId(dto.getId());
-        usuario.setNombre(dto.getNombre());
-        usuario.setApellido(dto.getApellido());
-        usuario.setEmail(dto.getEmail());
-        usuario.setCarrera(dto.getCarrera());
-        return usuario;
+    public DatosUsuario toDto(Usuario usuario) {
+        DatosUsuario dto = new DatosUsuario();
+
+        dto.setId(usuario.getId());
+        dto.setNombre(usuario.getNombre());
+        dto.setApellido(usuario.getApellido());
+        dto.setEmail(usuario.getEmail());
+        dto.setCarrera(usuario.getCarrera());
+        dto.setFotoPerfil(usuario.getFotoPerfil());
+
+        // 🟢 Publicaciones propias
+        if (usuario.getPublicaciones() != null) {
+            dto.setDtopublicaciones(
+                    usuario.getPublicaciones().stream()
+                            .map(p -> publicacionMapper.toDto(p, usuario.getId()))
+                            .collect(Collectors.toList())
+            );
+        }
 
 
+
+        return dto;
     }
-
-
 }

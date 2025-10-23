@@ -22,8 +22,6 @@ public class ControladorHome {
     private final ServicioLike servicioLike;
     //private final ServicioUsuario servicioUsuario;
 
-
-
     public ControladorHome(ServicioPublicacion servicioPublicacion, ServicioLike servicioLike, PublicacionMapper publicacionMapper) {
         this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
@@ -60,6 +58,4 @@ public class ControladorHome {
         return new ModelAndView("home", model);
     }
 
-
 }
-

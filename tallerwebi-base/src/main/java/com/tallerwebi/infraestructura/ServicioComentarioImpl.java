@@ -39,7 +39,7 @@ public class ServicioComentarioImpl implements ServicioComentario {
 
     @Override
     public int contarComentarios(long publiId) {
-     return repositorioComentario.contarComentarioPorPublicacion(publiId);
+        return repositorioComentario.contarComentarioPorPublicacion(publiId);
 
 
     }

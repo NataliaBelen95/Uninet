@@ -83,8 +83,8 @@
                             <input type="checkbox" id="seleccionarTodosCheck">
                             <label for="seleccionarTodosCheck">Seleccionar todos</label>
                         </div>
-                    <button class="btn btn-ia" type="submit">Generar resumen con IA</button>
-                    <button class="btn btn-ia" type="button" id="btnBorrarSeleccionados" disabled>Borrar seleccionados</button>
+                        <button class="btn btn-ia" type="submit">Generar resumen con IA</button>
+                        <button class="btn btn-ia" type="button" id="btnBorrarSeleccionados" disabled>Borrar seleccionados</button>
                     </div>
                 </form>
             </div>
@@ -92,9 +92,22 @@
 
         <article class="estructura">
             <h3>Resumen generado a partir del pdf subido</h3>
-            <div class="resumen-ia-display" th:if="${resumen}" th:utext="${resumen}">
+            <div class="resumen-ia-display" th:if="${resumen}" th:text="${resumen}">
             </div>
-            <button class="btn btn-ia" disabled>Guardar como pdf</button>
+
+            <!--compartir resumen, esto lo carga en la viste html de compartir-->
+            <form th:action="@{/subir-resumen}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="resumen" th:value="${resumen}" />
+
+                <button type="submit" class="btn btn-primary" th:disabled="${resumen == null or #strings.isEmpty(resumen)}">
+                    Compartir resumen
+                </button>
+            </form>
+            <!-- -->
+            <form th:action="@{/descargar-resumen-pdf}" method="post" enctype="multipart/form-data" target="_blank">
+                <textarea name="resumenHtml" style="display:none;" th:text="${resumen}"></textarea>
+                <button type="submit" class="btn btn-primary" th:disabled="${resumen == null or #strings.isEmpty(resumen)}">Descargar resumen PDF</button>
+            </form>
         </article>
     </section>
 

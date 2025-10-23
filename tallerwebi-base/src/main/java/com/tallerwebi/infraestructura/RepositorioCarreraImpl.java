@@ -14,13 +14,11 @@ import java.util.List;
 public class RepositorioCarreraImpl implements RepositorioCarrera {
     private final SessionFactory sessionFactory;
 
-
     @Autowired
     public RepositorioCarreraImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
 
     }
-
 
     @Override
     public void guardar(Carrera carrera) {
@@ -44,16 +42,11 @@ public class RepositorioCarreraImpl implements RepositorioCarrera {
         Carrera carrera = buscarPorId(id);
         if (carrera == null) {
             throw new RuntimeException("Carrera no encontrada");
-    }
+        }
 
         carrera.getMaterias().add(materia);
         sessionFactory.getCurrentSession().saveOrUpdate(materia);
         guardar(carrera);
 
     }
-
-
-
-
-
 }

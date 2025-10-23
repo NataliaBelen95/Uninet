@@ -1,6 +1,7 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.excepcion.PublicacionNoEncontrada;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ public class ServicioLikeImpl implements ServicioLike {
         repositorioLike.guardar(like);
     }
 
+
     @Override
     public void quitarLike(long id) {
         Like like = repositorioLike.buscarPorId(id);
@@ -50,6 +52,29 @@ public class ServicioLikeImpl implements ServicioLike {
     @Override
     public boolean yaDioLike(long usuId, long publiId) {
         return repositorioLike.existePorUsuarioYPublicacion(usuId, publiId);
+    }
+    //HACER TOGGLE
+    @Override
+    public void toggleLike(long idUsuario, long publiId) {
+        Publicacion publicacion = repositorioPublicacion.buscarPorId(publiId);
+        if(publicacion == null) {
+            throw new PublicacionNoEncontrada("Error al encontrar publicacion que se quiere dar like");
+        }
+        Usuario usuario = repositorioUsuario.buscarPorId(idUsuario);
+
+        boolean yaDioLike = repositorioLike.existePorUsuarioYPublicacion(idUsuario, publiId);
+        if (yaDioLike) {
+            Like like = repositorioLike.buscarPorUsuarioYPublicacion(idUsuario, publiId);
+            if(like != null) {
+                repositorioLike.eliminar(like.getId());
+            }
+        }   else {
+            Like like = new Like();
+            like.setUsuario(usuario);
+            like.setPublicacion(publicacion);
+            like.setFecha(LocalDateTime.now());
+            repositorioLike.guardar(like);
+        }
     }
 
     @Override

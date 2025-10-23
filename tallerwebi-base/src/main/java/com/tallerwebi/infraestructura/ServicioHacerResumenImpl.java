@@ -34,10 +34,10 @@ public class ServicioHacerResumenImpl implements ServicioHacerResumen {
 
     @Override
     public String generarResumen(String texto) throws NoSePudoGenerarResumenDelPDFException {
-            // creo la instruccion o prompt para pasar a la IA
-            String prompt = "Generá un resumen de este texto usando formato **Markdown** " +
-                    "(con encabezados, negritas y listas) para hacerlo más legible. " +
-                    "El resumen debe estar estructurado en secciones:\n" + texto;
+        // creo la instruccion o prompt para pasar a la IA
+        String prompt = "Generá un resumen de este texto usando formato **Markdown** " +
+                "(con encabezados, negritas y listas) para hacerlo más legible. " +
+                "El resumen debe estar estructurado en secciones:\n" + texto;
 
         // 2. Delegar la comunicación HTTP al cliente, que también maneja las excepciones
         try {
@@ -65,5 +65,6 @@ public class ServicioHacerResumenImpl implements ServicioHacerResumen {
         return renderer.render(document);
     }
 }
+
 
 

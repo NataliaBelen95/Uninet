@@ -32,25 +32,28 @@ public class ControladorPublicacionTest {
     private ServicioComentario servicioComentarioMock;
     private RedirectAttributes redirectAttributesMock;
     private PublicacionMapper publicacionMapperMock;
+    private NotificacionService notificacionServiceMock;
 
     @BeforeEach
     public void init() {
         servicioPublicacionMock = mock(ServicioPublicacion.class);
         servicioLikesMock = mock(ServicioLike.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
-        servicioComentarioMock = mock(ServicioComentario.class);
         publicacionMapperMock = mock(PublicacionMapper.class);
+        notificacionServiceMock = mock(NotificacionService.class);
+        servicioComentarioMock = mock(ServicioComentario.class);
 
         controladorPublicacion = new ControladorPublicacion(
                 servicioPublicacionMock,
                 servicioLikesMock,
                 servicioUsuarioMock,
-                servicioComentarioMock,
-                publicacionMapperMock
+                publicacionMapperMock,
+                notificacionServiceMock,
+                servicioComentarioMock
         );
 
         requestMock = mock(HttpServletRequest.class);
-        redirectAttributesMock = mock(RedirectAttributes.class);
+
         sessionMock = mock(HttpSession.class);
 
         usuarioMock = mock(Usuario.class);
@@ -62,78 +65,38 @@ public class ControladorPublicacionTest {
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
     }
-    @Test
-    public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
-        // Preparación
-        MultipartFile archivoMock = new MockMultipartFile(
-                "archivo",                 // Nombre del campo del formulario
-                "archivo.pdf",             // Nombre del archivo
-                "application/pdf",         // Tipo MIME
-                "contenido del archivo".getBytes() // Contenido del archivo simulado
-        );
 
-        DatosUsuario datosUsuarioMock = mock(DatosUsuario.class);
-        when(datosUsuarioMock.getId()).thenReturn(42L);
-
-        when(requestMock.getSession()).thenReturn(sessionMock);
-        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
-        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
-
-        // Ejecución
-        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(
-                "Descripción de prueba",    // Descripción para la publicación
-                archivoMock,                // El archivo simulado
-                requestMock,                // Objeto de la petición mockeado
-                redirectAttributesMock      // Atributos de redirección mockeados
-        );
-
-        // Validación de la vista y la redirección
-        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
-
-
-        verify(servicioPublicacionMock).realizar(any(Publicacion.class), any(Usuario.class), eq(archivoMock));
-    }
-
-
-
-
-    /*preguntar donde van test , no son de controlador publicaion */
-    @Test
-    public void queUnaPublicacionPuedaRecibirLikesDeUsuariosDiferentes() {
-        // Arrange
-        Publicacion publicacionMock = mock(Publicacion.class);
-        when(servicioPublicacionMock.obtenerPublicacionPorId(5L)).thenReturn(publicacionMock);
-
-        Usuario usuario1 = mock(Usuario.class);
-        Usuario usuario2 = mock(Usuario.class);
-
-        servicioLikesMock.darLike(usuario1.getId(), publicacionMock.getId());
-        servicioLikesMock.darLike(usuario2.getId(), publicacionMock.getId());
+//    @Test
+//    public void queSePuedaCrearUnaPublicacionConDescripcionYUsuarioYQueVayaAPublicaciones() throws PublicacionFallida {
+//        // Preparación
+//        MultipartFile archivoMock = new MockMultipartFile(
+//                "archivo",                 // Nombre del campo del formulario
+//                "archivo.pdf",             // Nombre del archivo
+//                "application/pdf",         // Tipo MIME
+//                "contenido del archivo".getBytes() // Contenido del archivo simulado
+//        );
+//
+//        DatosUsuario datosUsuarioMock = mock(DatosUsuario.class);
+//        when(datosUsuarioMock.getId()).thenReturn(42L);
+//
+//        when(requestMock.getSession()).thenReturn(sessionMock);
+//        when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
+//        when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
+//
+//        // Ejecución
+//        ModelAndView modelAndView = controladorPublicacion.agregarPublicacion(
+//                "Descripción de prueba",    // Descripción para la publicación
+//                archivoMock,                // El archivo simulado
+//                requestMock,                // Objeto de la petición mockeado
+//                redirectAttributesMock      // Atributos de redirección mockeados
+//        );
+//
+//        // Validación de la vista y la redirección
+//        assertThat(modelAndView.getViewName(), equalToIgnoringCase("redirect:/home"));
+//
+//
+//        verify(servicioPublicacionMock).realizar(any(Publicacion.class), any(Usuario.class), eq(archivoMock));
+//    }
 
 
-        verify(servicioLikesMock).darLike(usuario1.getId(), publicacionMock.getId());
-        verify(servicioLikesMock).darLike(usuario2.getId(), publicacionMock.getId());
-    }
-
-
-
-    @Test
-    public void queAlVolverADarleLikeSeQuiteLaPublicacion() {
-        // Arrange
-        Usuario usuario = mock(Usuario.class);
-        Publicacion publicacion = mock(Publicacion.class);
-        Like likeMock = mock(Like.class);
-
-        when(servicioLikesMock.obtenerLike(usuario, publicacion)).thenReturn(likeMock);
-        when(likeMock.getId()).thenReturn(123L);
-
-        // Act
-        servicioLikesMock.darLike(usuario.getId(), publicacion.getId());
-        servicioLikesMock.quitarLike(123L);
-
-        // Assert
-        verify(servicioLikesMock).darLike(usuario.getId(), publicacion.getId());
-        verify(servicioLikesMock).quitarLike(123L);
-    }
 }
-

@@ -35,8 +35,8 @@ public class ControladorMiPerfilTest {
         //Para cargr fotos
         fotoMock = mock(MultipartFile.class);
     }
-}
-/*@Test
-public void queSePuedaCargarUnaFotoDePerfilCorrectament(){
+    @Test
+    public void queSePuedaCargarUnaFotoDePerfilCorrectament(){
 
-}*/
+    }
+}

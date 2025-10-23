@@ -96,8 +96,8 @@ public class ControladorHomeTest {
         List<Publicacion> publicaciones = List.of(pub1, pub2);
 
         when(servicioPublicacionMock.findAll()).thenReturn(publicaciones);
-        when(servicioLikeMock.contarLikes(pub1)).thenReturn(5);
-        when(servicioLikeMock.contarLikes(pub2)).thenReturn(3);
+        when(servicioLikeMock.contarLikes(1L)).thenReturn(5);
+        when(servicioLikeMock.contarLikes(2L)).thenReturn(3);
 
         DatosPublicacion dto1 = new DatosPublicacion();
         dto1.setId(1L);

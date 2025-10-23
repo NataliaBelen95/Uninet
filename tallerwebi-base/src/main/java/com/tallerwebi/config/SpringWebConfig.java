@@ -37,7 +37,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/imagenes/**").addResourceLocations("/resources/core/imagenes/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
         //registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("/resources/core/archivos_pdf/");
-       // registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf");
+        // registry.addResourceHandler("/archivos_pdf/**").addResourceLocations("C:/Users/rocam/OneDrive/Escritorio/TALLER WEB 1/Uninet/tallerwebi-base/archivos_pdf");
         registry.addResourceHandler("/archivos_pdf/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivos_pdf/");
         registry.addResourceHandler("/archivosPublicacion/**")

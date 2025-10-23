@@ -1,9 +1,7 @@
 package com.tallerwebi.presentacion;
 
 
-import com.tallerwebi.dominio.ServicioHacerResumen;
-import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
-import com.tallerwebi.dominio.ServicioSubirArchivoALaIA;
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePudoGenerarResumenDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
@@ -30,10 +28,12 @@ public class ControladorHerramientasIA {
     private final ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos;
     private final ServicioHacerResumen servicioHacerResumen;
 
-    public ControladorHerramientasIA(ServicioSubirArchivoALaIA servicioSubirArchivoALaIA, ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos,ServicioHacerResumen servicioHacerResumen) {
+
+    public ControladorHerramientasIA(ServicioSubirArchivoALaIA servicioSubirArchivoALaIA, ServicioMostrarArchivosSubidos servicioMostrarArchivosSubidos, ServicioHacerResumen servicioHacerResumen) {
         this.servicioSubirArchivoALaIA = servicioSubirArchivoALaIA;
         this.servicioMostrarArchivosSubidos = servicioMostrarArchivosSubidos;
         this.servicioHacerResumen = servicioHacerResumen;
+
     }
 
     //con este mostramos los datos del usuario en la página
@@ -75,7 +75,7 @@ public class ControladorHerramientasIA {
             String nombreArchivo = servicioSubirArchivoALaIA.guardarArchivoPdf(archivo, usuario);
             //si se pudo subir, envía mensaje de éxito
             model.addAttribute("mensaje", "Archivo guardado exitosamente: " + nombreArchivo);
-        //si no se pudo subir envía la excepción
+            //si no se pudo subir envía la excepción
         }catch (NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException | NoSePuedeSubirArchivoPorFallaException e) {
             model.addAttribute("mensaje", e.getMessage());
         }
@@ -111,10 +111,11 @@ public class ControladorHerramientasIA {
             // 🔍 IMPRIMÍS EL RESUMEN EN CONSOLA
             System.out.println("Resumen generado:");
             System.out.println(resumen); // Acá ves si está vacío, cortado, etc.
-//agrego el resumen al model
+            //agrego el resumen al model
             model.addAttribute("resumen", resumen);
             model.addAttribute("mensaje", "Resumen generado exitosamente.");
-
+            //agrego Nombre al mode//
+            model.addAttribute("archivoNombre", nombreArchivoSeleccionado);
         } catch (NoSePudoExtraerElTextoDelPDFException | NoSePudoGenerarResumenDelPDFException e) {
             model.addAttribute("mensaje", e.getMessage());
         }
@@ -125,4 +126,5 @@ public class ControladorHerramientasIA {
 
         return new ModelAndView("herramientas-IA", model);
     }
+
 }//fin de la clase

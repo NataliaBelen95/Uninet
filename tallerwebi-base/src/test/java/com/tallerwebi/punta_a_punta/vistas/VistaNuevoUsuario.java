@@ -23,5 +23,5 @@ public class VistaNuevoUsuario extends VistaWeb {
     public String obtenerMensajeDeError(){
         return this.obtenerTextoDelElemento("p.alert.alert-danger");
     }
-    
+
 }

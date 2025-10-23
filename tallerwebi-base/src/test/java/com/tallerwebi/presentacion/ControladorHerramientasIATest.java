@@ -1,7 +1,5 @@
 package com.tallerwebi.presentacion;
-import com.tallerwebi.dominio.ServicioHacerResumen;
-import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
-import com.tallerwebi.dominio.ServicioSubirArchivoALaIA;
+import com.tallerwebi.dominio.*;
 
 import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
@@ -31,6 +29,7 @@ public class ControladorHerramientasIATest {
     private HttpSession session;
     private DatosUsuario usuario;
     private MultipartFile archivoMock;
+    private ServicioUsuario servicioUsuario;
 
     @BeforeEach
     public void init(){
@@ -64,7 +63,7 @@ public class ControladorHerramientasIATest {
         assertThat(mov.getViewName(),equalTo("herramientas-IA"));
 
         DatosUsuario usuarioMov = (DatosUsuario) mov.getModel().get("usuario");
-       //ahora testeo que el nombre del usuario sea el que obtengo
+        //ahora testeo que el nombre del usuario sea el que obtengo
         assertThat(usuarioMov.getNombre(),equalTo(usuario.getNombre()));
 
     }
@@ -81,14 +80,14 @@ public class ControladorHerramientasIATest {
     @Test
     public void queSiElUsuarioCargaUnArchivoEsteSeGuardeCorrectamenteYmuestreMensajeDeExito(){
 
-       when(servicioSubirArchivoALaIA.guardarArchivoPdf(archivoMock,usuario)).thenReturn("archivoPrueba.pdf");
-       ModelAndView mov = controladorHerramientasIA.guardarArchivoSubidoEnHerramientasIA(usuario, archivoMock);
+        when(servicioSubirArchivoALaIA.guardarArchivoPdf(archivoMock,usuario)).thenReturn("archivoPrueba.pdf");
+        ModelAndView mov = controladorHerramientasIA.guardarArchivoSubidoEnHerramientasIA(usuario, archivoMock);
 
-       assertThat(mov.getViewName(),equalTo("herramientas-IA"));
+        assertThat(mov.getViewName(),equalTo("herramientas-IA"));
 
-       String mensaje=mov.getModel().get("mensaje").toString();
+        String mensaje=mov.getModel().get("mensaje").toString();
 
-       assertThat(mensaje,equalTo("Archivo guardado exitosamente: archivoPrueba.pdf"));
+        assertThat(mensaje,equalTo("Archivo guardado exitosamente: archivoPrueba.pdf"));
 
     }
 

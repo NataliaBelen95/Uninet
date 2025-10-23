@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Registrarse</title>
+    <title>Registrarse</title>
 
     <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
     <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
@@ -47,11 +47,11 @@
                 </select>
             </div>
 
-        <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
+            <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
             <a href="login.html">Volver atrás</a>
-        <p th:if="${error != null}" class="error" th:text="'Error ' + ${error}">
-        </p>
-      </form>
+            <p th:if="${error != null}" class="error" th:text="'Error ' + ${error}">
+            </p>
+        </form>
     </div>
 </main>
 <script type="module" th:src="@{js/tema.js}"></script>

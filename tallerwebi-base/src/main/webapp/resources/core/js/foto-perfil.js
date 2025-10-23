@@ -36,11 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('click', function(e){
         if (e.target === popUp) cerrarPopUp();
     });
-     // Cierra el popup automáticamente al enviar cualquiera de los formularios
-        const forms = document.querySelectorAll("#form-cambiar-foto, .form-eliminar-foto");
-        forms.forEach(f => f.addEventListener("submit", () => {
-            if (popUp) popUp.style.display = "none";
-            //f.reset();
-            //popUp.offsetHeight;
-        }));
+    // Cierra el popup automáticamente al enviar cualquiera de los formularios
+    const forms = document.querySelectorAll("#form-cambiar-foto, .form-eliminar-foto");
+    forms.forEach(f => f.addEventListener("submit", () => {
+        if (popUp) popUp.style.display = "none";
+        //f.reset();
+        //popUp.offsetHeight;
+    }));
 });
