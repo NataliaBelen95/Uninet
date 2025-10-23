@@ -2,7 +2,6 @@ package com.tallerwebi.presentacion;
 
 
 import com.tallerwebi.dominio.*;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 
@@ -24,10 +22,12 @@ public class ControladorHome {
 
 
 
+
     public ControladorHome(ServicioPublicacion servicioPublicacion, ServicioLike servicioLike, PublicacionMapper publicacionMapper) {
         this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
         this.publicacionMapper = publicacionMapper;
+
         //this.servicioUsuario = servicioUsuario;
 
     }
@@ -41,8 +41,11 @@ public class ControladorHome {
         DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return new ModelAndView("redirect:/login");
-        }                                         //dtoUsuario
+        }
+        //dtoUsuario
         model.addAttribute("usuario", usuario);
+
+
 
         // Ahora la lista de publicaciones ya trae los comentarios por estar con `EAGER` en la entidad
         List<Publicacion> publicaciones = servicioPublicacion.findAll();
@@ -55,8 +58,10 @@ public class ControladorHome {
             datosPublicaciones.add(dto);
         }
 
+
         model.addAttribute("datosPublicaciones", datosPublicaciones);
         model.addAttribute("origen", "home");
+
         return new ModelAndView("home", model);
     }
 

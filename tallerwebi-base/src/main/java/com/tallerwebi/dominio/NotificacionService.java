@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 public class NotificacionService {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final RepositorioNotificacion repositorioNotificacion;
 
     @Autowired
-    public NotificacionService(@Qualifier("brokerMessagingTemplate") SimpMessagingTemplate messagingTemplate) {
+    public NotificacionService(@Qualifier("brokerMessagingTemplate") SimpMessagingTemplate messagingTemplate,  RepositorioNotificacion repositorioNotificacion) {
         this.messagingTemplate = messagingTemplate;
+        this.repositorioNotificacion = repositorioNotificacion;
     }
 
     // Método para enviar mensaje a un topic
@@ -22,6 +24,26 @@ public class NotificacionService {
 
     public void enviarMensajePubli(String destino, DatosPublicacion dtoPublicacion) {
         messagingTemplate.convertAndSend(destino, dtoPublicacion);
+    }
+
+
+    // 1️⃣ Método para contar notificaciones no leídas de un usuario
+    public int contarNoLeidas(Usuario usuario) {
+        return repositorioNotificacion.contarPublisNoLeidasPorUsuario(usuario.getId());
+    }
+    public void enviarNotificacion(Usuario receptor, Notificacion notificacion) {
+        // Guardás la notificación normalmente
+        repositorioNotificacion.guardar(notificacion);
+
+        // Contás las no leídas
+        int cantidadNoLeidas = contarNoLeidas(receptor);
+
+        // Enviás al WebSocket del usuario
+        messagingTemplate.convertAndSend(
+                "/topic/notificaciones-" + receptor.getId(),
+                cantidadNoLeidas
+        );
+
     }
 }
 
