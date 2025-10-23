@@ -20,5 +20,5 @@ public interface ServicioPdfGenerator {
 
     MultipartFile obtenerArchivoPdf(String nombreArchivoOriginal) throws IOException;
 
-}
+    }
 

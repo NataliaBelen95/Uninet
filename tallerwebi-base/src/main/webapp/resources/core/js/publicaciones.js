@@ -116,14 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
             method: 'POST',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-            .then(res => res.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const nuevoLikeSpan = doc.querySelector('.likes-count');
-                if (nuevoLikeSpan) actualizarLikes(publicacionId, nuevoLikeSpan.innerText);
-            })
-            .catch(err => console.error("Error dar like:", err));
+        .then(res => res.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const nuevoLikeSpan = doc.querySelector('.likes-count');
+            if (nuevoLikeSpan) actualizarLikes(publicacionId, nuevoLikeSpan.innerText);
+        })
+        .catch(err => console.error("Error dar like:", err));
     }
 
     function toggleContenedor(id) {
@@ -158,12 +158,12 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify({ texto })
         })
-            .then(res => res.json())
-            .then(data => {
-                agregarComentarioAlDOM(publicacionId, data.comentario);
-                actualizarContadorComentarios(publicacionId, data.cantidadComentarios);
-            })
-            .catch(err => console.error("Error enviar comentario:", err));
+        .then(res => res.json())
+        .then(data => {
+            agregarComentarioAlDOM(publicacionId, data.comentario);
+            actualizarContadorComentarios(publicacionId, data.cantidadComentarios);
+        })
+        .catch(err => console.error("Error enviar comentario:", err));
     }
 
     function agregarComentarioAlDOM(publicacionId, comentario) {

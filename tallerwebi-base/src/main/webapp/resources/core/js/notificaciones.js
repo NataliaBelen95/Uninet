@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+ocument.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('button.marcar-leida').forEach(button => {
         button.addEventListener('click', () => {
             const id = button.getAttribute('data-id');

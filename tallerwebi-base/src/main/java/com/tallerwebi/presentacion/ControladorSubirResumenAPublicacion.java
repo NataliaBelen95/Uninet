@@ -26,36 +26,36 @@ public class ControladorSubirResumenAPublicacion {
     }
 
 
-    //para que suba el archivo cargado a subir-resumen y despues le pueda agregar descripcion
-    @PostMapping("/subir-resumen")
-    public String mostrarFormularioSubirResumen(@RequestParam String resumen,
+   //para que suba el archivo cargado a subir-resumen y despues le pueda agregar descripcion
+   @PostMapping("/subir-resumen")
+   public String mostrarFormularioSubirResumen(@RequestParam String resumen,
 
-                                                HttpServletRequest request,
-                                                Model model) throws IOException {
-        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if (datosUsuario == null) {
-            return "redirect:/login"; // o lo que tenga sentido
-        }
-        try {
-            // Generar nombre único para el PDF
-            String nombrePdfGenerado = "resumen_" + UUID.randomUUID() + ".pdf";
+                                               HttpServletRequest request,
+                                               Model model) throws IOException {
+       DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+       if (datosUsuario == null) {
+           return "redirect:/login"; // o lo que tenga sentido
+       }
+       try {
+           // Generar nombre único para el PDF
+           String nombrePdfGenerado = "resumen_" + UUID.randomUUID() + ".pdf";
 
-            // Generar PDF a partir del resumen HTML
-            File pdfGenerado = servicioPdfGenerator.generarPdfYGuardar(resumen, nombrePdfGenerado);
+           // Generar PDF a partir del resumen HTML
+           File pdfGenerado = servicioPdfGenerator.generarPdfYGuardar(resumen, nombrePdfGenerado);
 
-            // Guardar el nombre del PDF en el modelo para usarlo en la vista
-            model.addAttribute("archivoPdfPath", nombrePdfGenerado);
+           // Guardar el nombre del PDF en el modelo para usarlo en la vista
+           model.addAttribute("archivoPdfPath", nombrePdfGenerado);
 
-            model.addAttribute("usuario", datosUsuario);
+           model.addAttribute("usuario", datosUsuario);
 
-        } catch (IOException e) {
-            // Si falla la generación del PDF, mostrar mensaje de error y devolver la vista con mensaje
-            model.addAttribute("error", "Error al generar el PDF: " + e.getMessage());
-            // Podés decidir si devolver una vista de error o la misma para reintentar
-        }
+       } catch (IOException e) {
+           // Si falla la generación del PDF, mostrar mensaje de error y devolver la vista con mensaje
+           model.addAttribute("error", "Error al generar el PDF: " + e.getMessage());
+           // Podés decidir si devolver una vista de error o la misma para reintentar
+       }
 
-        return "subir-resumen"; // Vista con formulario para agregar descripción y mostrar PDF generado
-    }
+       return "subir-resumen"; // Vista con formulario para agregar descripción y mostrar PDF generado
+   }
 //
 //    @PostMapping("/herramientas-IA/compartir-resumen")
 //    public ModelAndView compartirResumenComoPublicacion(
@@ -129,4 +129,4 @@ public class ControladorSubirResumenAPublicacion {
     }
 
 
-}
+    }

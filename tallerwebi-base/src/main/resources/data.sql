@@ -2,11 +2,11 @@
 --USE tallerwebi;
 
 INSERT INTO Carrera(nombre) VALUES
-                                ('Tecnicatura en Desarrollo Web'),
-                                ('Licenciatura en Sistemas de Información'),
-                                ('Profesorado en Matemática'),
-                                ('Tecnicatura en Gestión de Empresas'),
-                                ('Licenciatura en Economía');
+('Tecnicatura en Desarrollo Web'),
+('Licenciatura en Sistemas de Información'),
+('Profesorado en Matemática'),
+('Tecnicatura en Gestión de Empresas'),
+('Licenciatura en Economía');
 
 
 -- 2️⃣ Crear materias (deja que el ID se autoasigne)
@@ -39,5 +39,5 @@ SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
 INSERT INTO genero (nombre) VALUES ('Femenino'), ('Masculino'), ('Otro'), ('Prefiero no decirlo');
 
 ALTER TABLE Publicacion
-    CONVERT TO CHARACTER SET utf8mb4
-    COLLATE utf8mb4_general_ci;
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_general_ci;

@@ -37,50 +37,69 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
     private final RepositorioComentario repositorioComentario;
-    private final ServicioUsuario servicioUsuario;
+
     private final RepositorioPublicacion repositorioPublicacion;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion, ServicioUsuario servicioUsuario) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
         this.repositorioPublicacion = repositorioPublicacion;
-        this.servicioUsuario = servicioUsuario;
 
     }
-    @Override
+@Override
     public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida {
 
+        // Verificar si la descripción está vacía
         boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
-        boolean sinArchivo = archivo == null || archivo.isEmpty();
+        boolean sinArchivo = archivo == null || archivo.isEmpty(); // Verificar si no se ha subido archivo
 
+        // Si ni la descripción ni el archivo están presentes, lanzar excepción
         if (descripcionVacia && sinArchivo) {
             throw new PublicacionFallida("La publicación debe tener texto o al menos un archivo adjunto");
         }
 
+        // Verificar que la descripción no exceda los 200 caracteres
         if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
             throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
         }
 
-        // No verificar duplicados para permitir subir varias veces lo mismo
+        // Verificar si ya existe una publicación igual
+        if (repositorio.existeIgual(publicacion)) {
+            throw new PublicacionFallida("Ya existe una publicación igual");
+        }
 
+        // Establecer fecha de publicación y usuario
         publicacion.setFechaPublicacion(LocalDateTime.now());
         publicacion.setUsuario(usuario);
 
+        // Verificar si ya existe un archivo asociado a esta publicación
+        if (publicacion.getArchivo() != null) {
+            throw new PublicacionFallida("Ya existe un archivo asociado a esta publicación");
+        }
 
+        // Si hay archivo
         if (archivo != null && !archivo.isEmpty()) {
             String tipo = archivo.getContentType();
 
+            // Verificar si el archivo es del tipo permitido (PDF o imágenes)
             if (!tipo.equals("application/pdf") && !tipo.startsWith("image/")) {
                 throw new PublicacionFallida("Solo se permiten archivos JPG o PDF");
             }
 
+            // Obtener nombre original del archivo
             String nombreOriginal = archivo.getOriginalFilename();
+
+            // Generar nombre único para el archivo
             String nombreArchivo = UUID.randomUUID() + "_" + nombreOriginal;
+
+            // Ruta donde se guardará el archivo
             Path rutaArchivo = Paths.get(System.getProperty("user.dir"), "archivosPublicacion", nombreArchivo);
 
             try (InputStream is = archivo.getInputStream()) {
+                // Crear directorios si no existen
                 Files.createDirectories(rutaArchivo.getParent());
+                // Copiar archivo a la ruta especificada
                 Files.copy(is, rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new PublicacionFallida("Error al guardar archivo: " + archivo.getOriginalFilename());

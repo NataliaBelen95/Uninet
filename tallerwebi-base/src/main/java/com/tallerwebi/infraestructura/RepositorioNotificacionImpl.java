@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public class RepositorioNotificacionImpl implements RepositorioNotificacion {
 
-    private SessionFactory sessionFactory;
+     private SessionFactory sessionFactory;
 
 
     @Autowired

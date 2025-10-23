@@ -75,7 +75,7 @@ public class ControladorHerramientasIA {
             String nombreArchivo = servicioSubirArchivoALaIA.guardarArchivoPdf(archivo, usuario);
             //si se pudo subir, envía mensaje de éxito
             model.addAttribute("mensaje", "Archivo guardado exitosamente: " + nombreArchivo);
-            //si no se pudo subir envía la excepción
+        //si no se pudo subir envía la excepción
         }catch (NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException | NoSePuedeSubirArchivoPorFallaException e) {
             model.addAttribute("mensaje", e.getMessage());
         }
@@ -111,7 +111,7 @@ public class ControladorHerramientasIA {
             // 🔍 IMPRIMÍS EL RESUMEN EN CONSOLA
             System.out.println("Resumen generado:");
             System.out.println(resumen); // Acá ves si está vacío, cortado, etc.
-            //agrego el resumen al model
+           //agrego el resumen al model
             model.addAttribute("resumen", resumen);
             model.addAttribute("mensaje", "Resumen generado exitosamente.");
             //agrego Nombre al mode//

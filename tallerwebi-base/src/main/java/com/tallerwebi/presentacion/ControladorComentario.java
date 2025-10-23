@@ -1,15 +1,19 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import com.tallerwebi.dominio.excepcion.PublicacionNoEncontrada;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -21,11 +25,9 @@ public class ControladorComentario {
     private final ServicioLike servicioLike;
     private final NotificacionService notificacionService;
     private final PublicacionMapper publicacionMapper;
-    private final ServicioNotificacion servicioNotificacion;
 
     @Autowired
-    public ControladorComentario(ServicioComentario servicioComentario, ServicioPublicacion servicioPublicacion, ServicioUsuario servicioUsuario, ServicioLike servicioLike, NotificacionService notificacionService,
-                                 PublicacionMapper publicacionMapper, ServicioNotificacion servicioNotificacion) {
+    public ControladorComentario(ServicioComentario servicioComentario, ServicioPublicacion servicioPublicacion, ServicioUsuario servicioUsuario, ServicioLike servicioLike, NotificacionService notificacionService, PublicacionMapper publicacionMapper) {
         this.servicioComentario = servicioComentario;
         this.servicioPublicacion = servicioPublicacion;
         this.servicioUsuario = servicioUsuario;
@@ -33,6 +35,8 @@ public class ControladorComentario {
         this.notificacionService = notificacionService;
         this.publicacionMapper = publicacionMapper;
         this.servicioNotificacion = servicioNotificacion;
+
+
     }
 
     @PostMapping("/publicacion/comentar/{id}")
@@ -61,19 +65,6 @@ public class ControladorComentario {
 
         Comentario comentario = servicioComentario.comentar(dto, usuario, publicacion);
 
-
-        Usuario receptor = publicacion.getUsuario();
-        // ✅ Crear notificación solo si dio like (no si quitó)
-
-        if (!Objects.equals(usuario.getId(), receptor.getId())) {
-            servicioNotificacion.crear(
-                    receptor,      // usuario que recibe la notificación
-                    usuario,       // usuario que envía la notificación (comenta)
-                    publicacion,
-                    TipoNotificacion.COMENTARIO
-            );
-        }
-
         DatosComentario comentarioDTO = publicacionMapper.toComentarioDto(comentario);
         int cantidadLikes = servicioLike.contarLikes(publicacion.getId());
         int cantidadComentarios = servicioComentario.contarComentarios(publicacion.getId());
@@ -85,7 +76,7 @@ public class ControladorComentario {
         response.put("cantidadComentarios", cantidadComentarios);
         response.put("cantidadLikes", cantidadLikes);
         return response;
-    } //manejar los if en otros lados.
+    }
 
 
     @GetMapping("/publicacion/comentarios/{id}")
@@ -103,6 +94,8 @@ public class ControladorComentario {
 
         return response;
     }
+
+
 
     /*ACA VA ELIMINAR COMENTARIO **/
     //@PostMapping ("/comentario/{id})

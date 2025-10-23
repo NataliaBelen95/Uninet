@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hsqldb.Tokens.LIKE;
-
 @Service
 @Transactional
 public class ServicioNotificacion {

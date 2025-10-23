@@ -16,7 +16,7 @@
     <nav th:replace="templates/nav :: nav"></nav>
 </header>
 <main>
-    <h2>Mis MG</h2>
+     <h2>Mis MG</h2>
     <div th:each="pub : ${publicaciones}" xmlns:th="http://www.w3.org/1999/xhtml">
         <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${pub}, usuario=${usuario})"></div>
     </div>

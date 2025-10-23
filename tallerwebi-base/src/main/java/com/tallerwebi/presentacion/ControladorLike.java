@@ -28,22 +28,22 @@ public class ControladorLike {
     private final ServicioNotificacion servicioNotificacion;
 
     @Autowired
-    public  ControladorLike(ServicioPublicacion servicioPublicacion,
-                            ServicioLike servicioLike,
-                            ServicioUsuario servicioUsuario,
-                            PublicacionMapper publicacionMapper, NotificacionService notificacionService,
-                            UsuarioMapper usuarioMapper,
-                            ServicioNotificacion servicioNotificacion) {
-        this.servicioPublicacion = servicioPublicacion;
-        this.servicioLike = servicioLike;
-        this.servicioUsuario = servicioUsuario;
-        this.publicacionMapper = publicacionMapper;
-        this.notificacionService = notificacionService;
-        this.usuarioMapper = usuarioMapper;
-        this.servicioNotificacion = servicioNotificacion;
+        public  ControladorLike(ServicioPublicacion servicioPublicacion,
+                                      ServicioLike servicioLike,
+                                      ServicioUsuario servicioUsuario,
+                                      PublicacionMapper publicacionMapper, NotificacionService notificacionService,
+                                      UsuarioMapper usuarioMapper,
+                                      ServicioNotificacion servicioNotificacion) {
+            this.servicioPublicacion = servicioPublicacion;
+            this.servicioLike = servicioLike;
+            this.servicioUsuario = servicioUsuario;
+            this.publicacionMapper = publicacionMapper;
+            this.notificacionService = notificacionService;
+            this.usuarioMapper = usuarioMapper;
+            this.servicioNotificacion = servicioNotificacion;
 
 
-    }
+        }
 
     @PostMapping("/publicacion/darLike/{id}")
     public String darYQuitarLike(@PathVariable long id, Model model, HttpServletRequest request) {
@@ -109,4 +109,4 @@ public class ControladorLike {
         return mav;
     }
 
-}
+    }
