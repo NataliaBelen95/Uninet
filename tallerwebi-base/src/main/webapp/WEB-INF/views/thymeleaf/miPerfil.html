@@ -1,16 +1,19 @@
 <!DOCTYPE HTML>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Perfil</title>
-
+    <!--websocket-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
     <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
 
     <link rel="stylesheet" th:href="@{/css/variables.css}"/>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
+
     <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
     <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
     <link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>-->
@@ -89,5 +92,7 @@
 <script type="module" th:src="@{js/tema.js}"></script>
 <script type="module" th:src="@{js/login.js}"></script>
 <script type="module" th:src="@{js/nav.js}"></script>
+<script type="module" th:src="@{js/notificaciones.js}"></script>
+
 </body>
 </html>

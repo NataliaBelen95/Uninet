@@ -35,13 +35,13 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
                         "SELECT n " +
                                 "FROM Notificacion n " +
                                 "LEFT JOIN FETCH n.publicacion " +
+                                "LEFT JOIN FETCH n.usuarioEmisor " +  //agrego el join fetch para usuarioEmisor
                                 "WHERE n.usuarioReceptor.id = :receptorId " +
                                 "ORDER BY n.fechaCreacion DESC"
                 )
                 .setParameter("receptorId", receptorId)
                 .list();
     }
-
 
     @Override
     public void marcarComoLeida(Long id) {
@@ -50,5 +50,20 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
             notificacion.setLeida(true);
             sessionFactory.getCurrentSession().update(notificacion);
         }
+    }
+
+    @Override
+    public int contarPublisNoLeidasPorUsuario(long usuarioId) {
+        Long cantidad = (Long) sessionFactory.getCurrentSession()
+                .createQuery(
+                        "SELECT COUNT(n) " +
+                                "FROM Notificacion n " +
+                                "WHERE n.usuarioReceptor.id = :usuarioId " +
+                                "AND n.leida = false"
+                )
+                .setParameter("usuarioId", usuarioId)
+                .uniqueResult();
+
+        return cantidad != null ? cantidad.intValue() : 0;
     }
 }
