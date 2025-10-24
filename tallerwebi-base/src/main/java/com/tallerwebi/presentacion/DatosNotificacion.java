@@ -1,5 +1,7 @@
 package com.tallerwebi.presentacion;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class DatosNotificacion {
@@ -7,7 +9,13 @@ public class DatosNotificacion {
     private String mensaje;
     private boolean leida;
     private String usuarioEmisor;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fecha;
+
+
+    // Constructor vacío (necesario para Jackson)
+    public DatosNotificacion() {}
 
     // Constructor
     public DatosNotificacion(Long id, String mensaje, boolean leida, LocalDateTime fecha,  String usuarioEmisor) {
