@@ -13,6 +13,8 @@ public class ServicioNotificacion {
 
     @Autowired
     private RepositorioNotificacion repoNotificacion;
+    @Autowired
+    private NotificacionService notificacionService;
 
     public void crear(Usuario receptor, Usuario emisor, Publicacion publicacion, TipoNotificacion tipo) {
         String mensaje = generarMensaje(tipo, emisor, publicacion);
@@ -26,6 +28,7 @@ public class ServicioNotificacion {
         notificacion.setFechaCreacion(LocalDateTime.now());
 
         repoNotificacion.guardar(notificacion);
+        notificacionService.enviarNotificacion(receptor, notificacion);
     }
     private String generarMensaje(TipoNotificacion tipo, Usuario emisor, Publicacion publicacion) {
         String preview = (publicacion != null && publicacion.getDescripcion() != null)
@@ -48,11 +51,15 @@ public class ServicioNotificacion {
         }
     }
 
-    public List<Notificacion> obtenerPorUsuario(Usuario receptor) {
-        return repoNotificacion.buscarPorReceptor(receptor.getId());
+    public List<Notificacion> obtenerPorUsuario(long receptorId) {
+        return repoNotificacion.buscarPorReceptor(receptorId);
     }
 
     public void marcarLeida(long idNoti){
         repoNotificacion.marcarComoLeida(idNoti);
+    }
+
+    public int contarNoLeidas(long usuId){
+        return repoNotificacion.contarPublisNoLeidasPorUsuario(usuId);
     }
 }

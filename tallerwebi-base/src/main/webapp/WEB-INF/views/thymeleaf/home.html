@@ -90,11 +90,26 @@
                 <img class="user2" th:src="@{/imagenes/user2.png}">
                 <img class="user2" th:src="@{/imagenes/user2.png}">
             </div>
+            <h2>Quizás conozcas...</h2>
+            <ul>
+                <!-- Iteramos sobre la lista de usuarios -->
+                <li th:each="usuario : ${usuarios}">
+                    <span th:text="${usuario.nombre}"></span> <!-- Muestra el nombre del usuario -->
+                    <!-- Formulario para enviar solicitud de amistad -->
+                    <form th:action="@{/amistad/enviarSolicitud}" method="post">
+                        <input type="hidden" th:name="receptorId" th:value="${usuario.id}"/>
+                        <button type="submit">Enviar Solicitud de Amistad</button>
+                    </form>
+                </li>
+            </ul>
+
         </div>
     </aside>
 </main>
 <script type="module" th:src="@{/js/publicaciones.js}"></script>
+<script type="module" th:src="@{js/notificaciones.js}"></script>
 <script type="module" th:src="@{js/tema.js}"></script>
+
 </body>
 
 </html>

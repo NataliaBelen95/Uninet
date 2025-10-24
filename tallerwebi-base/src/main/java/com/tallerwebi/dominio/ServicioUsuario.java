@@ -40,6 +40,10 @@ public class ServicioUsuario {
     }
 
     public void actualizarContrasena(Usuario usuario, String nuevaContrasena) {
-        repositorioUsuario.actualizarContrasena(usuario, nuevaContrasena);
+
+    }
+
+    public List<Usuario> obtenerTodosLosUsuarios() {
+        return repositorioUsuario.findAll();
     }
 }

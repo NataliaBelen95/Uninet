@@ -85,7 +85,30 @@
         </div>
     </aside>
 
-    <section class="estructura"></section>
+    <section class="estructura">
+        <h1>Solicitudes Pendientes</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Nombre del Solicitante</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="solicitud : ${solicitudes}">
+                <td th:text="${solicitud.solicitante.nombre}"></td>
+                <td>
+                    <form th:action="@{/amistad/aceptar/{idSolicitud}(idSolicitud=${solicitud.id})}" method="post">
+                        <button type="submit">Aceptar</button>
+                    </form>
+                    <form th:action="@{/amistad/rechazar/{idSolicitud}(idSolicitud=${solicitud.id})}" method="post">
+                        <button type="submit">Rechazar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 </main>
 <!--<script type="module" src="../../../resources/core/js/foto-perfil.js"></script>-->
 <script type="module" th:src="@{js/foto-perfil.js}"></script>

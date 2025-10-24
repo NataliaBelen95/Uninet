@@ -1,18 +1,32 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Genero;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 public class DatosUsuario {
+    private long id;
     private String nombre;
     private String apellido;
-    private Carrera carrera; // ahora pasamos la entidad completa
+    private Carrera carrera;
+    private Genero genero; // para el select
     private String email;
-    private long id ;
+    private String emailPersonal;
+    private int dni;  // o int/long según definas
+    private String password;
+    private LocalDate fechaNacimiento;
+    private String telefono;
+    private String direccion;
+    private String localidad;
+    private String provincia;
+    private String codigoPostal;
     private String fotoPerfil;
     private List<DatosPublicacion> dtopublicaciones;
     private List<DatosPublicacion> likesGuardados;
+    private int cantidadNotificaciones;
+
 
     public String getFotoPerfil() {return fotoPerfil;}
     public void setFotoPerfil(String fotoPerfil) {this.fotoPerfil = fotoPerfil;}
@@ -38,5 +52,87 @@ public class DatosUsuario {
     public List<DatosPublicacion> getLikesGuardados() {return likesGuardados;}
     public void setLikesGuardados(List<DatosPublicacion> guardados) {
         this.likesGuardados = guardados;
+    }
+    public int getCantidadNotificaciones() { return cantidadNotificaciones; }
+    public void setCantidadNotificaciones(int cantidadNotificaciones) { this.cantidadNotificaciones = cantidadNotificaciones; }
+
+    public Genero getGenero() {
+        return genero;
+    }
+
+    public void setGenero(Genero genero) {
+        this.genero = genero;
+    }
+
+    public String getEmailPersonal() {
+        return emailPersonal;
+    }
+
+    public void setEmailPersonal(String emailPersonal) {
+        this.emailPersonal = emailPersonal;
+    }
+
+    public int getDni() {
+        return dni;
+    }
+
+    public void setDni(int dni) {
+        this.dni = dni;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
     }
 }

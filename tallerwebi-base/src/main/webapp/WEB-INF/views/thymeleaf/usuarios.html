@@ -85,7 +85,27 @@
         </div>
     </aside>
 
-    <section class="estructura"></section>
+    <section class="estructura">
+        <h1>Lista de Usuarios</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usuario : ${usuarios}">
+                <td th:text="${usuario.nombre}"></td>
+                <td>
+                    <form th:action="@{/amistad/enviar/{idReceptor}(idReceptor=${usuario.id})}" method="post">
+                        <button type="submit">Enviar Solicitud</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 </main>
 <!--<script type="module" src="../../../resources/core/js/foto-perfil.js"></script>-->
 <script type="module" th:src="@{js/foto-perfil.js}"></script>

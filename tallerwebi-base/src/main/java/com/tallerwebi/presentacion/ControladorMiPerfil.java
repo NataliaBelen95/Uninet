@@ -25,13 +25,17 @@ public class ControladorMiPerfil {
     private final ServicioUsuario servicioUsuario;
     private final ServicioGenero servicioGenero;
     private final ServicioLogin servicioLogin;
+    private final ServicioNotificacion servicioNotificacion;
+    private final UsuarioMapper usuarioMapper;
 
     // Inyección del repositorio a través del constructor
     @Autowired
-    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioLogin servicioLogin) {
+    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioLogin servicioLogin,  ServicioNotificacion servicioNotificacion, UsuarioMapper usuarioMapper) {
         this.servicioUsuario = servicioUsuario;
         this.servicioGenero = servicioGenero;
         this.servicioLogin = servicioLogin;
+        this.servicioNotificacion = servicioNotificacion;
+        this.usuarioMapper = usuarioMapper;
     }
 
     @GetMapping("/miPerfil")
@@ -39,14 +43,22 @@ public class ControladorMiPerfil {
     public ModelAndView miPerfil(HttpServletRequest request) {
         DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
-        Usuario usuario = servicioUsuario.buscarPorEmail(datosUsuario.getEmail());
+        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+        int cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuario.getId());
+
+        // Usamos el mapper para convertir Usuario a DatosUsuario
+        DatosUsuario dto = usuarioMapper.toDto(usuario);
+        dto.setCantidadNotificaciones(cantidadNoLeidas);
+
         ModelMap model = new ModelMap();
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", dto);
         model.addAttribute("generos", servicioGenero.listarGeneros());
+
+        // Actualizo sesión con DTO actualizado
+        request.getSession().setAttribute("usuarioLogueado", dto);
 
         return new ModelAndView("miPerfil", model);
     }
-
     @GetMapping("/editar-informacion")
     @Transactional(readOnly = true)
     public ModelAndView editarInformacion(HttpServletRequest request) {
@@ -57,64 +69,74 @@ public class ControladorMiPerfil {
         }
 
         Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
+        DatosUsuario dto = usuarioMapper.toDto(usuario);
+        dto.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuario.getId()));
+
         ModelMap model = new ModelMap();
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", dto);
         model.addAttribute("generos", servicioGenero.listarGeneros());
 
         return new ModelAndView("editar-informacion", model);
     }
 
-
     @PostMapping("/miPerfil")
     @Transactional
-    public ModelAndView actualizarPerfil(@ModelAttribute("usuario")  Usuario usuario, HttpServletRequest request) {
+    public ModelAndView actualizarPerfil(@ModelAttribute("usuario") DatosUsuario dto, HttpServletRequest request) {
         DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if(datosUsuario == null){
-            return new ModelAndView("miPerfil");
+        if (datosUsuario == null) {
+            return new ModelAndView("redirect:/login");
         }
-        //Usuario usuarioEnBD = servicioUsuario.buscarPorEmail(datosUsuario.getEmail()); forma vieja
+
         Usuario usuarioEnBD = servicioUsuario.buscarPorId(datosUsuario.getId());
 
-        //Acá actualizamos los campos editables
-        usuarioEnBD.setEmail(usuario.getEmail());
-        usuarioEnBD.setEmailPersonal(usuario.getEmailPersonal());
-        usuarioEnBD.setFechaNacimiento(usuario.getFechaNacimiento());
-        usuarioEnBD.setTelefono(usuario.getTelefono());
-        usuarioEnBD.setDireccion(usuario.getDireccion());
-        usuarioEnBD.setLocalidad(usuario.getLocalidad());
-        usuarioEnBD.setCodigoPostal(usuario.getCodigoPostal());
-        usuarioEnBD.setProvincia(usuario.getProvincia());
-        usuarioEnBD.setPassword(usuario.getPassword());
-        datosUsuario.setFotoPerfil(usuario.getFotoPerfil());
+        // Actualizamos usuarioEnBD con datos del DTO
+        usuarioEnBD.setEmail(dto.getEmail());
+        usuarioEnBD.setEmailPersonal(dto.getEmailPersonal());
+        usuarioEnBD.setFechaNacimiento(dto.getFechaNacimiento());
+        usuarioEnBD.setTelefono(dto.getTelefono());
+        usuarioEnBD.setDireccion(dto.getDireccion());
+        usuarioEnBD.setLocalidad(dto.getLocalidad());
+        usuarioEnBD.setCodigoPostal(dto.getCodigoPostal());
+        usuarioEnBD.setProvincia(dto.getProvincia());
+        usuarioEnBD.setPassword(dto.getPassword());
 
-        if(usuario.getGenero() != null && usuario.getGenero().getId() != null) {
-            Genero generoEnBD = servicioGenero.buscarPorId(usuario.getGenero().getId());
+        if(dto.getGenero() != null && dto.getGenero().getId() != null) {
+            Genero generoEnBD = servicioGenero.buscarPorId(dto.getGenero().getId());
             usuarioEnBD.setGenero(generoEnBD);
-        }else{
+        } else {
             usuarioEnBD.setGenero(null);
         }
 
-        //Guardamos en la base de datos
+        // Guardar entidad actualizada
         servicioUsuario.actualizar(usuarioEnBD);
 
-        //Actualizamos el modelo y mostramos mensaje
+        // Actualizar DTO para la sesión y vista
+        DatosUsuario dtoActualizado = usuarioMapper.toDto(usuarioEnBD);
+        dtoActualizado.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuarioEnBD.getId()));
+        request.getSession().setAttribute("usuarioLogueado", dtoActualizado);
+
         ModelMap model = new ModelMap();
-        model.addAttribute("usuario", usuarioEnBD);
+        model.addAttribute("usuario", dtoActualizado);
         model.addAttribute("generos", servicioGenero.listarGeneros());
         model.addAttribute("mensaje", "Cambios guardados con éxito");
 
         return new ModelAndView("miPerfil", model);
     }
-
     @PostMapping("/miPerfil/foto")
     @Transactional
     public ModelAndView subirFoto(@RequestParam("fotoPerfil") MultipartFile foto, HttpServletRequest request) {
         DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
         ModelMap model = new ModelMap();
+
+        if (datosUsuario == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
 
         if (foto.isEmpty()) {
             model.addAttribute("mensaje", "No seleccionaste ninguna imagen");
+            model.addAttribute("usuario", datosUsuario);
             return new ModelAndView("miPerfil", model);
         }
 
@@ -125,52 +147,51 @@ public class ControladorMiPerfil {
 
         if (!extensionesPermitidas.contains(extension)) {
             model.addAttribute("mensaje", "Formato no válido. Solo se aceptan: JPG, PNG, WEBP");
+            model.addAttribute("usuario", datosUsuario);
             return new ModelAndView("miPerfil", model);
         }
 
         if (foto.getSize() > pesoPermitido) {
             model.addAttribute("mensaje", "El archivo es demasiado grande (máx. 2MB)");
+            model.addAttribute("usuario", datosUsuario);
             return new ModelAndView("miPerfil", model);
         }
 
         try {
-            // Nombre único para evitar conflictos
             String nombreFinal = java.util.UUID.randomUUID().toString() + extension;
-
-            // Usamos una única fuente: la carpeta "perfiles" en la raíz del proyecto
             String rutaBase = System.getProperty("user.dir") + java.io.File.separator + "perfiles";
             java.io.File directorio = new java.io.File(rutaBase);
 
-            // Crea todos los directorios necesarios (mkdirs en vez de mkdir)
             if (!directorio.exists()) {
-                boolean ok = directorio.mkdirs();
-                System.out.println("Directorio creado: " + directorio.getAbsolutePath() + " -> " + ok);
+                directorio.mkdirs();
             }
 
             java.io.File destino = new java.io.File(directorio, nombreFinal);
 
-            // DEBUG: imprimir rutas para chequear
-            System.out.println("rutaBase = " + rutaBase);
-            System.out.println("destino absoluto = " + destino.getAbsolutePath());
-
-            // Guardar el archivo (usa la ruta absoluta)
             foto.transferTo(destino);
 
+            // Actualizamos entidad y guardamos
             usuario.setFotoPerfil("perfiles/" + nombreFinal);
-            datosUsuario.setFotoPerfil(usuario.getFotoPerfil());
             servicioUsuario.actualizar(usuario);
 
-            System.out.println("Archivo subido: " + nombreOriginal);
-            System.out.println("Ruta guardada en BD: " + usuario.getFotoPerfil());
+            // Actualizamos DTO
+            DatosUsuario dtoActualizado = usuarioMapper.toDto(usuario);
+            dtoActualizado.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuario.getId()));
+
+            // Guardamos DTO actualizado en sesión y pasamos a la vista
+            request.getSession().setAttribute("usuarioLogueado", dtoActualizado);
+            model.addAttribute("usuario", dtoActualizado);
+
+            model.addAttribute("mensaje", "Foto subida correctamente");
 
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("mensaje", "Error al cargar imagen: " + e.getMessage());
+            model.addAttribute("usuario", datosUsuario);
         }
-        model.addAttribute("usuario", usuario);
+
         return new ModelAndView("miPerfil", model);
     }
-
     @PostMapping("/miPerfil/eliminar-foto")
     @Transactional
     public ModelAndView eliminarFoto(HttpServletRequest request) {
@@ -184,33 +205,38 @@ public class ControladorMiPerfil {
 
         try {
             if (usuario.getFotoPerfil() != null) {
-                // Elimina el archivo físico
                 String rutaBase = System.getProperty("user.dir") + java.io.File.separator + "perfiles";
                 String rutaCompleta = rutaBase + java.io.File.separator + usuario.getFotoPerfil().substring("perfiles/".length());
-
-                // Crear el archivo
                 java.io.File archivo = new java.io.File(rutaCompleta);
 
                 if (archivo.exists()) {
                     archivo.delete();
                 }
 
-                // Elimina la ruta en la base
+                // Limpiamos foto en entidad y guardamos
                 usuario.setFotoPerfil(null);
-                datosUsuario.setFotoPerfil(null);
                 servicioUsuario.actualizar(usuario);
+
+                // Actualizamos DTO y sesión
+                DatosUsuario dtoActualizado = usuarioMapper.toDto(usuario);
+                dtoActualizado.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuario.getId()));
+                request.getSession().setAttribute("usuarioLogueado", dtoActualizado);
+
+                model.addAttribute("usuario", dtoActualizado);
+                model.addAttribute("mensaje", "Foto de perfil eliminada correctamente");
+            } else {
+                model.addAttribute("usuario", datosUsuario);
+                model.addAttribute("mensaje", "No tenés foto para eliminar");
             }
-
-            model.addAttribute("mensaje", "Foto de perfil eliminada correctamente");
-
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("usuario", datosUsuario);
             model.addAttribute("error", "Error al eliminar la foto");
         }
 
-        model.addAttribute("usuario", usuario);
         return new ModelAndView("miPerfil", model);
     }
+
 
 
 }

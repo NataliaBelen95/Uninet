@@ -20,6 +20,7 @@ a {
     border-radius: 1rem;
     padding: 2rem;
     position:relative;
+    margin-bottom:1rem;
 }
 .palabra{
     font-size: 2rem;
@@ -191,25 +192,24 @@ a {
 .ver-comentariosBtn {
     margin-left: auto; /* empuja el botón al final */
 }
-.contenedor_comentarios {
-      display: flex;
-      flex-direction: column;
+/* Estilos para los comentarios */
+ /* Estilo por defecto del contenedor de comentarios */
+ .contenedor_comentarios {
+     display: none; /* Ocultos inicialmente */
+     flex-direction: column;
+     gap: 10px;
+     margin-top: 15px;
+ }
 
-      gap: 10px;
-      margin-top: 15px;
-}
+ /* Cuando se añade la clase 'mostrar', hacemos visible el contenedor */
+ .contenedor_comentarios.mostrar {
+     display: flex; /* Muestra el contenedor */
+ }
 
-
-
-.contenedor_comentarios .comentario {
-
-    margin-bottom: 10px;
-    align-self:flex-end;
-
-
-}
-
-
+ /* Los comentarios estarán ocultos por defecto (solo visibles cuando se añada la clase 'mostrar') */
+ .contenedor_comentarios .comentario {
+     display: block; /* Los comentarios estarán visibles dentro del contenedor */
+ }
 .btn-like img {
   transition: filter 0.3s ease, opacity 0.3s ease;
 }
@@ -234,6 +234,8 @@ a {
     gap: 10px;
 }
 
+
+
 .linea-divisora {
     border: none;
     border-bottom: 1px solid #ccc;
@@ -254,39 +256,57 @@ a {
     height: 24px;
 }
 
-/*pdf*/
-/* Asegura que el contenedor del canvas no se expanda más del tamaño del padre */
-.archivo-pdf {
-    max-width: 100%;
-    margin-bottom: 15px;
+/*********** notificaciones dropdown *//////////////
+
+
+
+
+
+/******notificaciones , ver donde va ****/
+.badge {
+   background-color: var(--verde); /* Fondo verde */
+      color: var(--texto);            /* Texto claro/blanco */
+      border-radius: 50%;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      margin-left: 5px;
 }
 
-.archivo-pdf .acciones-archivo {
-    margin-bottom: 10px;
+.menu-notificaciones .dropdown {
+   position: absolute;
+       background-color: var(--background); /* Fondo oscuro */
+       border: 1px solid var(--borde);      /* Borde acorde */
+       width: 250px;
+       max-height: 300px;
+       overflow-y: auto;
+       box-shadow: 0 2px 6px rgba(0,0,0,0.6); /* Sombra más oscura */
+       z-index: 1000;
+       color: var(--verde); /* Texto verde */
 }
 
-.archivo-pdf canvas {
-    display: block;
-    width: 100% !important;
-    height: auto !important;
-    max-width: 100%;
-    border: 1px solid #ccc;
-    margin: 0 auto;
+.menu-notificaciones .dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-/* Contenedor con scroll si el PDF es muy largo */
-.archivo-pdf .pdf-container {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid #aaa;
-    padding: 5px;
+.menu-notificaciones .dropdown li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.menu-notificaciones .dropdown li.leida {
+    background-color: #2c2f30; /* un gris oscuro más claro */
+       color: var(--verde-2);
+}
+
+.menu-notificaciones .dropdown li:hover {
+  background-color: #3d3f40; /* u
 }
 
 
 
-
-
-/***/
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }

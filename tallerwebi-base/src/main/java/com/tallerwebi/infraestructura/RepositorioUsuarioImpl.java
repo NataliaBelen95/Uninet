@@ -8,12 +8,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository("repositoryUsuario")
 
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
+    @Override
+    public List<Usuario> findAll() {
+        return List.of();
+    }
 
     private SessionFactory sessionFactory;
 
@@ -63,6 +69,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
+    @Transactional
     public Usuario buscarPorId(long id) {
         return sessionFactory.getCurrentSession().get(Usuario.class, id);
     }
@@ -92,6 +99,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
         session.update(usuario);
     }
+
 
 
 }
