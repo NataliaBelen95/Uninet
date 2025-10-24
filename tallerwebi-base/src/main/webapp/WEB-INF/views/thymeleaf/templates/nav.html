@@ -8,8 +8,17 @@
             <li>
                 <button id="btn-tema" class="boton-tema"><img class="isologo" th:src="@{/imagenes/modo-oscuro.png}"></button>
             </li>
-            <li><a href="/spring/miPerfil">Notificaciones</a></li>
-            <!-- Enlace "Mis amigos" -->
+            <li class="menu-notificaciones">
+                <a href="#" id="btn-notificaciones" th:attr="data-user-id=${usuario.id}">
+                    Notificaciones
+                    <span th:if="${usuario.cantidadNotificaciones > 0}"
+                          class="badge"
+                          th:text="${usuario.cantidadNotificaciones}"></span>
+                </a>
+                <div id="dropdown-notificaciones" class="dropdown" style="display:none;">
+                    <ul id="listaNotificaciones"></ul>
+                </div>
+            </li>            <!-- Enlace "Mis amigos" -->
             <li><a href="/spring/amistad/amigos">Mis amigos</a></li>
             <li><a href="/spring/miPerfil">Mensajes</a></li>
             <li class="menu-perfil">
