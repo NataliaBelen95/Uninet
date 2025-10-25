@@ -33,6 +33,7 @@ public class PublicacionMapper {
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
         dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
+        dto.setEsPropio(p.getUsuario().getId() == (usuarioId));
 
 
         // Debug print

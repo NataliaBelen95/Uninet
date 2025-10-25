@@ -7,7 +7,7 @@
         <!-- Usuario -->
         <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
 
-    <form th:if="${dtopubli != null and usuario != null and dtopubli.usuarioId.equals(usuario.id)}"
+    <form th:if="${dtopubli.esPropio}"
           th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}"
           method="post">
         <button class="delete-button" type="submit">

@@ -45,6 +45,9 @@ public class DatosPublicacion {
     @JsonProperty("dioLike")
     private Boolean dioLike;
 
+    @JsonProperty("esPropio")
+    private boolean esPropio;
+
 
     // Getters and setters
     public String getNombreUsuario() {
@@ -138,4 +141,13 @@ public class DatosPublicacion {
 
     public Boolean getDioLike() {return dioLike;}
     public void setDioLike(Boolean yadioLike) {this.dioLike = yadioLike;}
+
+    // --- Getters y setters ---
+    public boolean isEsPropio() {
+        return esPropio;
+    }
+
+    public void setEsPropio(boolean esPropio) {
+        this.esPropio = esPropio;
+    }
 }

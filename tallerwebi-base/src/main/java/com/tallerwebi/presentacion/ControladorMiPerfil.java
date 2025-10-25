@@ -271,7 +271,7 @@ public class ControladorMiPerfil {
         model.addAttribute("usuario", dto);
         model.addAttribute("generos", servicioGenero.listarGeneros());
         model.addAttribute("publicaciones", dtosPublicaciones);
-
+        model.addAttribute("esPropio", esPropio);
         // Actualizamos sesión solo si es propio
         if (esPropio) {
             request.getSession().setAttribute("usuarioLogueado", dto);
