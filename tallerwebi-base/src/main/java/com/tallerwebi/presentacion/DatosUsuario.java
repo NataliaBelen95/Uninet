@@ -26,6 +26,7 @@ public class DatosUsuario {
     private List<DatosPublicacion> dtopublicaciones;
     private List<DatosPublicacion> likesGuardados;
     private int cantidadNotificaciones;
+    private String slug;
 
 
     public String getFotoPerfil() {return fotoPerfil;}
@@ -134,5 +135,13 @@ public class DatosUsuario {
 
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 }

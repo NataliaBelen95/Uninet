@@ -1,5 +1,9 @@
 --CREATE DATABASE IF NOT EXISTS tallerwebi;
---USE tallerwebi;
+USE tallerwebi;
+
+UPDATE Usuario
+SET slug = LOWER(CONCAT(nombre, '-', apellido, '-', LPAD(id, 4, '0')))
+WHERE slug IS NULL OR slug = '';
 
 INSERT INTO Carrera(nombre) VALUES
 ('Tecnicatura en Desarrollo Web'),
@@ -29,9 +33,9 @@ INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (4, 4); -- Tecnicatur
 INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
 VALUES (NULL, 'test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez',38065944, 1, '1990-01-01', true);
 INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
-VALUES (123, 'fran@unlam.edu.ar', '123', 'ADMIN', true, 'Franco', 'Vargas',41062869, 1, '1998-04-24', true);
+VALUES (NULL, 'fran@unlam.edu.ar', '123', 'ADMIN', true, 'Franco', 'Vargas',41062869, 1, '1998-04-24', true);
 INSERT INTO Usuario (id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
-VALUES (124, 'nat@unlam.edu.ar', '123', 'ADMIN', true, 'Nat', 'alia',41123869, 1, '1998-08-29', true);
+VALUES (NULL, 'nat@unlam.edu.ar', '123', 'ADMIN', true, 'Nat', 'alia',41123869, 1, '1998-08-29', true);
 
 INSERT INTO Usuario(id, email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
 VALUES (NULL, 'admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, '1990-01-01', true);
@@ -47,3 +51,8 @@ INSERT INTO genero (nombre) VALUES ('Femenino'), ('Masculino'), ('Otro'), ('Pref
 ALTER TABLE Publicacion
 CONVERT TO CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
+
+-- 6️⃣ Generar slug para los nuevos usuarios
+UPDATE Usuario
+SET slug = LOWER(CONCAT(nombre, '-', apellido, '-', LPAD(id, 4, '0')))
+WHERE slug IS NULL OR slug = '';

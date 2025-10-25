@@ -1,6 +1,7 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Publicacion;
 import com.tallerwebi.dominio.RepositorioUsuario;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Session;
@@ -18,6 +19,11 @@ import java.util.Optional;
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
     @Override
     public List<Usuario> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
         return List.of();
     }
 
@@ -100,6 +106,14 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         session.update(usuario);
     }
 
+    @Override
+    public Usuario buscarPorSlug(String slug) {
+        Session session = sessionFactory.getCurrentSession();
+        // Query para traer un único usuario por slug
+        return session.createQuery("FROM Usuario u WHERE u.slug = :slug", Usuario.class)
+                .setParameter("slug", slug)
+                .uniqueResult();
+    }
 
 
 }

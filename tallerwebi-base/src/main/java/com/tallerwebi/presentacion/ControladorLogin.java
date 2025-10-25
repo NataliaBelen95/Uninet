@@ -28,13 +28,17 @@ public class ControladorLogin {
 
     private RepositorioUsuario repositorioUsuario;
     private ServicioCarrera servicioCarrera;
+    private ServicioUsuario servicioUsuario;
     /******     ***/
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario, ServicioCarrera servicioCarrera) {
+    public ControladorLogin(ServicioLogin servicioLogin,
+                            ServicioCarrera servicioCarrera,
+                            ServicioUsuario servicioUsuario) {
         this.servicioLogin = servicioLogin;
-        this.repositorioUsuario = repositorioUsuario;
+
         this.servicioCarrera = servicioCarrera;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @RequestMapping("/login")
@@ -116,11 +120,11 @@ public class ControladorLogin {
     public ModelAndView validarCodigo(@RequestParam("email") String email,
                                       @RequestParam("codigo") String codigo) {
         ModelMap model = new ModelMap();
-        Usuario usuario = repositorioUsuario.buscar(email); // tu método para buscar usuario
+        Usuario usuario = servicioUsuario.buscarPorEmail(email); // tu método para buscar usuario
 
         if (usuario.getCodigoConfirmacion().equals(codigo)) {
             usuario.setConfirmado(true);
-            repositorioUsuario.guardar(usuario);
+            servicioUsuario.registrarUsuario(usuario);
             return new ModelAndView("redirect:/login");
         } else {
             model.put("error", "Código incorrecto");

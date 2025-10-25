@@ -184,5 +184,10 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorioPublicacion.obtenerPublicacionesConLikeDeUsuario(id);
     }
 
+    @Override
+    public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
+        return repositorioPublicacion.obtenerPublicacionesDeUsuario(usuId);
+    }
+
 
 }

@@ -62,10 +62,10 @@ public class Usuario {
 
     @Column(nullable = true)
     private String codigoConfirmacion;
-
     @Column(nullable = true)
     private boolean confirmado = false;
-
+    @Column(unique = true)
+    private String slug;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "genero_id", nullable = true) //El name es lo que conecta ambas tablas Usuario1-NGenero, o sea que es la fk
@@ -230,7 +230,13 @@ public class Usuario {
     public LocalDate getFechaNacimiento() {return fechaNacimiento;    }
     public void setFechaNacimiento(LocalDate fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;    }
 
+    public String getSlug() {
+        return slug;
+    }
 
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 }
 
 

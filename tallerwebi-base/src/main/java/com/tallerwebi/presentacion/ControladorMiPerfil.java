@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,6 +15,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ControladorMiPerfil {
@@ -27,38 +25,24 @@ public class ControladorMiPerfil {
     private final ServicioLogin servicioLogin;
     private final ServicioNotificacion servicioNotificacion;
     private final UsuarioMapper usuarioMapper;
+    private final ServicioPublicacion servicioPublicacion;
+    private final PublicacionMapper publicacionMapper;
 
     // Inyección del repositorio a través del constructor
     @Autowired
-    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioLogin servicioLogin,  ServicioNotificacion servicioNotificacion, UsuarioMapper usuarioMapper) {
+    public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioLogin servicioLogin,
+                               ServicioNotificacion servicioNotificacion, UsuarioMapper usuarioMapper,
+                               ServicioPublicacion servicioPublicacion,  PublicacionMapper publicacionMapper) {
         this.servicioUsuario = servicioUsuario;
         this.servicioGenero = servicioGenero;
         this.servicioLogin = servicioLogin;
         this.servicioNotificacion = servicioNotificacion;
         this.usuarioMapper = usuarioMapper;
+        this.servicioPublicacion = servicioPublicacion;
+        this.publicacionMapper = publicacionMapper;
     }
 
-    @GetMapping("/miPerfil")
-    @Transactional(readOnly = true)
-    public ModelAndView miPerfil(HttpServletRequest request) {
-        DatosUsuario datosUsuario = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
-        Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
-        int cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuario.getId());
-
-        // Usamos el mapper para convertir Usuario a DatosUsuario
-        DatosUsuario dto = usuarioMapper.toDto(usuario);
-        dto.setCantidadNotificaciones(cantidadNoLeidas);
-
-        ModelMap model = new ModelMap();
-        model.addAttribute("usuario", dto);
-        model.addAttribute("generos", servicioGenero.listarGeneros());
-
-        // Actualizo sesión con DTO actualizado
-        request.getSession().setAttribute("usuarioLogueado", dto);
-
-        return new ModelAndView("miPerfil", model);
-    }
     @GetMapping("/editar-informacion")
     @Transactional(readOnly = true)
     public ModelAndView editarInformacion(HttpServletRequest request) {
@@ -69,9 +53,8 @@ public class ControladorMiPerfil {
         }
 
         Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
-        DatosUsuario dto = usuarioMapper.toDto(usuario);
+        DatosUsuario dto = usuarioMapper.toDtoPropio(usuario);
         dto.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuario.getId()));
-
         ModelMap model = new ModelMap();
         model.addAttribute("usuario", dto);
         model.addAttribute("generos", servicioGenero.listarGeneros());
@@ -111,7 +94,7 @@ public class ControladorMiPerfil {
         servicioUsuario.actualizar(usuarioEnBD);
 
         // Actualizar DTO para la sesión y vista
-        DatosUsuario dtoActualizado = usuarioMapper.toDto(usuarioEnBD);
+        DatosUsuario dtoActualizado = usuarioMapper.toDtoPropio(usuarioEnBD);
         dtoActualizado.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuarioEnBD.getId()));
         request.getSession().setAttribute("usuarioLogueado", dtoActualizado);
 
@@ -175,7 +158,7 @@ public class ControladorMiPerfil {
             servicioUsuario.actualizar(usuario);
 
             // Actualizamos DTO
-            DatosUsuario dtoActualizado = usuarioMapper.toDto(usuario);
+            DatosUsuario dtoActualizado = usuarioMapper.toDtoPropio(usuario);
             dtoActualizado.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuario.getId()));
 
             // Guardamos DTO actualizado en sesión y pasamos a la vista
@@ -203,6 +186,7 @@ public class ControladorMiPerfil {
         Usuario usuario = servicioUsuario.buscarPorId(datosUsuario.getId());
         ModelMap model = new ModelMap();
 
+
         try {
             if (usuario.getFotoPerfil() != null) {
                 String rutaBase = System.getProperty("user.dir") + java.io.File.separator + "perfiles";
@@ -218,7 +202,7 @@ public class ControladorMiPerfil {
                 servicioUsuario.actualizar(usuario);
 
                 // Actualizamos DTO y sesión
-                DatosUsuario dtoActualizado = usuarioMapper.toDto(usuario);
+                DatosUsuario dtoActualizado = usuarioMapper.toDtoPropio(usuario);
                 dtoActualizado.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuario.getId()));
                 request.getSession().setAttribute("usuarioLogueado", dtoActualizado);
 
@@ -239,4 +223,62 @@ public class ControladorMiPerfil {
 
 
 
+    @GetMapping("/miPerfil")
+    @Transactional(readOnly = true)
+    public ModelAndView miPerfil(HttpServletRequest request) {
+        DatosUsuario datosSesion = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datosSesion == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        return mostrarPerfil(datosSesion.getSlug(), request, true);
+    }
+
+    @GetMapping("/perfil/{slug}")
+    public ModelAndView perfil(@PathVariable String slug, HttpServletRequest request) {
+        DatosUsuario datosSesion = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        boolean esPropio = datosSesion != null && slug.equals(datosSesion.getSlug());
+        return mostrarPerfil(slug, request, esPropio);
+    }
+
+    @Transactional
+    private ModelAndView mostrarPerfil(String slug, HttpServletRequest request, boolean esPropio) {
+        Usuario usuario;
+
+        if (slug != null) {
+            usuario = servicioUsuario.buscarPorSlug(slug);
+        } else {
+            DatosUsuario datosSesion = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+            usuario = servicioUsuario.buscarPorId(datosSesion.getId());
+        }
+
+        int cantidadNoLeidas = 0;
+        if (esPropio) {
+            cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuario.getId());
+        }
+
+        DatosUsuario dto = esPropio
+                ? usuarioMapper.toDtoPropio(usuario)
+                : usuarioMapper.toDtoPublico(usuario);
+        dto.setCantidadNotificaciones(cantidadNoLeidas);
+
+        // Traemos y mapeamos publicaciones (solo contenido público)
+        List<Publicacion> publicaciones = servicioPublicacion.obtenerPublicacionesDeUsuario(usuario.getId());
+        List<DatosPublicacion> dtosPublicaciones = publicaciones.stream()
+                .map(p -> publicacionMapper.toDto(p, usuario.getId()))
+                .collect(Collectors.toList());
+
+        ModelMap model = new ModelMap();
+        model.addAttribute("usuario", dto);
+        model.addAttribute("generos", servicioGenero.listarGeneros());
+        model.addAttribute("publicaciones", dtosPublicaciones);
+
+        // Actualizamos sesión solo si es propio
+        if (esPropio) {
+            request.getSession().setAttribute("usuarioLogueado", dto);
+        }
+
+        return new ModelAndView("miPerfil", model);
+    }
 }
+
+

@@ -12,44 +12,56 @@ public class UsuarioMapper {
     public UsuarioMapper(PublicacionMapper publicacionMapper) {
         this.publicacionMapper = publicacionMapper;
     }
-
-    public DatosUsuario toDto(Usuario usuario) {
+    // Mapper principal con flag de "propio"
+    public DatosUsuario toDto(Usuario usuario, boolean esPropio) {
         DatosUsuario dto = new DatosUsuario();
 
         dto.setId(usuario.getId());
         dto.setNombre(usuario.getNombre());
         dto.setApellido(usuario.getApellido());
         dto.setEmail(usuario.getEmail());
-        dto.setEmailPersonal(usuario.getEmailPersonal());  // <-- agregado
-        dto.setPassword(usuario.getPassword()); // Si querés mostrar/editar contraseña (cuidado con seguridad)
-        dto.setDni(usuario.getDni()); // <-- agregado
-        dto.setFechaNacimiento(usuario.getFechaNacimiento()); // <-- agregado
-        dto.setTelefono(usuario.getTelefono()); // <-- agregado
-        dto.setDireccion(usuario.getDireccion()); // <-- agregado
-        dto.setLocalidad(usuario.getLocalidad()); // <-- agregado
-        dto.setProvincia(usuario.getProvincia()); // <-- agregado
-        dto.setCodigoPostal(usuario.getCodigoPostal()); // <-- agregado
-        dto.setGenero(usuario.getGenero()); // <-- agregado (objeto Genero completo)
+        dto.setEmailPersonal(usuario.getEmailPersonal());
+        dto.setPassword(usuario.getPassword());
+        dto.setDni(usuario.getDni());
+        dto.setFechaNacimiento(usuario.getFechaNacimiento());
+        dto.setTelefono(usuario.getTelefono());
+        dto.setDireccion(usuario.getDireccion());
+        dto.setLocalidad(usuario.getLocalidad());
+        dto.setProvincia(usuario.getProvincia());
+        dto.setCodigoPostal(usuario.getCodigoPostal());
+        dto.setGenero(usuario.getGenero());
         dto.setCarrera(usuario.getCarrera());
         dto.setFotoPerfil(usuario.getFotoPerfil());
+        dto.setSlug(usuario.getSlug() != null ? usuario.getSlug() : "");
 
-        if (usuario.getPublicaciones() != null) {
-            dto.setDtopublicaciones(
-                    usuario.getPublicaciones().stream()
-                            .map(p -> publicacionMapper.toDto(p, usuario.getId()))
-                            .collect(Collectors.toList())
-            );
-        }
-
-        if (usuario.getLikesDados() != null) {
-            dto.setLikesGuardados(
-                    usuario.getLikesDados().stream()
-                            .map(p -> publicacionMapper.toDto(p.getPublicacion(), usuario.getId()))
-                            .collect(Collectors.toList())
-            );
+        // Solo mapeamos publicaciones y likes si es propio
+        if (esPropio) {
+            if (usuario.getPublicaciones() != null) {
+                dto.setDtopublicaciones(
+                        usuario.getPublicaciones().stream()
+                                .map(p -> publicacionMapper.toDto(p, usuario.getId()))
+                                .collect(Collectors.toList())
+                );
+            }
+            if (usuario.getLikesDados() != null) {
+                dto.setLikesGuardados(
+                        usuario.getLikesDados().stream()
+                                .map(p -> publicacionMapper.toDto(p.getPublicacion(), usuario.getId()))
+                                .collect(Collectors.toList())
+                );
+            }
         }
 
         return dto;
+    }
+
+    // Métodos de conveniencia
+    public DatosUsuario toDtoPublico(Usuario usuario) {
+        return toDto(usuario, false);
+    }
+
+    public DatosUsuario toDtoPropio(Usuario usuario) {
+        return toDto(usuario, true);
     }
 
     public Usuario toEntity(DatosUsuario dto, Usuario usuarioExistente) {

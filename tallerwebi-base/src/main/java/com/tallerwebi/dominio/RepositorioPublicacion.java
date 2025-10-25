@@ -16,5 +16,5 @@ public interface RepositorioPublicacion {
     Publicacion obtenerPublicacionCompleta(long id);
     boolean existeHashResumen(String hash, Long usuarioId);
     List<Publicacion> obtenerPublicacionesConLikeDeUsuario(Long usuarioId);
-
+    List<Publicacion> obtenerPublicacionesDeUsuario(Long usuarioId);
 }

@@ -46,4 +46,25 @@ public class ServicioUsuario {
     public List<Usuario> obtenerTodosLosUsuarios() {
         return repositorioUsuario.findAll();
     }
+    public void registrarUsuario(Usuario usuario) {
+        // Generamos un slug único antes de guardar
+        String slug = generarSlug(usuario.getNombre(), usuario.getApellido(), usuario.getId());
+        usuario.setSlug(slug);
+
+        // Guardamos el usuario en la base de datos
+        repositorioUsuario.guardar(usuario);
+    }
+
+    private String generarSlug(String nombre, String apellido, Long id) {
+        String base = nombre.toLowerCase() + "-" + apellido.toLowerCase();
+        String hash = Long.toHexString(id);
+        return base + "-" + hash;
+    }
+
+    public Usuario buscarPorSlug(String slug) {
+        return repositorioUsuario.buscarPorSlug(slug);
+    }
+
+
+
 }

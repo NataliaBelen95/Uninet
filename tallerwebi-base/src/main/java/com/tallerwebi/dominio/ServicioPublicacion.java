@@ -20,6 +20,7 @@ public interface ServicioPublicacion {
     public List<Comentario> obtenerComentariosDePublicacion(long publicacionId);
     Publicacion obtenerPublicacion(long id);
     List <Publicacion> obtenerPorLikeDeUsuario(long id);
+    List <Publicacion> obtenerPublicacionesDeUsuario(long usuId);
 
 
 }

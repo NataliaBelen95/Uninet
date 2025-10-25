@@ -97,6 +97,16 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .setParameter("usuarioId", usuarioId)
                 .getResultList();
     }
+    @Override
+    public List<Publicacion> obtenerPublicacionesDeUsuario(Long usuarioId) {
+        return sessionFactory.getCurrentSession()
+                .createQuery(
+                        "SELECT p FROM Publicacion p WHERE p.usuario.id = :usuarioId",
+                        Publicacion.class
+                )
+                .setParameter("usuarioId", usuarioId)
+                .getResultList();
+    }
 }
 
 
