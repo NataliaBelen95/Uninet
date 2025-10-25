@@ -17,10 +17,7 @@ import java.util.Optional;
 @Repository("repositoryUsuario")
 
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
-    @Override
-    public List<Usuario> findAll() {
-        return List.of();
-    }
+
 
     @Override
     public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
@@ -83,7 +80,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     public List<Usuario> buscarTodos() {
         return sessionFactory.getCurrentSession()
                 .createQuery("FROM Usuario", Usuario.class)
-                .list();
+                .getResultList();
     }
 
     @Override

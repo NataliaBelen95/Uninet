@@ -93,8 +93,8 @@
             <h2>Quizás conozcas...</h2>
             <ul>
                 <!-- Iteramos sobre la lista de usuarios -->
-                <li th:each="usuario : ${usuarios}">
-                    <span th:text="${usuario.nombre}"></span> <!-- Muestra el nombre del usuario -->
+                <li th:each="usuario : ${usuariosNuevos}">
+                    <span th:text="${usuario.nombreUsuario}"></span> <!-- Muestra el nombre del usuario -->
                     <!-- Formulario para enviar solicitud de amistad -->
                     <form th:action="@{/amistad/enviarSolicitud}" method="post">
                         <input type="hidden" th:name="receptorId" th:value="${usuario.id}"/>
