@@ -242,31 +242,33 @@ public class ControladorMiPerfil {
 
     @Transactional
     private ModelAndView mostrarPerfil(String slug, HttpServletRequest request, boolean esPropio) {
-        Usuario usuario;
+        Usuario usuarioPerfil; // usuario cuyo perfil estamos viendo
+        DatosUsuario usuarioLogueado = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        Long idLogueado = usuarioLogueado != null ? usuarioLogueado.getId() : null;
 
+        // Obtener el usuario del perfil
         if (slug != null) {
-            usuario = servicioUsuario.buscarPorSlug(slug);
+            usuarioPerfil = servicioUsuario.buscarPorSlug(slug);
         } else {
-            DatosUsuario datosSesion = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-            usuario = servicioUsuario.buscarPorId(datosSesion.getId());
+            usuarioPerfil = servicioUsuario.buscarPorId(usuarioLogueado.getId());
         }
 
         int cantidadNoLeidas = 0;
         if (esPropio) {
-            cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuario.getId());
+            cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuarioPerfil.getId());
         }
 
         DatosUsuario dto = esPropio
-                ? usuarioMapper.toDtoPropio(usuario)
-                : usuarioMapper.toDtoPublico(usuario);
+                ? usuarioMapper.toDtoPropio(usuarioPerfil)
+                : usuarioMapper.toDtoPublico(usuarioPerfil);
         dto.setCantidadNotificaciones(cantidadNoLeidas);
 
-        // Traemos y mapeamos publicaciones (solo contenido público)
-        List<Publicacion> publicaciones = servicioPublicacion.obtenerPublicacionesDeUsuario(usuario.getId());
+        // Traemos y mapeamos publicaciones
+        List<Publicacion> publicaciones = servicioPublicacion.obtenerPublicacionesDeUsuario(usuarioPerfil.getId());
         List<DatosPublicacion> dtosPublicaciones = publicaciones.stream()
                 .map(p -> esPropio
-                        ? publicacionMapper.toDtoPublica(p, usuario.getId())  // si es mi perfil → con comentarios
-                        : publicacionMapper.toDtoPropia(p, usuario.getId())   // si es otro perfil → sin comentarios
+                        ? publicacionMapper.toDtoPublica(p, idLogueado)  // perfil propio → trae comentarios
+                        : publicacionMapper.toDtoPropia(p, idLogueado)   // perfil ajeno → NO trae comentarios
                 )
                 .collect(Collectors.toList());
 

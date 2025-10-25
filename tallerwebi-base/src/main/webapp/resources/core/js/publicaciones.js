@@ -1,12 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ JS listo y cargado");
-      const esPropio = document.body.dataset.esPropio === "true";
-
-        // ⚠️ Solo activamos interacciones si es tu perfil
-        if (!esPropio) {
-            console.log("Perfil ajeno: interacciones desactivadas");
-            return; // todo el resto de botones (like, comentar, etc.) queda inactivo
-        }
+     
 
     // ----------------------
     // PDF.js
