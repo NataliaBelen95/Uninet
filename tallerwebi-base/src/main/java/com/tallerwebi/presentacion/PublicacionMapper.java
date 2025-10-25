@@ -21,38 +21,53 @@ public class PublicacionMapper {
         this.servicioComentario = servicioComentario;
     }
 
+    // --- Método base (por defecto sin comentarios) ---
     public DatosPublicacion toDto(Publicacion p, long usuarioId) {
+        return toDto(p, usuarioId, true);
+    }
+    // --- Sobrecarga: permite excluir comentarios ---
+    public DatosPublicacion toDto(Publicacion p, long usuarioId, boolean incluirComentarios) {
         DatosPublicacion dto = new DatosPublicacion();
 
         dto.setId(p.getId());
         dto.setDescripcion(p.getDescripcion());
         dto.setNombreUsuario(p.getUsuario().getNombre());
         dto.setApellidoUsuario(p.getUsuario().getApellido());
+        dto.setSlugUsuario(p.getUsuario().getSlug());
         dto.setCantLikes(servicioLike.contarLikes(p.getId()));
         dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
         dto.setUsuarioId(p.getUsuario().getId());
         dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
-        dto.setEsPropio(p.getUsuario().getId() == (usuarioId));
+        dto.setEsPropio(p.getUsuario().getId() == usuarioId);
 
-
-        // Debug print
-       // System.out.println("Usuario ID: " + p.getUsuario().getId());
-        // Mapear comentarios
-        List<DatosComentario> comentariosDto = new ArrayList<>();
-        if (p.getComentarios() != null) {
+        // Incluye comentarios solo cuando se necesita
+        if (incluirComentarios && p.getComentarios() != null) {
+            List<DatosComentario> comentariosDto = new ArrayList<>();
             for (Comentario c : p.getComentarios()) {
                 comentariosDto.add(toComentarioDto(c));
             }
+            dto.setComentarios(comentariosDto);
         }
-        dto.setComentarios(comentariosDto);
 
-        if (p.getArchivo() != null) { // Verificamos si el archivo no es nulo
-            dto.setArchivoNombre(p.getArchivo().getNombreArchivo()); // Asignar nombre del archivo
-            dto.setArchivoTipo(p.getArchivo().getTipoContenido());   // Asignar tipo de archivo
+        if (p.getArchivo() != null) {
+            dto.setArchivoNombre(p.getArchivo().getNombreArchivo());
+            dto.setArchivoTipo(p.getArchivo().getTipoContenido());
         }
+
         return dto;
     }
+
+
+    // Métodos de conveniencia
+    public DatosPublicacion toDtoPublica(Publicacion p, long usuarioId) {
+        return toDto(p, usuarioId, true);
+    }
+
+    public DatosPublicacion toDtoPropia(Publicacion p, long usuarioId) {
+        return toDto(p, usuarioId, false);
+    }
+
 
     public DatosComentario toComentarioDto(Comentario c) {
         DatosComentario comentarioDto = new DatosComentario();

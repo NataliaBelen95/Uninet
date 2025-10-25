@@ -264,7 +264,10 @@ public class ControladorMiPerfil {
         // Traemos y mapeamos publicaciones (solo contenido público)
         List<Publicacion> publicaciones = servicioPublicacion.obtenerPublicacionesDeUsuario(usuario.getId());
         List<DatosPublicacion> dtosPublicaciones = publicaciones.stream()
-                .map(p -> publicacionMapper.toDto(p, usuario.getId()))
+                .map(p -> esPropio
+                        ? publicacionMapper.toDtoPublica(p, usuario.getId())  // si es mi perfil → con comentarios
+                        : publicacionMapper.toDtoPropia(p, usuario.getId())   // si es otro perfil → sin comentarios
+                )
                 .collect(Collectors.toList());
 
         ModelMap model = new ModelMap();

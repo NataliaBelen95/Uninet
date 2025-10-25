@@ -48,6 +48,9 @@ public class DatosPublicacion {
     @JsonProperty("esPropio")
     private boolean esPropio;
 
+    @JsonProperty("slugUsuario") // // para perfil de otro usuario perfil/{slug}
+    private String slugUsuario;
+
 
     // Getters and setters
     public String getNombreUsuario() {
@@ -149,5 +152,13 @@ public class DatosPublicacion {
 
     public void setEsPropio(boolean esPropio) {
         this.esPropio = esPropio;
+    }
+
+    public String getSlugUsuario() {
+        return slugUsuario;
+    }
+
+    public void setSlugUsuario(String slugUsuario) {
+        this.slugUsuario = slugUsuario;
     }
 }

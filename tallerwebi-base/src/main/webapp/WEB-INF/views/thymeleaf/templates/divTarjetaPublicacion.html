@@ -5,7 +5,15 @@
          xmlns:th="http://www.w3.org/1999/xhtml">
 
         <!-- Usuario -->
-        <h2 th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></h2>
+    <!-- Usuario -->
+    <h2 th:if="${dtopubli.esPropio}">
+        <a th:href="@{/miPerfil}" th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></a>
+    </h2>
+
+    <h2 th:unless="${dtopubli.esPropio}">
+        <a th:href="@{/perfil/{slug}(slug=${dtopubli.slugUsuario})}"
+           th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></a>
+    </h2>
 
     <form th:if="${dtopubli.esPropio}"
           th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}"
