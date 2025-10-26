@@ -91,18 +91,12 @@
             <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Acción</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="usuario : ${usuarios}">
-                <td th:text="${usuario.nombre}"></td>
-                <td>
-                    <form th:action="@{/amistad/enviar/{idReceptor}(idReceptor=${usuario.id})}" method="post">
-                        <button type="submit">Enviar Solicitud</button>
-                    </form>
-                </td>
-            </tr>
+            <li th:each="u : ${usuariosNuevos}">
+            <span th:text="${u.nombreUsuario}"></span>
+            </li>
             </tbody>
         </table>
     </section>
