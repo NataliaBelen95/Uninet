@@ -29,7 +29,7 @@ public class ControladorLoginTest {
     private HttpSession sessionMock;
     private ServicioLogin servicioLoginMock;
     private RepositorioUsuario repositorioUsuarioMock;
-    private ServicioUsuario servicioUsuarioMock;
+    private RepositorioUsuarioImpl servicioUsuarioMock;
     private ServicioCarrera servicioCarreraMock;
 
 

@@ -34,7 +34,7 @@ public class Publicacion {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-  /*relacion con entidad like */
+    /*relacion con entidad like */
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Like> likesDePublicacion = new ArrayList<>();

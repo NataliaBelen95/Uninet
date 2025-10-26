@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Registrarse</title>
+    <title>Registrarse</title>
 
     <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
     <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
@@ -36,25 +36,42 @@
             <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
             <input th:field="*{dni}" id="dni" type="number" placeholder="D.N.I" required/>
             <input th:field="*{fechaNacimiento}" id="fecha" type="date" required/>
+
+
+
+            <div class="departamentos">
+                <label for="departamento">Departamento</label>
+
+                <select th:field="*{departamento.id}" id="departamento" required>
+                    <option value="" disabled selected>Seleccionar un Departamento</option>
+                    <option th:each="depto : ${todosLosDepartamentos}"
+                            th:value="${depto.id}"
+                            th:text="${depto.nombre}">
+                    </option>
+                </select>
+            </div>
             <div class="carreras">
                 <label for="carrera">Carrera</label>
+
                 <select th:field="*{carrera.id}" id="carrera" required>
-                    <option value="" disabled selected>Seleccionar una carrera</option>
+                    <option value="" disabled selected>Seleccionar una Carrera</option>
                     <option th:each="carrera : ${todasLasCarreras}"
                             th:value="${carrera.id}"
                             th:text="${carrera.nombre}">
                     </option>
                 </select>
+
             </div>
 
-        <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
+            <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
             <a href="login.html">Volver atrás</a>
-        <p th:if="${error != null}" class="error" th:text="'Error ' + ${error}">
-        </p>
-      </form>
+            <p th:if="${error != null}" class="error" th:text="'Error ' + ${error}">
+            </p>
+        </form>
     </div>
 </main>
-<script type="module" th:src="@{js/tema.js}"></script>
+<!--<script type="module" th:src="@{js/tema.js}"></script>-->
+<script type="module" th:src="@{js/filtrado-carreras.js}"></script>
 
 <!--<script>
     document.addEventListener("DOMContentLoaded", function () {

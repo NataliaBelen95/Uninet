@@ -2,6 +2,8 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Genero;
+import com.tallerwebi.dominio.departamento.Departamento;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ public class DatosUsuario {
     private String nombre;
     private String apellido;
     private Carrera carrera;
+    private Departamento departamento;
     private Genero genero; // para el select
     private String email;
     private String emailPersonal;
@@ -135,6 +138,13 @@ public class DatosUsuario {
 
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
     }
 
     public String getSlug() {

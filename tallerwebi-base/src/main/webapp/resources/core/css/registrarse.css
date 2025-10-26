@@ -1,4 +1,4 @@
-@import url ('variables.css');
+@import url('variables.css');
 body {
   min-height: 100vh;
   margin: 0;
@@ -86,7 +86,7 @@ label {
   color: var(--text-ter);
 }
 
-.carreras {
+.carreras,.departamentos {
   display: flex;
   flex-direction: column;
   gap: 0.8rem 1.5rem;
@@ -111,7 +111,7 @@ label {
     width: 15rem;
   }
 
-  .carrera {
+  .carrera,.departamentos {
     flex-basis: 100%;
   }
 }

@@ -12,12 +12,12 @@ public class ReiniciarDB {
             String dbPassword = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD") : "user";
 
             String sqlCommands = "DELETE FROM Usuario;\n" +
-                               "ALTER TABLE Usuario AUTO_INCREMENT = 1;\n" +
-                               "INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);";
+                    "ALTER TABLE Usuario AUTO_INCREMENT = 1;\n" +
+                    "INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);";
 
             String comando = String.format(
-                "docker exec tallerwebi-mysql mysql -h %s -P %s -u %s -p%s %s -e \"%s\"",
-                dbHost, dbPort, dbUser, dbPassword, dbName, sqlCommands
+                    "docker exec tallerwebi-mysql mysql -h %s -P %s -u %s -p%s %s -e \"%s\"",
+                    dbHost, dbPort, dbUser, dbPassword, dbName, sqlCommands
             );
 
             Process process = Runtime.getRuntime().exec(new String[]{"/bin/bash", "-c", comando});

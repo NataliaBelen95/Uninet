@@ -14,6 +14,6 @@ public interface RepositorioLike {
     void eliminar(long id);
 
     Like buscarPorId(long id);
-/*CAMBIOS A ID*/
+    /*CAMBIOS A ID*/
     Like buscarPorUsuarioYPublicacion(long usuarioId, long publiId);
 }

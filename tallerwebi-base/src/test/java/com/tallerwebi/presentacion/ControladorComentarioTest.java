@@ -75,11 +75,7 @@ public class ControladorComentarioTest {
 
         );
 
-
-
-
     }
-
 
     @Test
     public void queAlComentarUnaPublicacionConIdeDevuelvaElComentarioYLaCantidadDeComentariosParaActualizarLaVista() throws PublicacionNoEncontrada {

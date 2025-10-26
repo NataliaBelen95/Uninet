@@ -1,6 +1,8 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.departamento.Departamento;
+import com.tallerwebi.dominio.departamento.ServicioDepartamento;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,17 +30,16 @@ public class ControladorLogin {
 
     private RepositorioUsuario repositorioUsuario;
     private ServicioCarrera servicioCarrera;
-    private ServicioUsuario servicioUsuario;
-    /******     ***/
+    private ServicioDepartamento servicioDepartamento;
+    /* hacer un controlador Home y ordenar Luego ***/
+
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin,
-                            ServicioCarrera servicioCarrera,
-                            ServicioUsuario servicioUsuario) {
+    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario, ServicioCarrera servicioCarrera,ServicioDepartamento servicioDepartamento) {
         this.servicioLogin = servicioLogin;
-
+        this.repositorioUsuario = repositorioUsuario;
         this.servicioCarrera = servicioCarrera;
-        this.servicioUsuario = servicioUsuario;
+        this.servicioDepartamento = servicioDepartamento;
     }
 
     @RequestMapping("/login")
@@ -58,10 +59,12 @@ public class ControladorLogin {
         if (usuarioBuscado != null) {
             // Crear DTO para guardar en sesión
             DatosUsuario datosUsuario = new DatosUsuario();
+
             datosUsuario.setNombre(usuarioBuscado.getNombre());
             datosUsuario.setApellido(usuarioBuscado.getApellido());
             datosUsuario.setEmail(usuarioBuscado.getEmail());
             datosUsuario.setCarrera(usuarioBuscado.getCarrera());
+            datosUsuario.setDepartamento(usuarioBuscado.getDepartamento());
             datosUsuario.setId(usuarioBuscado.getId());
             datosUsuario.setFotoPerfil(usuarioBuscado.getFotoPerfil());
 
@@ -86,6 +89,7 @@ public class ControladorLogin {
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
         model.put("todasLasCarreras", servicioCarrera.buscarTodas());
+        model.put("todosLosDepartamentos",servicioDepartamento.obtenerDepartamentos());
 
         try {
             usuario.setRol("USER");
@@ -120,11 +124,11 @@ public class ControladorLogin {
     public ModelAndView validarCodigo(@RequestParam("email") String email,
                                       @RequestParam("codigo") String codigo) {
         ModelMap model = new ModelMap();
-        Usuario usuario = servicioUsuario.buscarPorEmail(email); // tu método para buscar usuario
+        Usuario usuario = repositorioUsuario.buscar(email); // tu mtodo para buscar usuario
 
         if (usuario.getCodigoConfirmacion().equals(codigo)) {
             usuario.setConfirmado(true);
-            servicioUsuario.registrarUsuario(usuario);
+            repositorioUsuario.guardar(usuario);
             return new ModelAndView("redirect:/login");
         } else {
             model.put("error", "Código incorrecto");
@@ -137,16 +141,29 @@ public class ControladorLogin {
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();
-        model.put("usuario", new Usuario());
+
+        Usuario nuevo = new Usuario();
+        nuevo.setDepartamento(null);
+        nuevo.setCarrera(null);
+
+        model.put("usuario", nuevo);
+
+        List<Departamento>departamentos= servicioDepartamento.obtenerDepartamentos();
+
+        model.put("todosLosDepartamentos", departamentos);
 
         // Traer todas las carreras desde la base
+//        List<Carrera> carreras = servicioCarrera.buscarTodas();
+//        System.out.println("📚 Carreras disponibles:");
+//        for (Carrera c : carreras) {
+//            System.out.println("ID: " + c.getId() + " - Nombre: " + c.getNombre());
+//        }
+        //model.put("todasLasCarreras", carreras);
+//lo mando vacio ya que despues se va a cargar al seleccionar un departamento
+        model.put("todasLasCarreras", List.of());
 
-        List<Carrera> carreras = servicioCarrera.buscarTodas();
-        System.out.println("📚 Carreras disponibles:");
-        for (Carrera c : carreras) {
-            System.out.println("ID: " + c.getId() + " - Nombre: " + c.getNombre());
-        }
-        model.put("todasLasCarreras", carreras);
+
+
         return new ModelAndView("nuevo-usuario", model);
     }
 

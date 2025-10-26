@@ -70,14 +70,14 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public void setearCarreraAUsuario(Usuario usuario, Carrera carrera) {
-       usuario.setCarrera(carrera);
+        usuario.setCarrera(carrera);
 
     }
 
     @Override
     @Transactional
     public Usuario buscarPorId(long id) {
-            return sessionFactory.getCurrentSession().get(Usuario.class, id);
+        return sessionFactory.getCurrentSession().get(Usuario.class, id);
     }
 
     public List<Usuario> buscarTodos() {
@@ -117,6 +117,5 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
 
 }
-
 
 

@@ -14,39 +14,39 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class HibernateTestInfraesructuraConfig {
 
- @Bean
+    @Bean
     public DataSource dataSource() {
-     DriverManagerDataSource dataSource = new DriverManagerDataSource();
-     dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-     dataSource.setUrl("jdbc:hsqldb:mem:db");
-     dataSource.setUsername("sa");
-     dataSource.setPassword("");
-     return dataSource;
- }
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:hsqldb:mem:db");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+        return dataSource;
+    }
 
- @Bean
+    @Bean
     public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
-     LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-     sessionFactory.setDataSource(dataSource);
-     sessionFactory.setPackagesToScan("com.tallerwebi.dominio");
-     sessionFactory.setHibernateProperties(hibernateProperties());
-     return sessionFactory;
- }
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource);
+        sessionFactory.setPackagesToScan("com.tallerwebi.dominio");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+        return sessionFactory;
+    }
 
- @Bean
- public HibernateTransactionManager transactionManager () {
-     return new HibernateTransactionManager(sessionFactory(dataSource()).getObject());
- }
+    @Bean
+    public HibernateTransactionManager transactionManager () {
+        return new HibernateTransactionManager(sessionFactory(dataSource()).getObject());
+    }
 
- public Properties hibernateProperties() {
-     Properties properties = new Properties();
-     properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-     properties.setProperty("hibernate.show_sql", "true");
-     properties.setProperty("hibernate.format_sql", "true");
-     properties.setProperty("hibernate.hbm2ddl.auto", "create");
-     return properties;
+    public Properties hibernateProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.format_sql", "true");
+        properties.setProperty("hibernate.hbm2ddl.auto", "create");
+        return properties;
 
- }
+    }
 
 
 }

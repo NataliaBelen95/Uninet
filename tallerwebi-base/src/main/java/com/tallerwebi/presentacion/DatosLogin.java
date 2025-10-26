@@ -28,4 +28,3 @@ public class DatosLogin {
         this.password = password;
     }
 }
-

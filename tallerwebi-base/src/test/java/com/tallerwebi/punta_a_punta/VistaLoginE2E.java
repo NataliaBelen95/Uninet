@@ -74,7 +74,7 @@ public class VistaLoginE2E {
         dadoQueElUsuarioSeRegistraCon("juan@unlam.edu.ar", "123456");
         dadoQueElUsuarioEstaEnLaVistaDeLogin();
         dadoQueElUsuarioCargaSusDatosDeLoginCon("juan@unlam.edu.ar", "123456");
-        cuandoElUsuarioTocaElBotonDeLogin();    
+        cuandoElUsuarioTocaElBotonDeLogin();
         entoncesDeberiaSerRedirigidoALaVistaDeHome();
     }
 

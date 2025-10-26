@@ -1,4 +1,4 @@
-@import url ('variables.css');
+@import url('variables.css');
 a {
   font-size: 14px;
 }
@@ -34,7 +34,7 @@ a {
 .columnaUno{
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: flex-start;
     justify-content: flex-start;
     font-size: 1.5rem;
     gap: 1rem;
@@ -256,11 +256,7 @@ a {
     height: 24px;
 }
 
-/*********** notificaciones dropdown *//////////////
-
-
-
-
+/*********** notificaciones dropdown */
 
 /******notificaciones , ver donde va ****/
 .badge {
@@ -302,11 +298,8 @@ a {
 }
 
 .menu-notificaciones .dropdown li:hover {
-  background-color: #3d3f40; /* u
+  background-color: #3d3f40; /* u*/
 }
-
-
-
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }

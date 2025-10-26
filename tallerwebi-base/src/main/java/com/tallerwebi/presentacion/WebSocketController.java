@@ -18,4 +18,3 @@ public class WebSocketController {
         messagingTemplate.convertAndSend("/topic/greetings", "Hola desde el servidor: " + message);
     }
 }
-

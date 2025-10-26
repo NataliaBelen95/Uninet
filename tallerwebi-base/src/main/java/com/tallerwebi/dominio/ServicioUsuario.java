@@ -35,7 +35,7 @@ public class ServicioUsuario {
 
     @Transactional
     public Usuario buscarUsuarioPorIdConPublicaciones(long id) {
-       return repositorioUsuario.findByIdWithPublicaciones(id);
+        return repositorioUsuario.findByIdWithPublicaciones(id);
 
     }
 
