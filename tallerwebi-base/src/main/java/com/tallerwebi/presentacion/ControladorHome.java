@@ -98,7 +98,8 @@ public class ControladorHome {
 
         // 4. Pasar datos al modelo
         model.addAttribute("usuariosNuevos", usuariosDTO);
-
+        model.addAttribute("esPropio", true);
+        model.addAttribute("datosPublicaciones", datosPublicaciones);
         return new ModelAndView("home", model);
     }
 
