@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.departamento.ServicioDepartamento;
 import com.tallerwebi.dominio.excepcion.EmailNoInstitucional;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import com.tallerwebi.infraestructura.RepositorioUsuarioImpl;
@@ -31,6 +32,7 @@ public class ControladorLoginTest {
     private RepositorioUsuario repositorioUsuarioMock;
     private RepositorioUsuarioImpl servicioUsuarioMock;
     private ServicioCarrera servicioCarreraMock;
+    private ServicioDepartamento servicioDepartamentoMock;
 
 
 
@@ -54,8 +56,9 @@ public class ControladorLoginTest {
         servicioUsuarioMock = mock(RepositorioUsuarioImpl.class);
 
         servicioCarreraMock = mock(ServicioCarrera.class);
+        servicioDepartamentoMock = mock(ServicioDepartamento.class);
 
-        controladorLogin = new ControladorLogin(servicioLoginMock, repositorioUsuarioMock, servicioCarreraMock);
+        controladorLogin = new ControladorLogin(servicioLoginMock, repositorioUsuarioMock, servicioCarreraMock, servicioDepartamentoMock);
 
     }
 

@@ -1,6 +1,9 @@
 package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 
+import com.tallerwebi.dominio.ServicioHacerResumen;
+import com.tallerwebi.dominio.ServicioMostrarArchivosSubidos;
+import com.tallerwebi.dominio.ServicioSubirArchivoALaIA;
 import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 

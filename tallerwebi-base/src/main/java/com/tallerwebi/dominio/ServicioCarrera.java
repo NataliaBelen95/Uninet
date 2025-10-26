@@ -20,4 +20,9 @@ public class ServicioCarrera {
     public List<Carrera> buscarTodas() {
         return repositorioCarrera.buscarTodas();
     }
+
+    public List<Carrera> buscarPorDepartamento(Integer departamentoId) {
+        return repositorioCarrera.buscarPorDepartamento(departamentoId);
+    }
+
 }

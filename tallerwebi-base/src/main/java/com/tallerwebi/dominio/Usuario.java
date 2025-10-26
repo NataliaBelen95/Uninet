@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.departamento.Departamento;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,6 +15,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(unique = true, nullable = false)
     private String email;
     private String password;
@@ -26,8 +28,14 @@ public class Usuario {
     @Column(nullable = false)
     private String apellido;
 
-    @Column(nullable = false)
+    @Column(unique=true, nullable = false)
     private Integer dni;
+
+    /*relacion con departamento*/
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name="departamento_id")
+    private Departamento departamento;
+
 
     /*relacion con carrera*/
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
@@ -92,7 +100,7 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+   /* @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)*/
 
 
     public long getId() {
@@ -230,7 +238,12 @@ public class Usuario {
     public LocalDate getFechaNacimiento() {return fechaNacimiento;    }
     public void setFechaNacimiento(LocalDate fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;    }
 
-
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
 }
 
 

@@ -17,7 +17,6 @@ public class RepositorioCarreraImpl implements RepositorioCarrera {
     @Autowired
     public RepositorioCarreraImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-
     }
 
     @Override
@@ -36,6 +35,15 @@ public class RepositorioCarreraImpl implements RepositorioCarrera {
                 .createQuery("from Carrera", Carrera.class)
                 .getResultList();
     }
+
+    @Override
+    public List<Carrera> buscarPorDepartamento(Integer departamentoId) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("from Carrera c where c.departamento.id = :id", Carrera.class)
+                .setParameter("id", departamentoId)
+                .getResultList();
+    }
+
 
     @Override
     public void agregarMateria(long id, Materia materia) {

@@ -36,15 +36,31 @@
             <input th:field="*{password}" type="password" id="password" placeholder="Contraseña" required/>
             <input th:field="*{dni}" id="dni" type="number" placeholder="D.N.I" required/>
             <input th:field="*{fechaNacimiento}" id="fecha" type="date" required/>
+
+
+
+            <div class="departamentos">
+                <label for="departamento">Departamento</label>
+
+                <select th:field="*{departamento.id}" id="departamento" required>
+                    <option value="" disabled selected>Seleccionar un Departamento</option>
+                    <option th:each="depto : ${todosLosDepartamentos}"
+                            th:value="${depto.id}"
+                            th:text="${depto.nombre}">
+                    </option>
+                </select>
+            </div>
             <div class="carreras">
                 <label for="carrera">Carrera</label>
+
                 <select th:field="*{carrera.id}" id="carrera" required>
-                    <option value="" disabled selected>Seleccionar una carrera</option>
+                    <option value="" disabled selected>Seleccionar una Carrera</option>
                     <option th:each="carrera : ${todasLasCarreras}"
                             th:value="${carrera.id}"
                             th:text="${carrera.nombre}">
                     </option>
                 </select>
+
             </div>
 
             <button id="btn-registrarme" class="btn" Type="Submit">Registrarme</button>
@@ -54,7 +70,8 @@
         </form>
     </div>
 </main>
-<script type="module" th:src="@{js/tema.js}"></script>
+<!--<script type="module" th:src="@{js/tema.js}"></script>-->
+<script type="module" th:src="@{js/filtrado-carreras.js}"></script>
 
 <!--<script>
     document.addEventListener("DOMContentLoaded", function () {
