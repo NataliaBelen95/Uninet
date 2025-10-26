@@ -1,4 +1,7 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.departamento;
+
+import com.tallerwebi.dominio.Carrera;
+import com.tallerwebi.dominio.Usuario;
 
 import javax.persistence.*;
 import java.util.ArrayList;

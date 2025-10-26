@@ -1,4 +1,9 @@
 package com.tallerwebi.infraestructura;
 
-public class RepositorioDepartamento {
+import com.tallerwebi.dominio.departamento.Departamento;
+
+import java.util.List;
+
+public interface RepositorioDepartamento {
+    List<Departamento> obtenerDepartamentos();
 }
