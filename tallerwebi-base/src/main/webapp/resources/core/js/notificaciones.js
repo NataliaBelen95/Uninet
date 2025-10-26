@@ -69,8 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
                    data.forEach(n => {
                        const li = document.createElement('li');  // <--- Aquí creas el li
 
-                       const f = n.fecha;
-                       const fechaObj = new Date(f[0], f[1] - 1, f[2], f[3], f[4], f[5]);
+                       const f = n.fecha; // "2025-10-24T07:15:30"
+                       const fechaObj = new Date(f); // JS ya entiende ISO 8601
                        const anio = fechaObj.getFullYear();
                        const mes = (fechaObj.getMonth() + 1).toString().padStart(2, '0');
                        const dia = fechaObj.getDate().toString().padStart(2, '0');

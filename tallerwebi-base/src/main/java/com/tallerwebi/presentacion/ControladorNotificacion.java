@@ -6,10 +6,13 @@ import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,21 +33,18 @@ public class ControladorNotificacion {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @GetMapping ("/notificaciones")
-    public ModelAndView notificaciones(HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("notificaciones");
+    @GetMapping("/notificaciones")
+    public ModelAndView notificaciones(HttpSession session) {
+        DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
+        if (usuario == null) return new ModelAndView("redirect:/login");
 
-        DatosUsuario usuarioDTO = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if (usuarioDTO != null) {
-            // Traer notificaciones usando solo el id
-            List<Notificacion> listaNotificaciones = servicioNotificacion.obtenerPorUsuario(usuarioDTO.getId());
-            mav.addObject("notificaciones", listaNotificaciones);
-        } else {
-            mav.addObject("notificaciones", Collections.emptyList());
-        }
+        ModelMap modelo = new ModelMap();
+        modelo.addAttribute("notificaciones", servicioNotificacion.obtenerPorUsuario(usuario.getId()));
 
-        return mav;
+        return new ModelAndView("notificaciones", modelo); // explícito, como login
     }
+
+
     @PostMapping("/marcar-leida/{id}")
     @ResponseBody
     public String marcarLeida(@PathVariable Long id, HttpServletRequest request) {

@@ -92,7 +92,7 @@
 
         <article class="estructura">
             <h3>Resumen generado a partir del pdf subido</h3>
-            <div class="resumen-ia-display" th:if="${resumen}" th:text="${resumen}">
+            <div class="resumen-ia-display" th:if="${resumen}" th:utext="${resumen}">
             </div>
 
             <!--compartir resumen, esto lo carga en la viste html de compartir-->
