@@ -25,12 +25,13 @@ INSERT INTO Materia(nombre) VALUES
 -- Supongamos que las materias quedaron con IDs del 1 al 4 (verificalo con SELECT * FROM Materia;)
 
 -- 3️⃣ Vincular materias con carreras usando los IDs de carrera que me diste:
-INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (1, 1); -- Tecnicatura en Desarrollo Web - Programación I
-INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (1, 2); -- Tecnicatura en Desarrollo Web - Programación II
-INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (2, 1); -- Licenciatura en Sistemas de Información - Programación I
-INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (2, 2); -- Licenciatura en Sistemas de Información - Programación II
-INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (3, 3); -- Profesorado en Matemática - Matemática I
-INSERT INTO carrera_materia(carrera_id, materia_id) VALUES (4, 4); -- Tecnicatura en Gestión de Empresas - Economía General
+INSERT INTO carrera_materia(carrera_id, materia_id) VALUES
+                                                        (1, 1), -- Tecnicatura en Desarrollo Web - Programación I
+                                                        (1, 2), -- Tecnicatura en Desarrollo Web - Programación II
+                                                        (2, 1), -- Licenciatura en Sistemas de Información - Programación I
+                                                        (2, 2), -- Licenciatura en Sistemas de Información - Programación II
+                                                        (3, 3), -- Profesorado en Matemática - Matemática I
+                                                        (4, 4); -- Tecnicatura en Gestión de Empresas - Economía General
 
 -- 4️⃣ Crear usuarios y asignarles carrera por id
 INSERT INTO Usuario (email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado) VALUES
@@ -40,7 +41,7 @@ INSERT INTO Usuario (email, password, rol, activo, nombre, apellido, dni, carrer
                                             ('ro@unlam.edu.ar', '1234', 'ADMIN', true, 'Ro', 'Campa',37659747, 1, '1993-06-18', true);
 
 INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
-VALUES ('admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, '1990-01-01', true);
+                VALUES ('admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, '1990-01-01', true);
 
 -- 5️⃣ Validar que no haya usuarios duplicados
 SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
