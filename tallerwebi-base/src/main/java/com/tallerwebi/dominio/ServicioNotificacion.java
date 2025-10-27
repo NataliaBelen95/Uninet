@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.presentacion.DatosUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,23 +66,35 @@ public class ServicioNotificacion {
     public int contarNoLeidas(long usuId) {
         return repoNotificacion.contarPublisNoLeidasPorUsuario(usuId);
     }
+
     private String generarUrl(TipoNotificacion tipo, Publicacion publicacion, Usuario receptor, Usuario emisor) {
+        boolean receptorEsDueño = receptor != null
+                && publicacion != null
+                && receptor.getId() == (publicacion.getUsuario().getId());
+
         switch (tipo) {
             case COMENTARIO:
-                return "/perfil/" + receptor.getSlug() + "#publicacion-" + publicacion.getId();
             case LIKE:
-                // La publicación pertenece al receptor, y tu ruta usa slug
-                return "/perfil/" + receptor.getSlug() + "#publicacion-" + publicacion.getId();
+                if (receptorEsDueño) {
+                    // si la publicación es mía → voy a miPerfil
+                    return "/miPerfil#publicacion-" + publicacion.getId();
+                } else {
+                    // si la publicación es de otro → voy al perfil del dueño
+                    return "/perfil/" + publicacion.getUsuario().getSlug() + "#publicacion-" + publicacion.getId();
+                }
 
             case SOLICITUD_AMISTAD:
-                // Querés ir al perfil del emisor (quien envió la solicitud)
+                // si alguien me envía solicitud → ver su perfil
                 return "/perfil/" + emisor.getSlug();
+
+            case RECOMENDACION:
+            case INACTIVIDAD:
+                return "/miPerfil";
 
             default:
                 return "/notificaciones";
         }
     }
-
 
 
 }

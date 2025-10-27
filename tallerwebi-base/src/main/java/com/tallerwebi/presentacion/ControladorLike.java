@@ -69,6 +69,7 @@ public class ControladorLike {
                             usuario,
                             publicacion,
                             TipoNotificacion.LIKE
+
                     );
                 }
 

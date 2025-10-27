@@ -74,6 +74,7 @@ public class ControladorComentario {
                     usuario,       // usuario que envía la notificación (comenta)
                     publicacion,
                     TipoNotificacion.COMENTARIO
+
             );
         }
 
