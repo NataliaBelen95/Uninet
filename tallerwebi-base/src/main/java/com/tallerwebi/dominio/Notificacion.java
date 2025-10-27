@@ -33,6 +33,8 @@ public class Notificacion {
 
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
+    private String url;
+
 
     public long getId() {
         return id;
@@ -96,5 +98,13 @@ public class Notificacion {
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -1,9 +1,6 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.Notificacion;
-import com.tallerwebi.dominio.ServicioNotificacion;
-import com.tallerwebi.dominio.ServicioUsuario;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,14 +20,15 @@ public class ControladorNotificacion {
 
     private final ServicioNotificacion servicioNotificacion;
     private final ServicioUsuario servicioUsuario;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final NotificacionService notificacionService;
+
 
     @Autowired
     public ControladorNotificacion(ServicioNotificacion servicioNotificacion,
-                                   ServicioUsuario servicioUsuario, SimpMessagingTemplate messagingTemplate) {
+                                   ServicioUsuario servicioUsuario, NotificacionService notificacionService) {
         this.servicioNotificacion = servicioNotificacion;
         this.servicioUsuario = servicioUsuario;
-        this.messagingTemplate = messagingTemplate;
+        this.notificacionService = notificacionService;
     }
 
     @GetMapping("/notificaciones")
@@ -48,20 +46,11 @@ public class ControladorNotificacion {
     @PostMapping("/marcar-leida/{id}")
     @ResponseBody
     public String marcarLeida(@PathVariable Long id, HttpServletRequest request) {
-        servicioNotificacion.marcarLeida(id);
-
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         if (datos != null) {
             Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
-            int cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuario.getId());
-
-            // 🔔 Enviar actualización al topic del usuario
-            messagingTemplate.convertAndSend(
-                    "/topic/notificaciones-" + usuario.getId(),
-                    cantidadNoLeidas
-            );
+            notificacionService.marcarLeidaYActualizarContador(usuario, id);
         }
-
         return "ok";
     }
     @GetMapping("/notificaciones-dropdown")

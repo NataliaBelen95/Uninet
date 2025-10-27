@@ -45,4 +45,16 @@ public class NotificacionService {
         );
 
     }
+
+
+    public void marcarLeidaYActualizarContador(Usuario usuario, Long notificacionId) {
+        repositorioNotificacion.marcarComoLeida(notificacionId);
+
+        int cantidadNoLeidas = contarNoLeidas(usuario);
+
+        messagingTemplate.convertAndSend(
+                "/topic/notificaciones-" + usuario.getId(),
+                cantidadNoLeidas
+        );
+    }
 }

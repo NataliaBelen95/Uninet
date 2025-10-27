@@ -37,19 +37,20 @@ public class ControladorNotificacionTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioNotificacion servicioNotificacionMock;
     private SimpMessagingTemplate simpMessagingTemplateMock;
-
+    private NotificacionService notificacionServiceMock;
     @BeforeEach
     void init() {
         // Crear mocks
         servicioNotificacionMock = mock(ServicioNotificacion.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         simpMessagingTemplateMock = mock(SimpMessagingTemplate.class);
+        notificacionServiceMock = mock(NotificacionService.class);
 
         // Inyectar mocks en el controlador
         controlador = new ControladorNotificacion(
                 servicioNotificacionMock,
                 servicioUsuarioMock,
-                simpMessagingTemplateMock
+                notificacionServiceMock
         );
 
         // Inicializar MockMvc

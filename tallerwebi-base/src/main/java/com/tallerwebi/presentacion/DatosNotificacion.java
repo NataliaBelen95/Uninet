@@ -9,7 +9,7 @@ public class DatosNotificacion {
     private String mensaje;
     private boolean leida;
     private String usuarioEmisor;
-
+    private String url;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fecha;
 
@@ -31,12 +31,12 @@ public class DatosNotificacion {
     public String getMensaje() { return mensaje; }
     public boolean isLeida() { return leida; }
     public LocalDateTime getFecha() { return fecha; }
-
     public void setId(Long id) { this.id = id; }
     public void setMensaje(String mensaje) { this.mensaje = mensaje; }
     public void setLeida(boolean leida) { this.leida = leida; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
-
     public String getUsuarioEmisor() { return usuarioEmisor; }
     public void setUsuarioEmisor(String usuarioEmisor) {this.usuarioEmisor = usuarioEmisor; }
+    public String getUrl() { return url; }
+
 }
