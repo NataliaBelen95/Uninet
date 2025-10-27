@@ -62,6 +62,8 @@ public class ServicioUsuario {
         return repositorioUsuario.buscarPorSlug(slug);
     }
 
-
+    public Usuario buscarPorSlugConPublis(String slug) {
+        return repositorioUsuario.findBySlugWithPublicaciones(slug);
+    }
 
 }

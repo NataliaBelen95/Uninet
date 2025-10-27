@@ -19,10 +19,7 @@ import java.util.Optional;
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
 
-    @Override
-    public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
-        return List.of();
-    }
+
 
     private SessionFactory sessionFactory;
 
@@ -112,6 +109,18 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .uniqueResult();
     }
 
+    @Override
+    public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
+        return List.of();
+    }
+
+    @Override
+    public Usuario findBySlugWithPublicaciones(String slug) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT u FROM Usuario u LEFT JOIN FETCH u.publicaciones WHERE u.slug = :slug", Usuario.class)
+                .setParameter("slug", slug)
+                .uniqueResult();
+    }
 
 }
 

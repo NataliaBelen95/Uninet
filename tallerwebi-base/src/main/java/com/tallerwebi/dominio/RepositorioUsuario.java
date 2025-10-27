@@ -20,4 +20,5 @@ public interface RepositorioUsuario {
     void actualizarContrasena(Usuario usuario, String nuevaContrasena);
     Usuario buscarPorSlug(String slug);
     List<Publicacion> obtenerPublicacionesDeUsuario(long usuId);
+    Usuario findBySlugWithPublicaciones(String slug);
 }

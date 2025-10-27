@@ -18,12 +18,13 @@ public class DatosNotificacion {
     public DatosNotificacion() {}
 
     // Constructor
-    public DatosNotificacion(Long id, String mensaje, boolean leida, LocalDateTime fecha,  String usuarioEmisor) {
+    public DatosNotificacion(Long id, String mensaje, boolean leida, LocalDateTime fecha,  String usuarioEmisor, String url) {
         this.id = id;
         this.mensaje = mensaje;
         this.leida = leida;
         this.fecha = fecha;
         this.usuarioEmisor = usuarioEmisor;
+        this.url = url;
     }
 
     // Getters y setters

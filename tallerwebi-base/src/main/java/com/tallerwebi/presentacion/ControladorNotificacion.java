@@ -68,7 +68,8 @@ public class ControladorNotificacion {
                             n.getMensaje(),
                             n.isLeida(),
                             n.getFechaCreacion(),
-                            n.getUsuarioEmisor().getNombre()
+                            n.getUsuarioEmisor().getNombre(),
+                            n.getUrl()
                     ))
                     .collect(Collectors.toList());
         }

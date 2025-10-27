@@ -248,11 +248,10 @@ public class ControladorMiPerfil {
 
         // Obtener el usuario del perfil
         if (slug != null) {
-            usuarioPerfil = servicioUsuario.buscarPorSlug(slug);
+            usuarioPerfil = servicioUsuario.buscarPorSlugConPublis(slug);
         } else {
-            usuarioPerfil = servicioUsuario.buscarPorId(usuarioLogueado.getId());
+            usuarioPerfil = servicioUsuario.buscarUsuarioPorIdConPublicaciones(usuarioLogueado.getId());
         }
-
         int cantidadNoLeidas = 0;
         if (esPropio) {
             cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuarioPerfil.getId());

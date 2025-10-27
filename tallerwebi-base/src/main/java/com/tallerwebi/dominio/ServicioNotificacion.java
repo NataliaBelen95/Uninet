@@ -26,10 +26,13 @@ public class ServicioNotificacion {
         notificacion.setTipo(tipo);
         notificacion.setMensaje(mensaje);
         notificacion.setFechaCreacion(LocalDateTime.now());
+        String url = generarUrl(tipo, publicacion, receptor, emisor);
+        notificacion.setUrl(url);
 
         repoNotificacion.guardar(notificacion);
         notificacionService.enviarNotificacion(receptor, notificacion);
     }
+
     private String generarMensaje(TipoNotificacion tipo, Usuario emisor, Publicacion publicacion) {
         String preview = (publicacion != null && publicacion.getDescripcion() != null)
                 ? " \"" + publicacion.getDescripcion().substring(0, Math.min(30, publicacion.getDescripcion().length())) + "...\""
@@ -55,11 +58,30 @@ public class ServicioNotificacion {
         return repoNotificacion.buscarPorReceptor(receptorId);
     }
 
-    public void marcarLeida(long idNoti){
+    public void marcarLeida(long idNoti) {
         repoNotificacion.marcarComoLeida(idNoti);
     }
 
-    public int contarNoLeidas(long usuId){
+    public int contarNoLeidas(long usuId) {
         return repoNotificacion.contarPublisNoLeidasPorUsuario(usuId);
     }
+    private String generarUrl(TipoNotificacion tipo, Publicacion publicacion, Usuario receptor, Usuario emisor) {
+        switch (tipo) {
+            case COMENTARIO:
+                return "/perfil/" + receptor.getSlug() + "#publicacion-" + publicacion.getId();
+            case LIKE:
+                // La publicación pertenece al receptor, y tu ruta usa slug
+                return "/perfil/" + receptor.getSlug() + "#publicacion-" + publicacion.getId();
+
+            case SOLICITUD_AMISTAD:
+                // Querés ir al perfil del emisor (quien envió la solicitud)
+                return "/perfil/" + emisor.getSlug();
+
+            default:
+                return "/notificaciones";
+        }
+    }
+
+
+
 }
