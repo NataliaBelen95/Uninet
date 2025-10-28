@@ -44,6 +44,10 @@ public class Publicacion {
     @Fetch(FetchMode.SUBSELECT)
     private List<Comentario> comentarios;
 
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Notificacion> notificaciones = new ArrayList<>();
+
+
     // getters y setters
 
 
@@ -115,5 +119,11 @@ public class Publicacion {
         this.archivo = archivo;
     }
 
+    public List<Notificacion> getNotificaciones() {
+        return notificaciones;
+    }
 
+    public void setNotificaciones(List<Notificacion> notificaciones) {
+        this.notificaciones = notificaciones;
+    }
 }

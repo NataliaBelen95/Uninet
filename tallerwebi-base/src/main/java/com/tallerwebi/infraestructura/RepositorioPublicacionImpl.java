@@ -55,9 +55,10 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
     }
 
     public void eliminarPubli(Publicacion publicacion) {
-
         sessionFactory.getCurrentSession().delete(publicacion);
     }
+
+
     @Override
     public Publicacion obtenerPublicacionCompleta(long id) {
         Publicacion publicacion = sessionFactory.getCurrentSession()
