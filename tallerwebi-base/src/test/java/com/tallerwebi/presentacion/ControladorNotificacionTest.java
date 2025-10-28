@@ -82,8 +82,8 @@ public class ControladorNotificacionTest {
                 .andExpect(content().string("ok"));
 
         // Verificar que se haya llamado al servicio
-        verify(servicioNotificacionMock).marcarLeida(idNotificacion);
-        verify(simpMessagingTemplateMock).convertAndSend(eq("/topic/notificaciones-1"), anyInt());
+        verify(notificacionServiceMock).marcarLeidaYActualizarContador(usuarioReal, idNotificacion);
+
     }
 
     @Test
