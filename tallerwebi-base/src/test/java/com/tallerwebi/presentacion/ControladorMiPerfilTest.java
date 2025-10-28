@@ -74,7 +74,7 @@ public class ControladorMiPerfilTest {
         Usuario usuarioPerfil = new Usuario();
         usuarioPerfil.setId(1L);
 
-        when(servicioUsuarioMock.buscarPorSlug("juan-perez")).thenReturn(usuarioPerfil);
+        when(servicioUsuarioMock.buscarPorSlugConPublis("juan-perez")).thenReturn(usuarioPerfil);
         when(usuarioMapperMock.toDtoPropio(usuarioPerfil)).thenReturn(usuarioLogueado);
         when(servicioGeneroMock.listarGeneros()).thenReturn(Collections.emptyList());
         when(servicioPublicacionMock.obtenerPublicacionesDeUsuario(1L)).thenReturn(Collections.emptyList());
@@ -101,7 +101,7 @@ public class ControladorMiPerfilTest {
         Usuario usuarioPerfil = new Usuario();
         usuarioPerfil.setId(2L);
 
-        when(servicioUsuarioMock.buscarPorSlug("maria-gomez")).thenReturn(usuarioPerfil);
+        when(servicioUsuarioMock.buscarPorSlugConPublis("maria-gomez")).thenReturn(usuarioPerfil);
         when(servicioGeneroMock.listarGeneros()).thenReturn(Collections.emptyList());
         when(servicioPublicacionMock.obtenerPublicacionesDeUsuario(2L)).thenReturn(Collections.emptyList());
         when(usuarioMapperMock.toDtoPublico(usuarioPerfil)).thenReturn(new DatosUsuario());
@@ -115,7 +115,7 @@ public class ControladorMiPerfilTest {
                 .andExpect(model().attributeExists("usuario"))
                 .andExpect(model().attribute("esPropio", false));
 
-        verify(servicioUsuarioMock).buscarPorSlug("maria-gomez");
+        verify(servicioUsuarioMock).buscarPorSlugConPublis("maria-gomez");
         verify(usuarioMapperMock).toDtoPublico(usuarioPerfil);
         verifyNoInteractions(servicioNotificacionMock);
     }
@@ -127,7 +127,7 @@ public class ControladorMiPerfilTest {
         Usuario usuarioPerfil = new Usuario();
         usuarioPerfil.setId(2L);
 
-        when(servicioUsuarioMock.buscarPorSlug("maria-gomez")).thenReturn(usuarioPerfil);
+        when(servicioUsuarioMock.buscarPorSlugConPublis("maria-gomez")).thenReturn(usuarioPerfil);
         when(servicioGeneroMock.listarGeneros()).thenReturn(Collections.emptyList());
         when(servicioPublicacionMock.obtenerPublicacionesDeUsuario(2L)).thenReturn(Collections.emptyList());
         when(usuarioMapperMock.toDtoPublico(usuarioPerfil)).thenReturn(new DatosUsuario());
@@ -140,7 +140,7 @@ public class ControladorMiPerfilTest {
                 .andExpect(model().attributeExists("usuario"))
                 .andExpect(model().attribute("esPropio", false));
 
-        verify(servicioUsuarioMock).buscarPorSlug("maria-gomez");
+        verify(servicioUsuarioMock).buscarPorSlugConPublis("maria-gomez");
         verify(usuarioMapperMock).toDtoPublico(usuarioPerfil);
         verifyNoInteractions(servicioNotificacionMock);
     }
