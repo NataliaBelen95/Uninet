@@ -42,6 +42,11 @@ public class ControladorMiPerfil {
         this.publicacionMapper = publicacionMapper;
     }
 
+    /** --- Método privado para validar sesión --- */
+    private DatosUsuario validarSesion(HttpServletRequest request) {
+        return (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+    }
+
 
     @GetMapping("/editar-informacion")
     @Transactional(readOnly = true)
@@ -240,49 +245,37 @@ public class ControladorMiPerfil {
         return mostrarPerfil(slug, request, esPropio);
     }
 
-    @Transactional
+    /** --- Método privado para mostrar perfil --- */
+    @Transactional(readOnly = true)
     private ModelAndView mostrarPerfil(String slug, HttpServletRequest request, boolean esPropio) {
-        Usuario usuarioPerfil; // usuario cuyo perfil estamos viendo
-        DatosUsuario usuarioLogueado = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        Long idLogueado = usuarioLogueado != null ? usuarioLogueado.getId() : null;
-
-        // Obtener el usuario del perfil
-        if (slug != null) {
-            usuarioPerfil = servicioUsuario.buscarPorSlugConPublis(slug);
-        } else {
-            usuarioPerfil = servicioUsuario.buscarUsuarioPorIdConPublicaciones(usuarioLogueado.getId());
-        }
-        int cantidadNoLeidas = 0;
-        if (esPropio) {
-            cantidadNoLeidas = servicioNotificacion.contarNoLeidas(usuarioPerfil.getId());
-        }
+        Usuario usuarioPerfil = (slug != null)
+                ? servicioUsuario.buscarPorSlugConPublis(slug)
+                : servicioUsuario.buscarUsuarioPorIdConPublicaciones(validarSesion(request).getId());
 
         DatosUsuario dto = esPropio
                 ? usuarioMapper.toDtoPropio(usuarioPerfil)
                 : usuarioMapper.toDtoPublico(usuarioPerfil);
-        dto.setCantidadNotificaciones(cantidadNoLeidas);
 
-        // Traemos y mapeamos publicaciones
-        List<Publicacion> publicaciones = servicioPublicacion.obtenerPublicacionesDeUsuario(usuarioPerfil.getId());
-        List<DatosPublicacion> dtosPublicaciones = publicaciones.stream()
+        if (esPropio) {
+            dto.setCantidadNotificaciones(servicioNotificacion.contarNoLeidas(usuarioPerfil.getId()));
+            request.getSession().setAttribute("usuarioLogueado", dto);
+        }
+
+        // Mapeo de publicaciones
+        Long idLogueado = validarSesion(request) != null ? validarSesion(request).getId() : null;
+        List<DatosPublicacion> dtos = servicioPublicacion.obtenerPublicacionesDeUsuario(usuarioPerfil.getId())
+                .stream()
                 .map(p -> esPropio
-                        ? publicacionMapper.toDtoPublica(p, idLogueado)  // perfil propio → trae comentarios
-                        : publicacionMapper.toDtoPropia(p, idLogueado)   // perfil ajeno → NO trae comentarios
-                )
+                        ? publicacionMapper.toDtoPublica(p, idLogueado)
+                        : publicacionMapper.toDtoPropia(p, idLogueado))
                 .collect(Collectors.toList());
 
         ModelMap model = new ModelMap();
         model.addAttribute("usuario", dto);
         model.addAttribute("generos", servicioGenero.listarGeneros());
-        model.addAttribute("publicaciones", dtosPublicaciones);
+        model.addAttribute("publicaciones", dtos);
         model.addAttribute("esPropio", esPropio);
-        // Actualizamos sesión solo si es propio
-        if (esPropio) {
-            request.getSession().setAttribute("usuarioLogueado", dto);
-        }
 
         return new ModelAndView("miPerfil", model);
     }
 }
-
-
