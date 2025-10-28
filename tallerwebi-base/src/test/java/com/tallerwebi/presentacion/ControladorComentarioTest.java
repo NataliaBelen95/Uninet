@@ -95,6 +95,10 @@ public class ControladorComentarioTest {
         when(servicioUsuarioMock.buscarPorId(42L)).thenReturn(usuarioMock);
         when(publicacionMock.getId()).thenReturn(publiId);
 
+        Usuario receptorMock = mock(Usuario.class);
+        when(publicacionMock.getUsuario()).thenReturn(receptorMock);
+        when(receptorMock.getId()).thenReturn(99L);
+
         Comentario comentarioReal = new Comentario();
         comentarioReal.setTexto(textoComentario);
         when(servicioComentarioMock.comentar(dto, usuarioMock, publicacionMock)).thenReturn(comentarioReal);
