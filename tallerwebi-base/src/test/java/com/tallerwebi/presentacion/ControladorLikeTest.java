@@ -65,14 +65,16 @@ public class ControladorLikeTest {
         Publicacion publicacion = new Publicacion();
         publicacion.setId(idEjemplo);
 
-        DatosPublicacion dto = new DatosPublicacion(); // crea DTO real
-        dto.setDioLike(false); // inicia en false
+        Usuario receptor = new Usuario();
+        receptor.setId(20L); // el propietario de la publicación
+        publicacion.setUsuario(receptor);
 
+        DatosPublicacion dto = new DatosPublicacion();
+        dto.setDioLike(false);
 
         when(servicioUsuarioMock.buscarPorId(10L)).thenReturn(usuario);
         when(servicioPublicacionMock.obtenerPublicacion(idEjemplo)).thenReturn(publicacion);
         when(servicioLikesMock.yaDioLike(usuario.getId(), publicacion.getId())).thenReturn(true);
-
         when(publicacionMapperMock.toDto(publicacion, usuario.getId())).thenReturn(dto);
         when(servicioLikesMock.contarLikes(idEjemplo)).thenReturn(5);
 
