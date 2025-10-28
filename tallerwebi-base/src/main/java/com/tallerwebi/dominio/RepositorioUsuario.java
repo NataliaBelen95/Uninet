@@ -3,6 +3,7 @@ package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,5 @@ public interface RepositorioUsuario {
     Usuario buscarPorSlug(String slug);
     List<Publicacion> obtenerPublicacionesDeUsuario(long usuId);
     Usuario findBySlugWithPublicaciones(String slug);
+    List<Usuario> buscarUsuariosInactivosPorFechaUltimaPublicacionOSinPublicacion(LocalDate fechaUltimaPublicacion);
 }

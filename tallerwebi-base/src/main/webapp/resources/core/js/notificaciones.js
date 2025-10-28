@@ -49,63 +49,69 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Carga notificaciones en el dropdown
-    function cargarNotificaciones() {
-        fetch('/spring/notificaciones-dropdown')
-            .then(res => res.json())
-            .then(data => {
-                lista.innerHTML = '';
+   function cargarNotificaciones() {
+       fetch('/spring/notificaciones-dropdown')
+           .then(res => res.json())
+           .then(data => {
+               lista.innerHTML = '';
 
-                if (data.length === 0) {
-                    const li = document.createElement('li');
-                    li.textContent = 'No hay notificaciones';
-                    li.style.fontStyle = 'italic';
-                    li.style.color = '#666';
-                    lista.appendChild(li);
-                    actualizarBadge(0); // 🔹 aseguramos que el badge desaparezca
-                } else {
-                    data.forEach(n => {
-                        const li = document.createElement('li');
+               if (!data || data.length === 0) {
+                   const li = document.createElement('li');
+                   li.textContent = 'No hay notificaciones';
+                   li.style.fontStyle = 'italic';
+                   li.style.color = '#666';
+                   lista.appendChild(li);
+                   actualizarBadge(0);
+               } else {
+                   data.forEach(n => {
+                       const li = document.createElement('li');
 
-                        // Formatear fecha
-                        const fechaObj = new Date(n.fecha);
-                        const fechaFormateada = `${fechaObj.getFullYear()}.${(fechaObj.getMonth()+1).toString().padStart(2,'0')}.${fechaObj.getDate().toString().padStart(2,'0')}`;
+                       // Usuario emisor (si es null, ponemos 'Sistema')
+                       const emisor = n.usuarioEmisor || 'Sistema';
 
-                        li.innerHTML = `<strong>${n.usuarioEmisor}</strong>: ${n.mensaje} <span class="fecha">${fechaFormateada}</span>`;
-                        if (n.leida) li.classList.add('leida');
+                       // Formatear fecha (quitar microsegundos para que JS la entienda)
+                       const fechaStr = n.fecha ? n.fecha.split('.')[0] : '';
+                       const fechaObj = new Date(fechaStr);
+                       const fechaFormateada = fechaObj.getFullYear() + '.' +
+                           String(fechaObj.getMonth()+1).padStart(2,'0') + '.' +
+                           String(fechaObj.getDate()).padStart(2,'0');
 
-                        // 🔹 Evento clic
-                        li.addEventListener('click', () => {
-                            fetch(`/spring/marcar-leida/${n.id}`, { method: 'POST' })
-                                .then(res => {
-                                    if (!res.ok) throw new Error('Error al marcar como leída');
+                       li.innerHTML = `<strong>${emisor}</strong>: ${n.mensaje} <span class="fecha">${fechaFormateada}</span>`;
 
-                                    // actualizar badge con lo que viene del WS o local
-                                    const badge = btnNotificaciones.querySelector('.badge');
-                                    if (badge) {
-                                        let c = parseInt(badge.textContent);
-                                        c = Math.max(0, c - 1);
-                                        if (c === 0) badge.remove();
-                                        else badge.textContent = c;
-                                    }
+                       if (n.leida) li.classList.add('leida');
 
-                                    // redirigir solo si existe URL
-                                    if (n.url && n.url.trim() !== '') {
-                                        // 🔹 No duplicar /spring
-                                        window.location.href = n.url.startsWith('/spring') ? n.url : '/spring' + n.url;
-                                    } else {
-                                        console.warn("Notificación sin URL definida:", n);
-                                    }
-                                })
-                                .catch(err => console.error(err));
-                        });
+                       // Evento clic
+                       li.addEventListener('click', () => {
+                           fetch(`/spring/marcar-leida/${n.id}`, { method: 'POST' })
+                               .then(res => {
+                                   if (!res.ok) throw new Error('Error al marcar como leída');
 
-                        lista.appendChild(li);
-                    });
+                                   // Actualizar badge
+                                   const badge = btnNotificaciones.querySelector('.badge');
+                                   if (badge) {
+                                       let c = parseInt(badge.textContent);
+                                       c = Math.max(0, c - 1);
+                                       if (c === 0) badge.remove();
+                                       else badge.textContent = c;
+                                   }
 
-                    // 🔹 Actualizamos badge con cantidad real
-                    actualizarBadge(data.length);
-                }
-            })
-            .catch(err => console.error(err));
-    }
+                                   // Redirigir si hay URL
+                                  // Redirigir solo si la notificación apunta a otra página
+                                           const urlFinal = n.url.startsWith('/spring') ? n.url : '/spring' + n.url;
+                                           if (window.location.pathname !== urlFinal) {
+                                               window.location.href = urlFinal;
+                                           }
+                                       })
+                                       .catch(err => console.error(err));
+                       });
+
+                       lista.appendChild(li);
+                   });
+
+                   // Actualizamos badge con la cantidad real
+                   actualizarBadge(data.length);
+               }
+           })
+           .catch(err => console.error(err));
+   }
 });

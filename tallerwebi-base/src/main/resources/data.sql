@@ -54,6 +54,12 @@ ALTER TABLE Publicacion
 CONVERT TO CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
 
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
+VALUES ('Publicación vieja de prueba', '2025-09-27 10:00:00', 3);
+UPDATE Usuario
+SET ultima_publicacion = '2025-09-27'
+WHERE id = 3;
+
 -- 6️⃣ Generar slug para los nuevos usuarios
 UPDATE Usuario
 SET slug = LOWER(CONCAT(nombre, '-', apellido, '-', LPAD(id, 4, '0')))

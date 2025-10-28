@@ -68,7 +68,7 @@ public class ControladorNotificacion {
                             n.getMensaje(),
                             n.isLeida(),
                             n.getFechaCreacion(),
-                            n.getUsuarioEmisor().getNombre(),
+                            n.getUsuarioEmisor() != null ? n.getUsuarioEmisor().getNombre() : "Uninet",
                             n.getUrl()
                     ))
                     .collect(Collectors.toList());

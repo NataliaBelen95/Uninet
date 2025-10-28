@@ -97,6 +97,14 @@ public class Usuario {
     private List<Comentario> comentarios;
 
 
+    @Column(name = "ultima_publicacion")
+    private LocalDate ultimaPublicacion;
+
+
+
+
+
+    //getters and setters
     public long getId() {
         return id;
     }
@@ -243,6 +251,14 @@ public class Usuario {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public LocalDate getUltimaPublicacion() {
+        return ultimaPublicacion;
+    }
+
+    public void setUltimaPublicacion(LocalDate ultimaPublicacion) {
+        this.ultimaPublicacion = ultimaPublicacion;
     }
 }
 

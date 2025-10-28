@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -37,15 +38,16 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
     private final RepositorioComentario repositorioComentario;
-
     private final RepositorioPublicacion repositorioPublicacion;
+    private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion
+    , RepositorioUsuario repositorioUsuario) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
         this.repositorioPublicacion = repositorioPublicacion;
-
+        this.repositorioUsuario = repositorioUsuario;
     }
 @Override
     public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida {
@@ -113,7 +115,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
             publicacion.setArchivo(archivoPub);
         }
-
+        usuario.setUltimaPublicacion(LocalDate.now());
+        repositorioUsuario.actualizar(usuario); // 🔒 asegurar persistencia
         repositorio.guardar(publicacion);
     }
 
@@ -166,6 +169,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
         publicacion.setFechaPublicacion(LocalDateTime.now());
         publicacion.setUsuario(usuario);
+        usuario.setUltimaPublicacion(LocalDate.now());
 
 
 
@@ -194,7 +198,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
             publicacion.setArchivo(archivoPub);
         }
-
+        usuario.setUltimaPublicacion(LocalDate.now());
+        repositorioUsuario.actualizar(usuario); // 🔒 asegurar persistencia
         repositorio.guardar(publicacion);
     }
 

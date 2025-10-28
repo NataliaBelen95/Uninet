@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,6 +121,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .createQuery("SELECT u FROM Usuario u LEFT JOIN FETCH u.publicaciones WHERE u.slug = :slug", Usuario.class)
                 .setParameter("slug", slug)
                 .uniqueResult();
+    }
+
+    @Override
+    public List<Usuario> buscarUsuariosInactivosPorFechaUltimaPublicacionOSinPublicacion(LocalDate fechaUltimaPublicacion) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery(
+                        "FROM Usuario u " +
+                                "WHERE u.ultimaPublicacion < :fecha OR u.ultimaPublicacion IS NULL", Usuario.class)
+                .setParameter("fecha", fechaUltimaPublicacion)
+                .getResultList();
     }
 
 }

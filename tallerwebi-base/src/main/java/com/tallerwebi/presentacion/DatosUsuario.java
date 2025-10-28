@@ -30,6 +30,7 @@ public class DatosUsuario {
     private List<DatosPublicacion> likesGuardados;
     private int cantidadNotificaciones;
     private String slug;
+    private LocalDate ultimaFechaPublicacion;
 
 
     public String getFotoPerfil() {return fotoPerfil;}
@@ -153,5 +154,13 @@ public class DatosUsuario {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public LocalDate getUltimaFechaPublicacion() {
+        return ultimaFechaPublicacion;
+    }
+
+    public void setUltimaFechaPublicacion(LocalDate ultimaFechaPublicacion) {
+        this.ultimaFechaPublicacion = ultimaFechaPublicacion;
     }
 }
