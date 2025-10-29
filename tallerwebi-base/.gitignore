@@ -19,5 +19,8 @@ hs_err_pid*
 /.idea/
 /.settings/
 
+#resultados test
+/test-results/
+
 **/node_modules/
 .vscode/.idea/

@@ -34,24 +34,24 @@ public class VistaMiPerfil extends VistaWeb {
 
     // --- Publicaciones del usuario ---
     public boolean hayPublicaciones() {
+        // devuelve true si hay al menos un <article class="estructura"> en la página
         return !page.querySelectorAll("article.estructura").isEmpty();
     }
 
     public String obtenerTextoPrimeraPublicacion() {
-        // obtiene el texto <p class="texto">holi</p>
-        return page.textContent("article.estructura p.texto");
+        return hayPublicaciones() ? page.textContent("article.estructura p.texto") : "";
     }
 
     public String obtenerLikesPrimeraPublicacion() {
-        return page.textContent("article.estructura .like-container span");
+        return hayPublicaciones() ? page.textContent("article.estructura .like-container span") : "0";
     }
-
     public String obtenerTextoBotonComentariosPrimeraPublicacion() {
         return page.textContent("article.estructura .ver-comentariosBtn");
     }
 
     public String obtenerTitulo() {
-        // suponiendo que hay un <h1> o <h2> en la vista del perfil
-        return page.textContent("h1, h2");
+        String nombre = page.textContent("div.estructura h2.palabra:nth-of-type(1)");
+        String apellido = page.textContent("div.estructura h2.palabra:nth-of-type(2)");
+        return (nombre != null ? nombre : "") + " " + (apellido != null ? apellido : "");
     }
 }
