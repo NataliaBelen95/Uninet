@@ -94,11 +94,12 @@
             <ul>
                 <!-- Iteramos sobre la lista de usuarios -->
                 <li th:each="usuario : ${usuariosNuevos}">
-                    <span th:text="${usuario.nombreUsuario}"></span> <!-- Muestra el nombre del usuario -->
+                    <span th:text="${usuario.nombreUsuario}"></span>
+                    <span th:text="${usuario.apellidoUsuario}"></span>
                     <!-- Formulario para enviar solicitud de amistad -->
                     <form th:action="@{/amistad/enviarSolicitud}" method="post">
                         <input type="hidden" th:name="receptorId" th:value="${usuario.id}"/>
-                        <button type="submit">Enviar Solicitud de Amistad</button>
+                        <button class="solicitud" type="submit">Enviar Solicitud de Amistad</button>
                     </form>
                 </li>
             </ul>

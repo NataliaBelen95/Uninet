@@ -167,6 +167,17 @@ a {
     background-color: transparent;
 }
 
+.solicitud{
+        background-color: #4CAF50; /* Color de fondo */
+        color: white; /* Color del texto */
+        padding: 10px 20px; /* Espacio interno (arriba/abajo, izquierda/derecha) */
+        border: none; /* Sin borde */
+        border-radius: 5px; /* Bordes redondeados */
+        cursor: pointer; /* Cursor de mano */
+        font-size: 16px; /* Tamaño de fuente */
+}
+
+
 /*agrego contendror ver comentarios separado de mg y comentar*/
 .contenedor_verComentarios {
     display: flex;
