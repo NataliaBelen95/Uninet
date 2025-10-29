@@ -66,4 +66,8 @@ public class ServicioUsuario {
         return repositorioUsuario.findBySlugWithPublicaciones(slug);
     }
 
+    public List <Usuario> buscarUsuarionNombreOEmail (String termino) {
+        return repositorioUsuario.buscarPorNombreOEmail(termino);
+    }
+
 }

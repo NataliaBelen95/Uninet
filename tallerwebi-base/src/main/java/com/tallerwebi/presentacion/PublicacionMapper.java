@@ -31,9 +31,8 @@ public class PublicacionMapper {
 
         dto.setId(p.getId());
         dto.setDescripcion(p.getDescripcion());
-        dto.setNombreUsuario(p.getUsuario().getNombre());
-        dto.setApellidoUsuario(p.getUsuario().getApellido());
-        dto.setSlugUsuario(p.getUsuario().getSlug());
+
+
         dto.setCantLikes(servicioLike.contarLikes(p.getId()));
         dto.setCantComentarios(servicioComentario.contarComentarios(p.getId()));
         dto.setFechaPublicacion(p.getFechaPublicacion());
@@ -41,6 +40,14 @@ public class PublicacionMapper {
         dto.setDioLike(servicioLike.yaDioLike(usuarioId, p.getId()));
         dto.setEsPropio(p.getUsuario().getId() == usuarioId);
 
+        // --- Crear DTO del autor ---
+        DatosUsuario autorDto = new DatosUsuario();
+        autorDto.setId(p.getUsuario().getId());
+        autorDto.setNombre(p.getUsuario().getNombre());
+        autorDto.setApellido(p.getUsuario().getApellido());
+        autorDto.setSlug(p.getUsuario().getSlug());
+        autorDto.setUrl(p.getUsuario().getSlug().equals(usuarioId) ? "/miPerfil" : "/perfil/" + p.getUsuario().getSlug());
+        dto.setAutor(autorDto);
         // Incluye comentarios solo cuando se necesita
         if (incluirComentarios && p.getComentarios() != null) {
             List<DatosComentario> comentariosDto = new ArrayList<>();

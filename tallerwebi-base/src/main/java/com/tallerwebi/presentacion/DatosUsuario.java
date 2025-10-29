@@ -30,6 +30,7 @@ public class DatosUsuario {
     private List<DatosPublicacion> likesGuardados;
     private int cantidadNotificaciones;
     private String slug;
+    private String url;
     private LocalDate ultimaFechaPublicacion;
 
 
@@ -163,4 +164,13 @@ public class DatosUsuario {
     public void setUltimaFechaPublicacion(LocalDate ultimaFechaPublicacion) {
         this.ultimaFechaPublicacion = ultimaFechaPublicacion;
     }
+
+    public String getUrl() {
+        return "/perfil/" + this.slug;
+    }
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
 }

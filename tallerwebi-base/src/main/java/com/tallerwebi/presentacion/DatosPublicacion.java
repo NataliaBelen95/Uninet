@@ -51,6 +51,12 @@ public class DatosPublicacion {
     @JsonProperty("slugUsuario") // // para perfil de otro usuario perfil/{slug}
     private String slugUsuario;
 
+    @JsonProperty("autor")
+    private DatosUsuario autor;
+
+    public DatosUsuario getAutor() { return autor; }
+    public void setAutor(DatosUsuario autor) { this.autor = autor; }
+
 
     // Getters and setters
     public String getNombreUsuario() {

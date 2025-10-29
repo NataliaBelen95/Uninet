@@ -13,6 +13,7 @@ public interface RepositorioUsuario {
     Usuario buscarUsuario(String email, String password);
     void guardar(Usuario usuario);
     Usuario buscar(String email);
+    List<Usuario> buscarPorNombreOEmail(String termino);
     void actualizar(Usuario usuario);
     void setearCarreraAUsuario(Usuario usuario, Carrera carrera);
     Usuario buscarPorId(long id);

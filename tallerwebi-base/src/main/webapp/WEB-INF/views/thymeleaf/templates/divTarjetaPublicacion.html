@@ -7,12 +7,13 @@
         <!-- Usuario -->
     <!-- Usuario -->
     <h2 th:if="${dtopubli.esPropio}">
-        <a th:href="@{/miPerfil}" th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></a>
+        <a th:href="@{/miPerfil}"
+           th:text="${dtopubli.autor.nombre + ' ' + dtopubli.autor.apellido}"></a>
     </h2>
 
     <h2 th:unless="${dtopubli.esPropio}">
-        <a th:href="@{/perfil/{slug}(slug=${dtopubli.slugUsuario})}"
-           th:text="${dtopubli.nombreUsuario + ' ' + dtopubli.apellidoUsuario}"></a>
+        <a th:href="@{${dtopubli.autor.url}}"
+           th:text="${dtopubli.autor.nombre + ' ' + dtopubli.autor.apellido}"></a>
     </h2>
 
     <form th:if="${dtopubli.esPropio}"

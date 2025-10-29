@@ -59,6 +59,18 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
+    public List<Usuario> buscarPorNombreOEmail(String termino) {
+       List <Usuario> usuariosEncontrados = sessionFactory.getCurrentSession()
+                .createQuery("FROM Usuario u WHERE " +
+                        "LOWER(u.email) LIKE LOWER(:termino) OR " +
+                        "LOWER(u.nombre) LIKE LOWER(:termino) OR " +
+                        "LOWER(u.apellido) LIKE LOWER(:termino)", Usuario.class)
+                .setParameter("termino", "%" + termino + "%")
+                .getResultList();
+       return usuariosEncontrados;
+    }
+
+    @Override
     public void actualizar(Usuario usuario) {
         sessionFactory.getCurrentSession().update(usuario);
     }
