@@ -45,7 +45,6 @@
         </div>
         <div class="estructura box_columnaUno">
             <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>
-            <a href=""><img th:src="@{/imagenes/guardados.png}"> Elementos guardados</a>
             <!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
             <a th:href="@{/herramientas-IA.html}" class="btn_subir_archivos">
                 <img th:src="@{/imagenes/pdf-icon.png}" alt="icono-pdf">Herramientas de IA
@@ -97,8 +96,8 @@
                     <span th:text="${usuario.nombreUsuario}"></span>
                     <span th:text="${usuario.apellidoUsuario}"></span>
                     <!-- Formulario para enviar solicitud de amistad -->
-                    <form th:action="@{/amistad/enviarSolicitud}" method="post">
-                        <input type="hidden" th:name="receptorId" th:value="${usuario.id}"/>
+                    <form th:action="@{/amistad/enviar}" method="post">
+                        <input type="hidden" name="receptorId" th:value="${usuario.id}" />
                         <button class="solicitud" type="submit">Enviar Solicitud de Amistad</button>
                     </form>
                 </li>

@@ -140,7 +140,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery(
                         "FROM Usuario u " +
-                                "WHERE u.ultimaPublicacion < :fecha OR u.ultimaPublicacion IS NULL", Usuario.class)
+                                "WHERE u.ultimaPublicacion < :fecha", Usuario.class)
                 .setParameter("fecha", fechaUltimaPublicacion)
                 .getResultList();
     }
