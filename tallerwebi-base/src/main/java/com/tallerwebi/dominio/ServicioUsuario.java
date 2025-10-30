@@ -40,7 +40,7 @@ public class ServicioUsuario {
     }
 
     public void actualizarContrasena(Usuario usuario, String nuevaContrasena) {
-
+            repositorioUsuario.actualizarContrasena(usuario, nuevaContrasena);
     }
 
     public void registrarUsuario(Usuario usuario) {

@@ -1,41 +1,82 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nueva contraseña</title>
+    <title>Recuperar contraseña</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
-    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
 
     <link rel="stylesheet" th:href="@{/css/variables.css}"/>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/registrarse.css}"/>
-    <!--<link rel="stylesheet" href="/src/main/webapp/resources/core/css/variables.css">
-    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/base.css">
-    <link rel="stylesheet" href="../../../resources/core/css/registrarse.css">-->
 </head>
 <body>
 <nav>
-    <img class="logo" th:src="@{/imagenes/logo.png}">
-    <!--<img class="logo" src="../../../resources/core/imagenes/logo.png">-->
+    <img class="logo" th:src="@{/imagenes/logo.png}" alt="logo">
 </nav>
+
 <main role="main" class="contenedor">
     <div id="loginbox" class="contenedor_form">
-        <form action="#" th:action="@{/recuperar}" method="POST" th:object="${datosRecuperarContrasenia}" accept-charset="UTF-8">
-            <h3>Nueva contraseña</h3>
+
+        <p th:if="${mensaje}" th:text="${mensaje}" style="color: green; margin-bottom: 1rem;"></p>
+        <p th:if="${error}" th:text="${error}" class="error" style="margin-bottom: 1rem;"></p>
+
+        <!-- FORMULARIO ÚNICO: solicitar envío de código por email -->
+        <div th:if="${datosRecuperarContrasenia == null or #strings.isEmpty(datosRecuperarContrasenia.email)}">
+            <h3>Recuperar contraseña</h3>
             <div class="separador"></div>
-            <input th:field="*{email}" id="email" placeholder="Email" required/>
-            <input th:field="*{nuevaContrasena}" type="password" id="passnew" placeholder="Contraseña nueva" required/>
-            <input th:field="*{repetirContrasena}" type="password" id="passrep" placeholder="Repetir contraseña" required/>
-            <button id="btn-registrarme" class="btn" Type="Submit">Actualizar</button>
-            <a href="login.html">Volver atrás</a>
-            <p th:if="${error != null}" class="error" th:text="${error}"></p>
-            <p th:if="${mensaje != null}" class="exito" th:text="${mensaje}"></p>
-        </form>
+
+            <form th:action="@{/recuperar}" method="post" th:object="${datosRecuperarContrasenia}">
+                <div class="box_campo">
+                    <input th:field="*{email}" id="email" type="email" placeholder="Email" required/>
+                </div>
+
+                <!-- Si usás Spring Security con CSRF, descomenta y mantiene -->
+                <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+
+                <div class="separador"></div>
+                <button id="btn-enviar-codigo" class="btn" type="submit">Enviar código por mail</button>
+            </form>
+
+            <div style="margin-top: 1rem;">
+                <a th:href="@{/login}">Volver al login</a>
+            </div>
+        </div>
+
+        <!-- FORMULARIO para establecer nueva contraseña (se muestra después de confirmar código) -->
+        <div th:if="${datosRecuperarContrasenia != null and !#strings.isEmpty(datosRecuperarContrasenia.email)}">
+            <h3>Ingresa nueva contraseña</h3>
+            <div class="separador"></div>
+
+            <form th:action="@{/recuperar/nueva}" method="post" th:object="${datosRecuperarContrasenia}">
+                <input type="hidden" th:field="*{email}" />
+
+                <div class="box_campo">
+                    <label for="nueva">Nueva contraseña</label>
+                    <input th:field="*{nuevaContrasena}" id="nueva" type="password" required placeholder="Nueva contraseña"/>
+                </div>
+
+                <div class="box_campo">
+                    <label for="repetir">Repetir contraseña</label>
+                    <input th:field="*{repetirContrasena}" id="repetir" type="password" required placeholder="Repetir contraseña"/>
+                </div>
+
+                <!-- CSRF si aplica -->
+                <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+
+                <div class="separador"></div>
+                <button id="btn-cambiar" class="btn" type="submit">Cambiar contraseña</button>
+            </form>
+
+            <div style="margin-top: 1rem;">
+                <a th:href="@{/login}">Volver al login</a>
+            </div>
+        </div>
+
     </div>
 </main>
 
