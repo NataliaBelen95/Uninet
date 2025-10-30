@@ -44,6 +44,41 @@ public class ServicioNotificacion {
         notificacionService.enviarNotificacion(receptor, notificacion);
     }
 
+    public void crearAmistad(Usuario receptor, Usuario emisor, TipoNotificacion tipo) {
+        String mensaje;
+        if (tipo == TipoNotificacion.INACTIVIDAD) {
+            mensaje = generarMensajeInactividad(receptor);
+        } else {
+            mensaje = generarMensajeAmigo(tipo, emisor, receptor);
+        }
+
+        if (mensaje == null || mensaje.isEmpty()) {
+            return; // no se crea notificación
+        }
+
+        Notificacion notificacion = new Notificacion();
+        notificacion.setUsuarioReceptor(receptor);
+        notificacion.setUsuarioEmisor(emisor);
+        notificacion.setTipo(tipo);
+        notificacion.setMensaje(mensaje);
+        notificacion.setFechaCreacion(LocalDateTime.now());
+        String url = generarUrlAmistad(tipo, emisor, receptor);
+        notificacion.setUrl(url);
+
+        repoNotificacion.guardar(notificacion);
+        notificacionService.enviarNotificacion(receptor, notificacion);
+    }
+
+    private String generarMensajeAmigo(TipoNotificacion tipo, Usuario emisor, Usuario receptor) {
+        String preview = "Quiere ser tu amichi";
+        switch (tipo) {
+            case SOLICITUD_AMISTAD:
+                return emisor.getNombre() + " te envió una solicitud de amistad.";
+            default:
+                return "Nueva notificación.";
+        }
+    }
+
 
     private String generarMensaje(TipoNotificacion tipo, Usuario emisor, Publicacion publicacion, Usuario receptor) {
         String preview = (publicacion != null && publicacion.getDescripcion() != null)
@@ -105,6 +140,19 @@ public class ServicioNotificacion {
         }
     }
 
+    private String generarUrlAmistad(TipoNotificacion tipo, Usuario receptor, Usuario emisor) {
+        boolean receptorEsDuenio = receptor != null
+                && emisor != null;
+
+        switch (tipo) {
+           case SOLICITUD_AMISTAD:
+                // si alguien me envía solicitud → ver su perfil
+                return "/perfil/" + emisor.getSlug();
+            default:
+                return "/notificaciones";
+        }
+    }
+
 
     private String generarMensajeInactividad(Usuario usuario) {
         LocalDate ultimaPub = usuario.getUltimaPublicacion();
@@ -126,6 +174,5 @@ public class ServicioNotificacion {
                     "¡Te invitamos a crear una nueva publicación ahora y mostrar lo que hacés!";
         }
     }
-
 
 }

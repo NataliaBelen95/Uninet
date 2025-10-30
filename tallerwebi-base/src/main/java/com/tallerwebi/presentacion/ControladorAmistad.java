@@ -96,4 +96,35 @@ public class ControladorAmistad {
 
         return "lista-amigos";
     }
+
+    @PostMapping("/enviar")
+    public String enviarSolicitudForm(@RequestParam("receptorId") Long receptorId, HttpServletRequest request) {
+        // 1) obtener datos de sesión
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return "redirect:/login";
+        }
+
+        // 2) buscar entidades
+        Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
+        Usuario receptor = servicioUsuario.buscarPorId(receptorId);
+        if (solicitante == null || receptor == null) {
+            // manejo simple de error: redirigir a la lista de usuarios
+            return "redirect:/usuarios";
+        }
+
+        // 3) enviar la solicitud (persistir la solicitud de amistad)
+        servicioAmistad.enviarSolicitud(solicitante, receptor);
+
+        // 4) crear notificación persistente y enviar en tiempo real
+        // Delegamos la creación y envío a ServicioNotificacion:
+        try {
+            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD);
+        } catch (Exception e) {
+            // en caso de fallo en la notificación no interrumpimos el flujo; opcional: loguear
+            System.err.println("Error al notificar solicitud de amistad: " + e.getMessage());
+        }
+
+        return "redirect:/home";
+    }
 }
