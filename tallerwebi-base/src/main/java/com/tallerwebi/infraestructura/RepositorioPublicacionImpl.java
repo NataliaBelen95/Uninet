@@ -62,15 +62,18 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
     @Override
     public Publicacion obtenerPublicacionCompleta(long id) {
         Publicacion publicacion = sessionFactory.getCurrentSession()
-                .createQuery("SELECT p FROM Publicacion p " +
-                        "LEFT JOIN FETCH p.usuario " + // esto está bien
+                .createQuery("SELECT DISTINCT p FROM Publicacion p " +
+                        "LEFT JOIN FETCH p.usuario " +
+                        "LEFT JOIN FETCH p.archivo " +
                         "WHERE p.id = :id", Publicacion.class)
                 .setParameter("id", id)
                 .uniqueResult();
 
-        // Inicializás manualmente las colecciones para evitar LazyInitializationException
-        Hibernate.initialize(publicacion.getComentarios());
-        Hibernate.initialize(publicacion.getLikesDePublicacion());
+        // Cargamos manualmente las colecciones si las necesitamos
+        if (publicacion != null) {
+            Hibernate.initialize(publicacion.getComentarios());
+            Hibernate.initialize(publicacion.getLikesDePublicacion());
+        }
 
         return publicacion;
     }

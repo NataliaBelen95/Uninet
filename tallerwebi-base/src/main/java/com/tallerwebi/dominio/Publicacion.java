@@ -37,7 +37,7 @@ public class Publicacion {
     /*relacion con entidad like */
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
-    private List<Like> likesDePublicacion = new ArrayList<>();
+    private Set<Like> likesDePublicacion = new HashSet<>();
 
     /*relacion con entidad comentarios , una publicacion muchos comentarios, comentario a una publi*/
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -81,11 +81,11 @@ public class Publicacion {
     }
 
 
-    public List<Like> getLikesDePublicacion() {
+    public Set<Like> getLikesDePublicacion() {
         return likesDePublicacion;
     }
 
-    public void setLikesDePublicacion(List<Like> likesDePublicacion) {
+    public void setLikesDePublicacion(Set<Like> likesDePublicacion) {
         this.likesDePublicacion = likesDePublicacion;
     }
 

@@ -5,10 +5,12 @@ import com.tallerwebi.dominio.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,15 +22,22 @@ public class ControladorHome {
     private final ServicioPublicacion servicioPublicacion;
     private final ServicioLike servicioLike;
     private final ServicioUsuario servicioUsuario;
+    private final ServicioRecomendaciones servicioRecomendaciones;
 
 
 
 
-    public ControladorHome(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion, ServicioLike servicioLike, PublicacionMapper publicacionMapper) {
+
+    public ControladorHome(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion,
+                           ServicioLike servicioLike, PublicacionMapper publicacionMapper,
+                           ServicioRecomendaciones servicioRecomendaciones) {
         this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
         this.publicacionMapper = publicacionMapper;
         this.servicioUsuario = servicioUsuario;
+        this.servicioRecomendaciones = servicioRecomendaciones;
+
+
 
         //this.servicioUsuario = servicioUsuario;
 
@@ -63,7 +72,8 @@ public class ControladorHome {
     }
 */
     @GetMapping("/home")
-    public ModelAndView home(HttpServletRequest request) {
+    public ModelAndView home(HttpServletRequest request,
+                             @RequestParam(value = "filtro", defaultValue = "p") String filtro) {
         ModelMap model = new ModelMap();
         HttpSession session = request.getSession();
 
@@ -96,10 +106,26 @@ public class ControladorHome {
                 ))
                 .collect(Collectors.toList());
 
+
+        Usuario usuarioReal = servicioUsuario.buscarPorId(usuario.getId());
+        List<Publicacion> publisParaTi;
+        try {
+            publisParaTi = servicioRecomendaciones.recomendarParaUsuario(usuarioReal, 5);
+        } catch (Exception e) {
+            publisParaTi = new ArrayList<>();
+            e.printStackTrace();
+        }
+
+        List<DatosPublicacion> datosPublisParaTi = publisParaTi.stream()
+                .map(p -> publicacionMapper.toDto(p, usuario.getId()))
+                .collect(Collectors.toList());
+
         // 4. Pasar datos al modelo
         model.addAttribute("usuariosNuevos", usuariosDTO);
         model.addAttribute("esPropio", true);
         model.addAttribute("datosPublicaciones", datosPublicaciones);
+        model.addAttribute("publisParaTi", datosPublisParaTi);
+        model.addAttribute("filtro", filtro);
         return new ModelAndView("home", model);
     }
 

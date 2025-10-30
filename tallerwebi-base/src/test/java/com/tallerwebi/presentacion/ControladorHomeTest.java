@@ -32,6 +32,8 @@ public class ControladorHomeTest {
     private RepositorioUsuario repositorioUsuarioMock;
     private PublicacionMapper publicacionMapperMock;
     private ServicioUsuario servicioUsuarioMock;
+    private ServicioRecomendaciones servicioRecomendacionesMock;
+    private LuceneService lucenceServiceMock;
 
     @BeforeEach
     public void init() {
@@ -61,7 +63,10 @@ public class ControladorHomeTest {
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         servicioLikeMock = mock(ServicioLike.class);
         publicacionMapperMock = mock (PublicacionMapper.class);
-        controlador = new ControladorHome(servicioUsuarioMock, servicioPublicacionMock, servicioLikeMock, publicacionMapperMock);
+        servicioRecomendacionesMock = mock(ServicioRecomendaciones.class);
+        lucenceServiceMock = mock(LuceneService.class);
+        controlador = new ControladorHome(servicioUsuarioMock, servicioPublicacionMock, servicioLikeMock,
+                publicacionMapperMock, servicioRecomendacionesMock);
     }
 
     @Test
@@ -115,10 +120,11 @@ public class ControladorHomeTest {
 
         servicioUsuarioMock = mock(ServicioUsuario.class);
         // Instanciar el controlador con mocks
-        ControladorHome controlador = new ControladorHome(servicioUsuarioMock, servicioPublicacionMock, servicioLikeMock, publicacionMapperMock);
+        ControladorHome controlador = new ControladorHome(servicioUsuarioMock, servicioPublicacionMock,
+                servicioLikeMock, publicacionMapperMock, servicioRecomendacionesMock);
 
         // Ejecutar
-        ModelAndView mav = controlador.home(requestMock);
+        ModelAndView mav = controlador.home(requestMock, requestMock.getParameter("filtro"));
 
         // Validar vista
         assertEquals("home", mav.getViewName());

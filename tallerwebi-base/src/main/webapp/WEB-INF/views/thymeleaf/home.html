@@ -61,20 +61,23 @@
         </article>
         <article class="box_ordenarPor">
             <div class="separador"></div>
-            <form>
-                <label for="ordenar">Ordenar por: </label>
-                <select name="ordenar" id="ordenar">
-                    <option value="p">Principal</option>
-                    <option value="r">Recientes</option>
+            <form id="filtroPublicaciones" th:action="@{/home}" method="get">
+                <label for="ordenar">Mostrar: </label>
+                <select name="filtro" id="ordenar" onchange="this.form.submit()">
+                    <option value="p" th:selected="${filtro == 'p'}">Principal</option>
+                    <option value="r" th:selected="${filtro == 'r'}">Para ti</option>
                 </select>
             </form>
         </article>
         <div id="contenedor-publicaciones">
-            <th:block th:each="dtopubli : ${datosPublicaciones}">
+            <th:block th:if="${filtro == 'p'}" th:each="dtopubli : ${datosPublicaciones}">
+                <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
+            </th:block>
+
+            <th:block th:if="${filtro == 'r'}" th:each="dtopubli : ${publisParaTi}">
                 <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
             </th:block>
         </div>
-
 
 
 

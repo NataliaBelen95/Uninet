@@ -7,18 +7,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class ServicioLikeImpl implements ServicioLike {
     private final RepositorioLike repositorioLike;
     private final RepositorioUsuario repositorioUsuario;
     private final RepositorioPublicacion repositorioPublicacion;
+    private final ServicioInteraccion servicioInteraccion;
 
     @Autowired
-    public ServicioLikeImpl(RepositorioLike repositorioLike,RepositorioUsuario repositorioUsuario,RepositorioPublicacion repositorioPublicacion) {
+    public ServicioLikeImpl(RepositorioLike repositorioLike,RepositorioUsuario repositorioUsuario,
+                            RepositorioPublicacion repositorioPublicacion, ServicioInteraccion servicioInteraccion) {
         this.repositorioLike = repositorioLike;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioPublicacion = repositorioPublicacion;
+        this.servicioInteraccion = servicioInteraccion;
+
 
     }
 
@@ -68,12 +75,30 @@ public class ServicioLikeImpl implements ServicioLike {
                 if(like != null) {
                     repositorioLike.eliminar(like.getId());
                 }
+                // Eliminar la interaccion asociada
+                List<Interaccion> interacciones = servicioInteraccion.obtenerInteraccionesDeUsuario(usuario)
+                        .stream()
+                        .filter(i -> i.getPublicacion().getId() == publiId && "LIKE".equals(i.getTipo()))
+                        .collect(Collectors.toList());
+                for (Interaccion inter : interacciones) {
+                    servicioInteraccion.eliminarInteraccion(inter.getId());
+                }
             }   else {
                 Like like = new Like();
                 like.setUsuario(usuario);
                 like.setPublicacion(publicacion);
                 like.setFecha(LocalDateTime.now());
                 repositorioLike.guardar(like);
+
+                // Crear la interaccion
+                Interaccion interaccion = new Interaccion();
+                interaccion.setUsuario(usuario);
+                interaccion.setPublicacion(publicacion);
+                interaccion.setTipo("LIKE");
+                interaccion.setFecha(LocalDateTime.now());
+                interaccion.setPeso(1.0); // o lo que uses para el peso
+                interaccion.setVista(false);
+                servicioInteraccion.guardarInteraccion(interaccion);
             }
     }
 

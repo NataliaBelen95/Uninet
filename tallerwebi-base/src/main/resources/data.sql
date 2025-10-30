@@ -34,7 +34,7 @@ INSERT INTO carrera_materia(carrera_id, materia_id) VALUES
                                                         (3, 3), -- Profesorado en Matemática - Matemática I
                                                         (4, 4); -- Tecnicatura en Gestión de Empresas - Economía General
 
--- 4️⃣ Crear usuarios y asignarles carrera por id
+-- 4️ Crear usuarios y asignarles carrera por id
 INSERT INTO Usuario (email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado) VALUES
                                             ('test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez',38065944, 1, '1990-01-01', true),
                                             ('fran@unlam.edu.ar', '123', 'ADMIN', true, 'Franco', 'Vargas',41062869, 1, '1998-04-24', true),
@@ -44,7 +44,7 @@ INSERT INTO Usuario (email, password, rol, activo, nombre, apellido, dni, carrer
 INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, fechaNacimiento, confirmado)
                 VALUES ('admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, '1990-01-01', true);
 
--- 5️⃣ Validar que no haya usuarios duplicados
+-- 5️ Validar que no haya usuarios duplicados
 SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
 
 -- Géneros
@@ -60,7 +60,35 @@ UPDATE Usuario
 SET ultima_publicacion = '2025-09-27'
 WHERE id = 3;
 
--- 6️⃣ Generar slug para los nuevos usuarios
+-- 6️Generar slug para los nuevos usuarios
 UPDATE Usuario
 SET slug = LOWER(CONCAT(nombre, '-', apellido, '-', LPAD(id, 4, '0')))
 WHERE slug IS NULL OR slug = '';
+
+-- probar interaccion--
+--- 1) Crear publicaciones nuevas
+ INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES
+ ('Explorando la programación avanzada', '2025-10-01 09:00:00', 1),
+ ('Mis apuntes de matemática I', '2025-10-02 14:30:00', 2),
+ ('Economía general: conceptos clave', '2025-10-03 11:15:00', 4),
+ ('Proyecto final de desarrollo web', '2025-10-04 16:45:00', 1),
+ ('Inteligencia artificial aplicada a la cocina', '2025-10-08 09:00:00', 1),
+ ('Cómo diseñar experiencias gastronómicas inmersivas', '2025-10-08 17:20:00', 2),
+ ('El futuro de la sostenibilidad alimentaria', '2025-10-09 13:15:00', 4);
+INSERT INTO Likes(usuario_id, publicacion_id, fechaDelLike) VALUES
+(3, 1, NOW()),
+(3, 2, NOW()),
+(3, 4, NOW());
+ -- 2) Verificar IDs asignados
+ SELECT id, descripcion FROM Publicacion;
+
+ -- 3) Registrar like de Nat (id = 3) en la primera publicación
+ INSERT INTO Interaccion(usuario_id, publicacion_id, tipo, fecha, peso, vista) VALUES
+ (3, 1, 'LIKE', NOW(), 1.0, false);
+
+ -- 4) Nat da like en otra publicación
+ INSERT INTO Interaccion(usuario_id, publicacion_id, tipo, fecha, peso, vista) VALUES
+ (3, 4, 'LIKE', NOW(), 1.0, false);
+
+ -- 5) Validar
+ SELECT * FROM Interaccion WHERE usuario_id = 3;
