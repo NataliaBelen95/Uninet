@@ -3,13 +3,13 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +39,24 @@ public class ControladorNotificacion {
         ModelMap modelo = new ModelMap();
         modelo.addAttribute("notificaciones", servicioNotificacion.obtenerPorUsuario(usuario.getId()));
 
+        //dtoUsuario
+        modelo.addAttribute("usuario", usuario);
+
+
+
+
+        List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos()
+                .stream()
+                .map(u -> new DatosUsuariosNuevos(
+                        u.getNombre(),
+                        u.getApellido(),
+                        u.getId()
+                ))
+                .collect(Collectors.toList());
+
+        // 4. Pasar datos al modelo
+        modelo.addAttribute("usuariosNuevos", usuariosDTO);
+        modelo.addAttribute("esPropio", true);
         return new ModelAndView("notificaciones", modelo); // explícito, como login
     }
 

@@ -14,7 +14,7 @@ public class TareaInactividad {
         private ServicioInactividad servicioInactividad;
 
         // Se ejecuta todos los días a las 9am
-        @Scheduled(cron = "0 0 9 * * ?")
+        @Scheduled(cron = "0 * * * * ?" , zone = "America/Argentina/Buenos_Aires")
         public void ejecutarNotificaciones() {
             servicioInactividad.notificarUsuariosInactivos(0); // fuerza la notificación para todos
         }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificaciones</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <script th:src="@{/js/notificaciones.js}" defer></script>
+</head>
+<body>
+<h1>Notificaciones</h1>
+<div class="notificaciones">
+    <ul>
+        <li th:each="n : ${notificaciones}" th:classappend="${n.leida} ? 'leida' : 'noleida'">
+            <div th:if="${n.publicacion != null}">
+                <a th:href="@{/publicacion/{id}(id=${n.publicacion.id})}" th:text="${n.mensaje}"></a>
+            </div>
+            <div th:if="${n.publicacion == null}">
+                <span th:text="${n.mensaje}"></span>
+            </div>
+        </li>
+    </ul>
+</div>
+<script type="module" th:src="@{/js/notificaciones.js}"></script>
+</body>
+</html>

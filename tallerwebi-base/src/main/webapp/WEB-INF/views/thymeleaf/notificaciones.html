@@ -1,26 +1,127 @@
-<!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
-    <title>Notificaciones</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Perfil</title>
+    <!--websocket-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
-    <script th:src="@{/js/notificaciones.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+
+    <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
+    <link rel="stylesheet" href="../../../resources/core/css/perfil.css"/>-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
-<body>
-<h1>Notificaciones</h1>
-<div class="notificaciones">
-    <ul>
-        <li th:each="n : ${notificaciones}" th:classappend="${n.leida} ? 'leida' : 'noleida'">
-            <div th:if="${n.publicacion != null}">
-                <a th:href="@{/publicacion/{id}(id=${n.publicacion.id})}" th:text="${n.mensaje}"></a>
+<body th:data-es-propio="${esPropio}">
+<header>
+    <nav th:replace="templates/nav :: nav"></nav>
+</header>
+
+<main class="contenedor_box_general">
+    <aside class="contenedor_usuario">
+        <div class="estructura">
+
+            <img id="perfilFoto" class="user"
+                 th:src="@{${#strings.isEmpty(usuario.fotoPerfil) ? '/imagenes/user.png' : '/' + usuario.fotoPerfil}}"
+                 alt="Foto de perfil">
+            <!--<img id="perfilFoto" class="user"
+                 th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
+                 alt="Foto de perfil">-->
+            <h2 class="palabra" th:text="${usuario.nombre}"></h2>
+            <h2 class="palabra" th:text="${usuario.apellido}"></h2>
+            <ul>
+                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+
+            </ul>
+
+        </div>
+        <!-- Mostrar solo si es el propio usuario -->
+        <div th:if="${esPropio}">
+            <a th:href="@{/mis-likes.html}" class="btn-mis-likes">
+               Mis Likes
+            </a>
+            <hr>
+            <a th:href="@{/editar-informacion}">Editar Información</a>
+
+            <!-- Pop-up para cambiar foto -->
+            <div id="popUp" class="popup">
+                <div class="popup-content">
+                    <span class="popup-cerrar">&times;</span>
+                    <h2>Cambiar Foto</h2>
+
+                    <!-- Form para cambiar foto -->
+                    <form id="form-cambiar-foto" th:action="@{/miPerfil/foto}" method="post" enctype="multipart/form-data">
+                        <img id="foto-preview" class="foto-preview"
+                             th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
+                             alt="Foto de perfil">
+                        <div class="separador"></div>
+                        <div class="box_botones">
+                            <div class="box-item">
+                                <input class="input-oculto" type="file" name="fotoPerfil" accept="image/*" id="inputFoto">
+                                <img th:src="@{/imagenes/camara.png}" alt="Cambiar foto">
+                                <label for="inputFoto" class="label-texto">Cambiar foto</label>
+                            </div>
+                            <div class="box-item">
+                                <button type="submit" class="botones_acciones">
+                                    <img th:src="@{/imagenes/publicar.png}" alt="Guardar foto">
+                                </button>
+                                <p class="label-texto">Guardar foto</p>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Form separado para eliminar foto -->
+                    <form th:action="@{/miPerfil/eliminar-foto}" method="post" class="form-eliminar-foto">
+                        <div class="box-item">
+                            <button type="submit" class="botones_acciones">
+                                <img th:src="@{/imagenes/eliminar.png}" alt="Eliminar foto">
+                            </button>
+                            <p class="label-texto">Eliminar foto</p>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div th:if="${n.publicacion == null}">
-                <span th:text="${n.mensaje}"></span>
-            </div>
-            <button type="button" class="marcar-leida" th:attr="data-id=${n.id}">Marcar como leída</button>
-        </li>
-    </ul>
-</div>
+        </div>
+        </div>
+    </aside>
+
+
+
+    <section class="estructura">  <h1>Notificaciones</h1>
+        <div class="notificaciones">
+            <ul>
+                <li th:each="n : ${notificaciones}" th:classappend="${n.leida} ? 'leida' : 'noleida'">
+                    <div th:if="${n.publicacion != null}">
+                        <a th:href="@{/publicacion/{id}(id=${n.publicacion.id})}" th:text="${n.mensaje}"></a>
+                    </div>
+                    <div th:if="${n.publicacion == null}">
+                        <span th:text="${n.mensaje}"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+
+
+</main>
+<!--<script type="module" src="../../../resources/core/js/foto-perfil.js"></script>-->
+<script type="module" th:src="@{js/foto-perfil.js}"></script>
+<script type="module" th:src="@{js/tema.js}"></script>
+<script type="module" th:src="@{js/login.js}"></script>
+<script type="module" th:src="@{js/nav.js}"></script>
 <script type="module" th:src="@{/js/notificaciones.js}"></script>
+<script th:src="@{/js/publicaciones.js}"></script>
 </body>
 </html>
