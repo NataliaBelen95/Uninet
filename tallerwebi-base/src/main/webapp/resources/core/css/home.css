@@ -312,33 +312,92 @@ a {
   background-color: #3d3f40; /* u*/
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+/*drop search */
+/*********** Estilos de búsqueda Dropdown ********/
+#searchDropdown {
+    position: absolute;
+    background-color: var(--background); /* Fondo oscuro */
+    border: 1px solid var(--borde);      /* Borde acorde */
+    width: 250px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6); /* Sombra oscura */
+    z-index: 1000;
+    color: var(--verde); /* Texto verde */
+    max-height: 300px;  /* Altura máxima */
+    overflow-y: auto;   /* Habilitar scroll si el contenido excede la altura */
+    word-wrap: break-word; /* Rompe las palabras largas para que no salgan del contenedor */
 }
 
-    /* Responsive*/
- @media (max-width: 75rem) {
-     .contenedor_general {
-         grid-template-columns: 1fr 2fr 1fr;
-         gap: 2rem;
-         padding: 1.5rem;
-     }
+/* Dropdown de resultados */
+#searchDropdown {
+    position: absolute;
+    background-color: var(--background); /* Fondo oscuro */
+    border: 1px solid var(--borde);      /* Borde acorde */
+    width: 250px;
+    max-height: 300px;  /* Altura máxima */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6); /* Sombra oscura */
+    z-index: 1000;
+    color: var(--verde); /* Texto verde */
+    overflow: hidden;    /* No mostrar scroll por defecto */
+    display: none; /* Escondido inicialmente */
+}
 
-     main {
-         font-size: 0.95rem;
-     }
+/* Contenido del dropdown */
+#searchDropdown .dropdown-content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
 
-     nav a {
-         font-size: 0.9rem;
-     }
+/* Enlaces dentro del dropdown */
+#searchDropdown .dropdown-content a {
+    display: block;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    color: var(--verde); /* Texto verde */
+    text-decoration: none;
+    cursor: pointer;
+    word-wrap: break-word; /* Para evitar que palabras largas se salgan */
+    overflow-wrap: break-word; /* Aseguramos que el texto largo se ajuste */
+}
 
-     .box_publi_botones button{
-          width: 8rem;
-          height: 3rem;
-     }
+#searchDropdown .dropdown-content a:hover {
+    background-color: #3d3f40; /* Fondo al pasar el mouse */
+}
 
- }
+#searchDropdown .dropdown-content a img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#searchDropdown .dropdown-content a span {
+    color: var(--verde); /* Texto verde */
+}
+
+/* Activar scroll solo cuando el contenido excede la altura máxima */
+#searchDropdown.show {
+    overflow-y: auto; /* Mostrar el scroll si el contenido es largo */
+    max-height: 300px;  /* Controlamos la altura máxima */
+}
+
+/* Si el dropdown está vacío, esconder la pared (div de la pared a la derecha) */
+#searchDropdown.empty .dropdown-wall {
+    display: none;
+}
+
+/* Estilo para la pared del lado derecho del dropdown */
+#searchDropdown .dropdown-wall {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px; /* Ancho del rectángulo a la derecha */
+    background-color: var(--background); /* Fondo del mismo color que el dropdown */
+    height: 100%;  /* Ocupa toda la altura del dropdown */
+    z-index: 1;    /* Aseguramos que quede por encima del contenido */
+}
 
  @media (max-width: 56.25rem) {
      .contenedor_general {

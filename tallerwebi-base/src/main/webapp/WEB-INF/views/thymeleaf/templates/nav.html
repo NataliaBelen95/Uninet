@@ -9,10 +9,15 @@
                 <button id="btn-tema" class="boton-tema"><img class="isologo" th:src="@{/imagenes/modo-oscuro.png}"></button>
             </li>
             <li>
-                <form action="/buscarPersona" method="get">
-                    <input type="search" name="query" placeholder="Buscar persona..." required>
-                    <button type="submit">Buscar</button>
-                </form>
+                <!-- Input de búsqueda en la barra de navegación -->
+                <input type="search" id="searchInput" placeholder="Buscar persona..." autocomplete="off">
+
+                <!-- Dropdown que contiene los resultados -->
+                <div class="dropdown" id="searchDropdown" style="display: none;">
+                    <div class="dropdown-content" id="searchResults">
+                        <!-- Los resultados de búsqueda se llenarán aquí -->
+                    </div>
+                </div>
             </li>
             <li class="menu-notificaciones">
                 <a href="#" id="btn-notificaciones" th:attr="data-user-id=${usuario.id}">

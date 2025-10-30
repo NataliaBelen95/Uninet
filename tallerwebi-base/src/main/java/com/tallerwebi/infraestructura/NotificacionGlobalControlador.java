@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,25 +45,7 @@ public class NotificacionGlobalControlador {
         return null;
     }
 
-    @GetMapping("/buscarPersona")
-    public String buscarPersona(@RequestParam("query") String query, ModelMap model) {
-        List<Usuario> usuariosEncontrados = servicioUsuario.buscarUsuarionNombreOEmail(query);
-        List<DatosUsuario> resultados = servicioUsuario.buscarUsuarionNombreOEmail(query)
-                .stream()
-                .map(usuario -> {
-                    DatosUsuario dto = new DatosUsuario();
-                    dto.setId(usuario.getId());
-                    dto.setNombre(usuario.getNombre());
-                    dto.setApellido(usuario.getApellido());
-                    dto.setEmail(usuario.getEmail());
-                    dto.setFotoPerfil(usuario.getFotoPerfil());
-                    return dto;
-                })
-                .collect(Collectors.toList());
 
-        model.put("resultados", resultados);
-        model.put("query", query);
-        return "resultado-busqueda"; // nombre de la vista con los resultados
-    }
+
 
 }
