@@ -52,7 +52,7 @@ public class ControladorAmigoTest {
     }
 
     @Test
-    public void enviarSolicitud_deberiaLlamarServicioYRedirigirAUsuarios() {
+    public void enviarSolicitudDeberiaLlamarServicioYRedirigirAUsuarios() {
         Long idSolicitante = 1L;
         Long idReceptor = 2L;
 
@@ -76,7 +76,7 @@ public class ControladorAmigoTest {
     }
 
     @Test
-    public void aceptarSolicitud_deberiaLlamarServicioYRedirigirASolicitudes() {
+    public void aceptarSolicitudDeberiaLlamarServicioYRedirigirASolicitudes() {
         Long idSolicitud = 42L;
 
         String resultado = controladorAmistad.aceptarSolicitud(idSolicitud);
@@ -86,7 +86,7 @@ public class ControladorAmigoTest {
     }
 
     @Test
-    public void rechazarSolicitud_deberiaLlamarServicioYRedirigirASolicitudes() {
+    public void rechazarSolicitudDeberiaLlamarServicioYRedirigirASolicitudes() {
         Long idSolicitud = 43L;
 
         String resultado = controladorAmistad.rechazarSolicitud(idSolicitud);
@@ -96,7 +96,7 @@ public class ControladorAmigoTest {
     }
 
     @Test
-    public void listarSolicitudesPendientes_deberiaPonerSolicitudesEnElModeloYRetornarVista() {
+    public void listarSolicitudesPendientesDeberiaPonerSolicitudesEnElModeloYRetornarVista() {
         Long idUsuario = 5L;
 
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(datosUsuarioMock);
@@ -124,7 +124,7 @@ public class ControladorAmigoTest {
     }
 
     @Test
-    public void listarAmigos_conSesionNula_deberiaRedirigirALogin() {
+    public void listarAmigosConSesionNulaDeberiaRedirigirALogin() {
         when(sessionMock.getAttribute("usuarioLogueado")).thenReturn(null);
 
         ModelMap model = new ModelMap();
@@ -135,7 +135,7 @@ public class ControladorAmigoTest {
     }
 
     @Test
-    public void listarAmigos_conDatosEnSesion_deberiaPonerAmigosDTOsEnElModeloYRetornarLista() {
+    public void listarAmigosConDatosEnSesionDeberiaPonerAmigosDTOsEnElModeloYRetornarLista() {
         Long idUsuario = 7L;
 
         // Datos en sesión

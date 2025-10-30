@@ -10,4 +10,8 @@ public interface RepositorioAmistad {
     List<Amistad> listarSolicitudesPendientes(Usuario usuario);
     List<Amistad> listarAmigos(Usuario usuario);
     void actualizar(Amistad amistad);
+
+    List<Usuario> listarAmigosPorUsuario(long l);
+
+    List<Usuario> obtenerAmigosDeUsuario(long l);
 }

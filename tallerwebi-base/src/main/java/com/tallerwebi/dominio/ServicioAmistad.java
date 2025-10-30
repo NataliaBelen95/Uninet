@@ -8,4 +8,6 @@ public interface ServicioAmistad {
     void rechazarSolicitud(Long idSolicitud);
     List<Usuario> listarAmigos(Usuario usuario);
     List<SolicitudAmistad> listarSolicitudesPendientes(Usuario usuario);
+
+    List<Usuario> obtenerAmigosDeUsuario(long l);
 }

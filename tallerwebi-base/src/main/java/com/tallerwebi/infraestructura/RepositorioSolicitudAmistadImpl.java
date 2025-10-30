@@ -48,6 +48,7 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
                 .list();
     }
 
+
     @Override
     public List<Usuario> buscarAmigos(Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
@@ -76,4 +77,6 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
     public void actualizar(SolicitudAmistad solicitud) {
         sessionFactory.getCurrentSession().update(solicitud);
     }
+
+
 }
