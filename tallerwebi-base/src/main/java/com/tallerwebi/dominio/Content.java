@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
-// 🔑 CORRECCIÓN: Ignorar campos como "role" que no necesitamos
+//  CORRECCIÓN: Ignorar campos como "role" que no necesitamos
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Content {
     private List<Part> parts;

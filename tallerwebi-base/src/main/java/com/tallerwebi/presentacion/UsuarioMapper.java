@@ -33,6 +33,7 @@ public class UsuarioMapper {
         dto.setCarrera(usuario.getCarrera());
         dto.setFotoPerfil(usuario.getFotoPerfil());
         dto.setSlug(usuario.getSlug() != null ? usuario.getSlug() : "");
+        dto.setIsBot(usuario.isEsBot());
 
         // Solo mapeamos publicaciones y likes si es propio
         if (esPropio) {

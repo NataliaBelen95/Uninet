@@ -54,7 +54,7 @@ public class DatosPublicacion {
     @JsonProperty("autor")
     private DatosUsuario autor;
 
-    @JsonProperty("urlImagen") // ⬅️ CAMPO NUEVO PARA LA IMAGEN DEL BOT
+    @JsonProperty("urlImagen") // ⬅CAMPO NUEVO PARA LA IMAGEN DEL BOT
     private String urlImagen;
     @JsonProperty("esPublicidad")
     private boolean esPublicidad;
