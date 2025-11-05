@@ -35,6 +35,7 @@ public class ControladorComentarioTest {
     private Publicacion publicacionMock;
     private Comentario comentarioMock;
     private ServicioNotificacion servicioNotificacionMock;
+  //  private ServicioInteraccion servicioInteraccionMock;
 
     @BeforeEach
     public void init() {
@@ -50,7 +51,7 @@ public class ControladorComentarioTest {
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
         servicioNotificacionMock = mock(ServicioNotificacion.class);
-
+        //servicioInteraccionMock = mock(ServicioInteraccion.class);
 
         // Mocks de request y sesión
         HttpServletRequest requestMock = mock(HttpServletRequest.class);
@@ -72,6 +73,7 @@ public class ControladorComentarioTest {
                 notificacionServiceMock,
                 publicacionMapperMock,
                 servicioNotificacionMock
+
 
         );
 

@@ -5,6 +5,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+
+/*Propósito: Registrar un evento o acción específica que ocurrió en un momento
+dado entre un Usuario y una Publicacion (Like, Comentario, Vista, etc.).
+
+Rol en el Sistema de Recomendación: Actúa como la fuente de datos primarios (crudos) p
+ara el análisis. Necesitas saber qué hizo el usuario para poder analizar sus gustos.*/
+
 @Entity
 public class Interaccion {
 

@@ -17,14 +17,17 @@ public class ServicioLikeImpl implements ServicioLike {
     private final RepositorioUsuario repositorioUsuario;
     private final RepositorioPublicacion repositorioPublicacion;
     private final ServicioInteraccion servicioInteraccion;
+    private final GeminiAnalysisService geminiAnalysisService;
 
     @Autowired
     public ServicioLikeImpl(RepositorioLike repositorioLike,RepositorioUsuario repositorioUsuario,
-                            RepositorioPublicacion repositorioPublicacion, ServicioInteraccion servicioInteraccion) {
+                            RepositorioPublicacion repositorioPublicacion,
+                            ServicioInteraccion servicioInteraccion, GeminiAnalysisService geminiAnalysisService) {
         this.repositorioLike = repositorioLike;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioPublicacion = repositorioPublicacion;
         this.servicioInteraccion = servicioInteraccion;
+        this.geminiAnalysisService = geminiAnalysisService;
 
 
     }
@@ -95,10 +98,18 @@ public class ServicioLikeImpl implements ServicioLike {
                 interaccion.setUsuario(usuario);
                 interaccion.setPublicacion(publicacion);
                 interaccion.setTipo("LIKE");
+                // Copiar la descripción de la Publicación al contenido de la Interaccion
+                if (publicacion.getDescripcion() != null) {
+                    interaccion.setContenido(publicacion.getDescripcion());
+                } else {
+                    // Si no tiene descripción, al menos guarda una etiqueta para que no sea NULL
+                    interaccion.setContenido("[LIKE a publicación sin texto]");
+                }
                 interaccion.setFecha(LocalDateTime.now());
                 interaccion.setPeso(1.0); // o lo que uses para el peso
                 interaccion.setVista(false);
                 servicioInteraccion.guardarInteraccion(interaccion);
+                geminiAnalysisService.analizarYGuardarGustos(usuario);
             }
     }
 

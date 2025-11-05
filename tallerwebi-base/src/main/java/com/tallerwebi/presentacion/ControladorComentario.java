@@ -24,9 +24,11 @@ public class ControladorComentario {
     private final PublicacionMapper publicacionMapper;
     private final ServicioNotificacion servicioNotificacion;
 
+
     @Autowired
     public ControladorComentario(ServicioComentario servicioComentario, ServicioPublicacion servicioPublicacion, ServicioUsuario servicioUsuario, ServicioLike servicioLike, NotificacionService notificacionService,
-                                 PublicacionMapper publicacionMapper, ServicioNotificacion servicioNotificacion) {
+                                 PublicacionMapper publicacionMapper,
+                                 ServicioNotificacion servicioNotificacion) {
         this.servicioComentario = servicioComentario;
         this.servicioPublicacion = servicioPublicacion;
         this.servicioUsuario = servicioUsuario;
@@ -34,6 +36,7 @@ public class ControladorComentario {
         this.notificacionService = notificacionService;
         this.publicacionMapper = publicacionMapper;
         this.servicioNotificacion = servicioNotificacion;
+
 
 
     }
@@ -64,7 +67,6 @@ public class ControladorComentario {
 
         Comentario comentario = servicioComentario.comentar(dto, usuario, publicacion);
 
-
         Usuario receptor = publicacion.getUsuario();
         // ✅ Crear notificación solo si dio like (no si quitó)
 
@@ -77,6 +79,7 @@ public class ControladorComentario {
 
             );
         }
+
 
         DatosComentario comentarioDTO = publicacionMapper.toComentarioDto(comentario);
         int cantidadLikes = servicioLike.contarLikes(publicacion.getId());

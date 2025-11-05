@@ -100,9 +100,27 @@ public class Usuario {
     @Column(name = "ultima_publicacion")
     private LocalDate ultimaPublicacion;
 
+    @Column(nullable = false)
+    private boolean esBot = false;
 
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private GustosPersonal gustosPersonal;
 
+    public GustosPersonal getGustosPersonal() {
+        return gustosPersonal;
+    }
 
+    public void setGustosPersonal(GustosPersonal gustosPersonal) {
+        this.gustosPersonal = gustosPersonal;
+    }
+
+    public boolean isEsBot() {
+        return esBot;
+    }
+
+    public void setEsBot(boolean esBot) {
+        this.esBot = esBot;
+    }
 
     //getters and setters
     public long getId() {

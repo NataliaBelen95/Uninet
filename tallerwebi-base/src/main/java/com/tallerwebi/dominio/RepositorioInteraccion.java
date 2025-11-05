@@ -18,5 +18,5 @@ public interface RepositorioInteraccion {
 
     void eliminar(long interaccionId);
 
-
+    String consolidarTextoInteraccionesRecientes(Usuario usuario, int limite);
 }

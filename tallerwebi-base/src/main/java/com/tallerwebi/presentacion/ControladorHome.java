@@ -23,6 +23,7 @@ public class ControladorHome {
     private final ServicioLike servicioLike;
     private final ServicioUsuario servicioUsuario;
     private final ServicioRecomendaciones servicioRecomendaciones;
+    private final GeminiAnalysisService geminiAnalysisService;
 
 
 
@@ -30,12 +31,13 @@ public class ControladorHome {
 
     public ControladorHome(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion,
                            ServicioLike servicioLike, PublicacionMapper publicacionMapper,
-                           ServicioRecomendaciones servicioRecomendaciones) {
+                           ServicioRecomendaciones servicioRecomendaciones, GeminiAnalysisService geminiAnalysisService) {
         this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
         this.publicacionMapper = publicacionMapper;
         this.servicioUsuario = servicioUsuario;
         this.servicioRecomendaciones = servicioRecomendaciones;
+        this.geminiAnalysisService = geminiAnalysisService;
 
 
 
@@ -71,64 +73,68 @@ public class ControladorHome {
         return new ModelAndView("usuarios", model);
     }
 */
-    @GetMapping("/home")
-    public ModelAndView home(HttpServletRequest request,
-                             @RequestParam(value = "filtro", defaultValue = "p") String filtro) {
-        ModelMap model = new ModelMap();
-        HttpSession session = request.getSession();
+@GetMapping("/home")
+public ModelAndView home(HttpServletRequest request,
+                         @RequestParam(value = "filtro", defaultValue = "p") String filtro) {
+    ModelMap model = new ModelMap();
+    HttpSession session = request.getSession();
 
-        // Obtener el usuario logueado
-        DatosUsuario usuario = (DatosUsuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null) {
-            return new ModelAndView("redirect:/login");
-        }
-        //dtoUsuario
-        model.addAttribute("usuario", usuario);
-
-
-
-        // Ahora la lista de publicaciones ya trae los comentarios por estar con `EAGER` en la entidad
-        List<Publicacion> publicaciones = servicioPublicacion.findAll();
-
-        // Mapear las publicaciones a DTOs
-        List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
-        for (Publicacion publicacion : publicaciones) {
-            DatosPublicacion dto = publicacionMapper.toDto(publicacion, usuario.getId());
-            //System.out.println("Publicacion usuarioId: " + dto.getUsuarioId());
-            datosPublicaciones.add(dto);
-        }
-        List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos()
-                .stream()
-                .map(u -> new DatosUsuariosNuevos(
-                        u.getNombre(),
-                        u.getApellido(),
-                        u.getId()
-                ))
-                .collect(Collectors.toList());
-
-
-        Usuario usuarioReal = servicioUsuario.buscarPorId(usuario.getId());
-        List<Publicacion> publisParaTi;
-        try {
-            publisParaTi = servicioRecomendaciones.recomendarParaUsuario(usuarioReal, 5);
-        } catch (Exception e) {
-            publisParaTi = new ArrayList<>();
-            e.printStackTrace();
-        }
-
-        List<DatosPublicacion> datosPublisParaTi = publisParaTi.stream()
-                .map(p -> publicacionMapper.toDto(p, usuario.getId()))
-                .collect(Collectors.toList());
-
-        // 4. Pasar datos al modelo
-        model.addAttribute("usuariosNuevos", usuariosDTO);
-        model.addAttribute("esPropio", true);
-        model.addAttribute("datosPublicaciones", datosPublicaciones);
-        model.addAttribute("publisParaTi", datosPublisParaTi);
-        model.addAttribute("filtro", filtro);
-        return new ModelAndView("home", model);
+    DatosUsuario usuarioLogueado = (DatosUsuario) session.getAttribute("usuarioLogueado");
+    if (usuarioLogueado == null) {
+        return new ModelAndView("redirect:/login");
     }
 
+    Usuario usuarioReal = servicioUsuario.buscarPorId(usuarioLogueado.getId());
+
+    // 1. Inicializar listas de publicaciones
+    List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
+    List<DatosPublicacion> datosPublisParaTi = new ArrayList<>();
+
+    // 2. Lógica de filtrado (Determina qué publicaciones cargar)
+    if ("r".equals(filtro)) {
+        //  FILTRO PARA TI (Recomendaciones IA/Lucene)
+
+        // Lógica de IA asíncrona (Solo consume si han pasado 6 horas)
+        geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
+
+        // Obtener las publicaciones recomendadas
+        try {
+            List<Publicacion> publisParaTi = servicioRecomendaciones.recomendarParaUsuario(usuarioReal, 5);
+            datosPublisParaTi = publisParaTi.stream()
+                    .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error de IA/Lucene: " + e.getMessage());
+        }
+
+    } else {
+        //  FILTRO PRINCIPAL ('p' o por defecto)
+        List<Publicacion> publicaciones = servicioPublicacion.findAll();
+        datosPublicaciones = publicaciones.stream()
+                .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
+                .collect(Collectors.toList());
+    }
+
+    // 3. Obtener y poblar DATOS COMUNES (Estos datos van siempre)
+
+    // Obtener la lista de usuarios para la columna derecha
+    List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos()
+            .stream()
+            .map(u -> new DatosUsuariosNuevos(u.getNombre(), u.getApellido(), u.getId()))
+            .collect(Collectors.toList());
+
+    // 4. Poblar el modelo FINAL
+    model.addAttribute("usuario", usuarioLogueado);
+    model.addAttribute("usuariosNuevos", usuariosDTO); // ✅ Reintegrado
+    model.addAttribute("esPropio", true); // ✅ Reintegrado
+
+    // Publicaciones (una de estas listas estará llena)
+    model.addAttribute("datosPublicaciones", datosPublicaciones);
+    model.addAttribute("publisParaTi", datosPublisParaTi);
+    model.addAttribute("filtro", filtro);
+
+    return new ModelAndView("home", model);
+}
 
 }
 

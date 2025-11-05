@@ -68,6 +68,34 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
             session.delete(interaccion); // 🔹 Esto marca la entidad para borrado
         }
     }
+    @Override
+    public String consolidarTextoInteraccionesRecientes(Usuario usuario, int limite) {
+        // 1. Obtener la sesión actual de Hibernate
+        Session session = sessionFactory.getCurrentSession();
 
+        // 2. Consulta HQL:
+        // - Filtra por el usuario
+        // - Ordena por fecha (asumiendo que Interaccion tiene un campo 'fecha') de forma descendente (más recientes primero)
+        // - Limita el número de resultados (las interacciones más recientes)
+        List<Interaccion> interaccionesRecientes = session.createQuery(
+                        "FROM Interaccion i WHERE i.usuario = :usuario ORDER BY i.fecha DESC", Interaccion.class)
+                .setParameter("usuario", usuario)
+                .setMaxResults(limite) // Limita a las N interacciones más recientes
+                .getResultList();
+
+        // 3. Consolidar el texto
+        StringBuilder textoConsolidado = new StringBuilder();
+        for (Interaccion i : interaccionesRecientes) {
+            // Agrega el contenido solo si existe y no es solo el tipo (ej. "LIKE" no tiene contenido útil)
+            if (i.getContenido() != null && !i.getContenido().isEmpty()) {
+                textoConsolidado.append(i.getContenido()).append(". ");
+            }
+            // Opcional: Podrías añadir el tipo de interacción para dar contexto, ej:
+            // textoConsolidado.append("[").append(i.getTipo()).append("]").append(" - ");
+        }
+
+        // Devolvemos la cadena de texto limpia
+        return textoConsolidado.toString().trim();
+    }
 
 }

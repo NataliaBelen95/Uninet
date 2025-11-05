@@ -6,6 +6,7 @@ import com.tallerwebi.presentacion.DatosComentario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -13,13 +14,14 @@ import java.util.List;
 public class ServicioComentarioImpl implements ServicioComentario {
 
     private final RepositorioComentario repositorioComentario;
-    private final RepositorioUsuario repositorioUsuario;
-    private final RepositorioPublicacion repositorioPublicacion;
+    private final ServicioInteraccion servicioInteraccion;
+    private final GeminiAnalysisService geminiAnalysisService;
 
-    public ServicioComentarioImpl(RepositorioComentario repositorioComentario, RepositorioUsuario repositorioUsuario, RepositorioPublicacion repositorioPublicacion) {
+    public ServicioComentarioImpl(RepositorioComentario repositorioComentario,
+                                  ServicioInteraccion servicioInteraccion, GeminiAnalysisService geminiAnalysisService) {
         this.repositorioComentario = repositorioComentario;
-        this.repositorioUsuario = repositorioUsuario;
-        this.repositorioPublicacion = repositorioPublicacion;
+        this.servicioInteraccion = servicioInteraccion;
+        this.geminiAnalysisService = geminiAnalysisService;
     }
     @Override
     public Comentario comentar(DatosComentario dto, Usuario usuario, Publicacion p) {
@@ -27,6 +29,23 @@ public class ServicioComentarioImpl implements ServicioComentario {
         comentario.setTexto(dto.getTexto());
         comentario.setUsuario(usuario);
         comentario.setPublicacion(p);
+
+        // Crear la interaccion
+        Interaccion interaccion = new Interaccion();
+        interaccion.setUsuario(usuario);
+        interaccion.setPublicacion(p);
+        interaccion.setTipo("COMENTARIO");
+        if (p.getDescripcion() != null) {
+            interaccion.setContenido(p.getDescripcion());
+        } else {
+            // Si no tiene descripción, al menos guarda una etiqueta para que no sea NULL
+            interaccion.setContenido("[COMENTARIO a publicación sin texto]");
+        }
+        interaccion.setFecha(LocalDateTime.now());
+        interaccion.setPeso(1.0); // o lo que uses para el peso
+        interaccion.setVista(false);
+        servicioInteraccion.guardarInteraccion(interaccion);
+        geminiAnalysisService.analizarYGuardarGustos(usuario);
 
 
         return repositorioComentario.guardar(comentario);

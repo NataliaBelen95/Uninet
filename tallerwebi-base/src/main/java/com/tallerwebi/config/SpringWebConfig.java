@@ -1,11 +1,17 @@
 package com.tallerwebi.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
@@ -17,6 +23,8 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import java.util.Properties;
+import java.util.concurrent.Executor;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -25,7 +33,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 @ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
 @PropertySource("classpath:application.properties")
-public class SpringWebConfig implements WebMvcConfigurer {
+@EnableAsync
+@EnableTransactionManagement
+public class SpringWebConfig implements WebMvcConfigurer, org.springframework.scheduling.annotation.AsyncConfigurer {
 
     // Spring + Thymeleaf need this
     @Autowired
@@ -121,6 +131,50 @@ public class SpringWebConfig implements WebMvcConfigurer {
 
         return mailSender;
     }
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+    @Bean(name = "geminiTaskExecutor")
+    public Executor geminiTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
+        // Hilos base que siempre están activos (ajusta este valor según tu carga)
+        executor.setCorePoolSize(5);
+
+        // Hilos máximos que se pueden crear para manejar picos de demanda
+        executor.setMaxPoolSize(25);
+
+        // Tareas que esperan en cola cuando todos los hilos están ocupados
+        executor.setQueueCapacity(500);
+
+        // Prefijo para los hilos (ayuda en el debug)
+        executor.setThreadNamePrefix("Gemini-Async-");
+
+        executor.initialize();
+        return executor;
+    }
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+    // Método que proporciona el ejecutor asíncrono (Usará el TaskExecutor)
+    @Override
+    public Executor getAsyncExecutor() {
+        return geminiTaskExecutor();
+    }
+
+    // Método que maneja las excepciones no capturadas de los hilos @Async
+    @Override
+    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+        return (throwable, method, params) -> {
+            System.err.println("------------------------------------------------------------------------");
+            System.err.println("🚨 EXCEPCIÓN ASÍNCRONA NO CAPTURADA EN GEMINI SERVICE 🚨");
+            System.err.println("Método fallido: " + method.getName());
+            System.err.println("Causa: " + throwable.getMessage());
+            throwable.printStackTrace(System.err);
+            System.err.println("------------------------------------------------------------------------");
+        };
+    }
 
 }

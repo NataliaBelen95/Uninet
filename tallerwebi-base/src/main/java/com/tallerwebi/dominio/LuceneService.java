@@ -30,13 +30,18 @@ public class LuceneService {
      * Indexa una lista de publicaciones en memoria
      */
     public void indexarPublicaciones(List<Publicacion> publicaciones) throws IOException {
+        // 🔑 CORRECCIÓN: Si ya indexamos, salimos inmediatamente.
+        if (this.indexado) {
+            return;
+        }
+
+        System.out.println("⚠ LUCENE: Iniciando indexación de " + publicaciones.size() + " publicaciones...");
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         try (IndexWriter writer = new IndexWriter(directory, config)) {
             for (Publicacion p : publicaciones) {
                 Document doc = new Document();
                 doc.add(new StringField("id", String.valueOf(p.getId()), Field.Store.YES));
                 if (p.getDescripcion() != null) {
-                    doc.add(new TextField("titulo", p.getDescripcion(), Field.Store.YES));
                     doc.add(new TextField("descripcion", p.getDescripcion(), Field.Store.YES));
                 }
                 writer.addDocument(doc);
@@ -54,8 +59,19 @@ public class LuceneService {
             return new ArrayList<>();
         }
 
+        // 1. Limpiar y Preparar la Query de Tags
+        // Reemplazamos comas por espacios. Esto convierte "Tag1,Tag2" en "Tag1 Tag2".
+        String queryInput = textoUsuario.replace(",", " ");
+
         QueryParser parser = new QueryParser("descripcion", analyzer);
-        Query query = parser.parse(QueryParser.escape(textoUsuario));
+
+        // 2. OPTIMIZACIÓN CRÍTICA: Establecer el operador por defecto a OR (O)
+        // Esto le dice a Lucene que busque coincidencias con CUALQUIERA de los tags.
+        parser.setDefaultOperator(QueryParser.Operator.OR);
+
+        // 3. Ejecutar la búsqueda con el texto limpio y escapado.
+        // El escape se asegura de manejar caracteres especiales que la IA podría generar.
+        Query query = parser.parse(QueryParser.escape(queryInput));
 
         try (DirectoryReader reader = DirectoryReader.open(directory)) {
             IndexSearcher searcher = new IndexSearcher(reader);
