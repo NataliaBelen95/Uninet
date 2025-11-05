@@ -145,6 +145,14 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .getResultList();
     }
 
+    @Override
+    public List<Usuario> buscarBots() {
+       return sessionFactory.getCurrentSession().createQuery(
+                        "FROM Usuario u WHERE u.esBot = :esBot", Usuario.class)
+                .setParameter("esBot", true)
+                .getResultList();
+    }
+
 }
 
 

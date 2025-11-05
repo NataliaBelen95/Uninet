@@ -61,7 +61,10 @@ public class PublicacionMapper {
             dto.setArchivoNombre(p.getArchivo().getNombreArchivo());
             dto.setArchivoTipo(p.getArchivo().getTipoContenido());
         }
+// 🔑 CORRECCIÓN CRÍTICA: Mapear la URL de la imagen del Bot/IA
+        dto.setUrlImagen(p.getUrlImagen());
 
+        dto.setEsPublicidad(p.isEsPublicidad());
         return dto;
     }
 

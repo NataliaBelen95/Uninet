@@ -4,8 +4,10 @@
          th:id="'publicacion-' + ${dtopubli.id}"
          xmlns:th="http://www.w3.org/1999/xhtml">
 
-    <!-- Usuario -->
-    <!-- Usuario -->
+    <div th:if="${dtopubli.esPublicidad}" style="background-color: #ffe0b2; padding: 5px 10px; border-radius: 5px; margin-bottom: 10px;">
+        <span style="font-weight: bold; color: #e65100;">ANUNCIO DIRIGIDO</span>
+    </div>
+
     <h2 th:if="${dtopubli.esPropio}">
         <a th:href="@{/miPerfil}"
            th:text="${dtopubli.autor.nombre + ' ' + dtopubli.autor.apellido}"></a>
@@ -16,7 +18,7 @@
            th:text="${dtopubli.autor.nombre + ' ' + dtopubli.autor.apellido}"></a>
     </h2>
 
-    <form th:if="${dtopubli.esPropio}"
+    <form th:if="${dtopubli.esPropio and !dtopubli.esPublicidad}"
           th:action="@{/publicacion/eliminar/{id}(id=${dtopubli.id})}"
           method="post">
         <button class="delete-button" type="submit">
@@ -25,78 +27,57 @@
     </form>
 
 
-    <!-- Mostrar descripción solo si existe -->
     <p class="texto" th:if="${dtopubli.descripcion != null and !#strings.isEmpty(dtopubli.descripcion)}" th:text="${dtopubli.descripcion}"></p>
 
-    <!-- Mostrar archivo si hay -->
-    <div th:if="${dtopubli.archivoNombre != null}">
-        <div th:switch="${dtopubli.archivoTipo}">
+    <div th:if="${dtopubli.urlImagen != null}">
+        <img th:src="@{${dtopubli.urlImagen}}"
+             style="width: 100%; max-height: 400px; object-fit: cover;"
+             alt="Imagen de Publicidad de IA" />
+    </div>
 
-            <!-- Mostrar imágenes -->
+    <div th:if="${dtopubli.archivoNombre != null and dtopubli.urlImagen == null}">
+        <div th:switch="${dtopubli.archivoTipo}">
             <img th:case="'image/jpeg'" th:src="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
                  style="max-width: 200px; max-height: 200px;" alt="Imagen" />
             <img th:case="'image/png'" th:src="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
                  style="max-width: 200px; max-height: 200px;" alt="Imagen" />
 
-            <!-- PDF -->
             <div th:case="'application/pdf'" class="archivo-pdf" style="margin-top: 10px;">
-                <div class="acciones-archivo">
-                    <a th:href="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
-                       class="boton-descargar"
-                       download>&#128229; Descargar PDF</a>
-
-                    <button type="button"
-                            class="ver-pdf-btn"
-                            th:data-id="${dtopubli.id}"
-                            th:data-url="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}">
-                        &#128065; Ver PDF
-                    </button>
-                </div>
-
-                <div th:attr="id='pdf-container-' + ${dtopubli.id}" class="pdf-container" style="display: none;">
-                    <canvas th:attr="id='pdf-viewer-' + ${dtopubli.id}"></canvas>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Fecha -->
     <span th:text="${dtopubli.fechaPublicacion != null
                         ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm'))
                         : 'Sin fecha'}"></span>
 
-    <!-- Contador de likes y comentarios -->
     <div class="contenedor_verComentarios">
-        <div class="like-container">
-            <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
-            <span th:text="${dtopubli.cantLikes !=null ? dtopubli.cantLikes : 0}" th:id="'likes-' + ${dtopubli.id}"></span>
+        <div th:unless="${dtopubli.esPublicidad}">
+            <div class="like-container">
+                <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
+                <span th:text="${dtopubli.cantLikes !=null ? dtopubli.cantLikes : 0}" th:id="'likes-' + ${dtopubli.id}"></span>
+            </div>
+
+            <button class="botones_acciones ver-comentariosBtn"
+                    type="button"
+                    th:data-id="${dtopubli.id}"
+                    th:text="${dtopubli.cantComentarios != null && dtopubli.cantComentarios > 0 ? dtopubli.cantComentarios + ' Comentarios' : 'No hay Comentarios'}">
+            </button>
         </div>
-
-        <button class="botones_acciones ver-comentariosBtn"
-                type="button"
-                th:data-id="${dtopubli.id}"
-                th:text="${dtopubli.cantComentarios != null && dtopubli.cantComentarios == 1 ? '1 Comentario' : (dtopubli.cantComentarios > 1 ? dtopubli.cantComentarios + ' Comentarios' : 'No hay Comentarios')}">
-        </button>
-
-
     </div>
 
     <hr class="linea-divisora"/>
 
-    <!-- Botonera de interacción -->
-    <div class="botonera-publicacion">
+    <div class="botonera-publicacion" th:unless="${dtopubli.esPublicidad}">
         <section class="btns_interaccion_publicacion">
-            <!-- Botón dar like -->
             <button class="botones_acciones likeBtn" type="button" th:data-id="${dtopubli.id}">
                 <img th:src="@{/imagenes/like.png}" alt="Like" th:id="'like-img-' + ${dtopubli.id}" />
             </button>
 
-            <!-- Botón comentar -->
             <button class="botones_acciones comentarBtn" type="button" th:data-id="${dtopubli.id}">
                 <img th:src="@{/imagenes/comentar.png}" alt="Comentar" />
             </button>
 
-            <!-- Formulario de comentar (oculto) -->
             <div class="contenedor_comentar" th:id="'contenedor-comentar-' + ${dtopubli.id}" style="display:none;">
                 <form th:id="'form-comentario-' + ${dtopubli.id}"
                       method="POST"
@@ -111,7 +92,6 @@
         </section>
     </div>
 
-    <!-- Contenedor de comentarios -->
     <div class="contenedor_comentarios"
          th:id="'contenedor-comentarios-' + ${dtopubli.id}"
          style="display: none;">
@@ -120,7 +100,6 @@
             <p th:text="${comentario.texto}"></p>
         </div>
     </div>
-    <!-- Si dtopubli es null, mostrar un mensaje o una advertencia -->
     <div th:unless="${dtopubli != null}">
         <p>No hay publicaciones disponibles.</p>
     </div>

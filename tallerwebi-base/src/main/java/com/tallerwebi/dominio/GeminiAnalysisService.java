@@ -39,11 +39,11 @@ public class GeminiAnalysisService {
 
     @Async("geminiTaskExecutor")
     @Transactional
-    public void analizarYGuardarGustos(Usuario usuario) {
+    public GustosPersonal analizarYGuardarGustos(Usuario usuario) {
         // Evita ejecutar dos análisis en paralelo para el mismo usuario
         if (enAnalisis.putIfAbsent(usuario.getId(), true) != null) {
             System.out.println("Ya hay un análisis en curso para el usuario " + usuario.getId());
-            return;
+            return null;
         }
 
         try {
@@ -56,7 +56,7 @@ public class GeminiAnalysisService {
                     gustosExistentes.getFechaUltimoAnalisis().isAfter(LocalDateTime.now().minusHours(HORAS_PARA_REANALIZAR))) {
 
                 System.out.println("Análisis omitido: ya actualizado recientemente.");
-                return;
+                return gustosExistentes;
             }
 
             // 2️⃣ Recolectar interacciones
@@ -65,7 +65,7 @@ public class GeminiAnalysisService {
 
             if (textoParaAnalizar.isEmpty()) {
                 System.out.println("No hay interacciones para analizar.");
-                return;
+                return gustosExistentes;
             }
 
             // 3️⃣ Generar prompt y enviar a Gemini
@@ -99,6 +99,7 @@ public class GeminiAnalysisService {
             // 🔓 Asegura liberar el bloqueo aunque haya error o return antes
             enAnalisis.remove(usuario.getId());
         }
+        return null;
     }
 
     // El método generarPrompt está correcto tal como lo tienes
@@ -112,13 +113,17 @@ public class GeminiAnalysisService {
                 "}";
 
         // 2.  Modificar la instrucción para pedir el resumen
-        String prompt = "Eres un analista de perfiles de usuario. Analiza el siguiente texto " +
-                "que representa el historial de interacciones de un usuario. " +
-                "Identifica sus 5 intereses principales, un tema dominante, Y UN RESUMEN BREVE DEL PERFIL. " + // ⬅️ Instrucción añadida
-                "Devuelve el resultado ÚNICAMENTE en formato JSON." +
+        String prompt = "Eres un especialista en marketing universitario. Analiza el historial de interacciones " +
+                "y genera una publicación publicitaria CORTA (máximo 200 caracteres, sin hashtags) que use una LLAMADA A LA ACCIÓN directa." +
+                "El anuncio debe motivar al usuario a inscribirse o aprender más sobre el tema clave: " +
+                "Identifica sus 5 intereses principales, un tema dominante, Y UN RESUMEN BREVE DEL PERFIL. " +
+                "Utiliza frases como '¡Aprende con nosotros!' o '¡Inscríbete hoy!' en el contexto de la universidad." + // ⬅️ INSTRUCCIÓN DE CTA
                 "\n\nTexto a analizar: " + textoInteracciones +
                 "\n\nFormato JSON requerido:\n" + formatoSalida;
 
         return prompt;
+    }
+    public ServicioGustoPersonal getServicioGustoPersonal() {
+        return servicioGustoPersonal;
     }
 }

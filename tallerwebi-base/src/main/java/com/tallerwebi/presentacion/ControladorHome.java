@@ -24,6 +24,7 @@ public class ControladorHome {
     private final ServicioUsuario servicioUsuario;
     private final ServicioRecomendaciones servicioRecomendaciones;
     private final GeminiAnalysisService geminiAnalysisService;
+    private final BotPublisherService botPublisherService;
 
 
 
@@ -31,13 +32,15 @@ public class ControladorHome {
 
     public ControladorHome(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion,
                            ServicioLike servicioLike, PublicacionMapper publicacionMapper,
-                           ServicioRecomendaciones servicioRecomendaciones, GeminiAnalysisService geminiAnalysisService) {
+                           ServicioRecomendaciones servicioRecomendaciones, GeminiAnalysisService geminiAnalysisService,
+                           BotPublisherService botPublisherService) {
         this.servicioPublicacion = servicioPublicacion;
         this.servicioLike = servicioLike;
         this.publicacionMapper = publicacionMapper;
         this.servicioUsuario = servicioUsuario;
         this.servicioRecomendaciones = servicioRecomendaciones;
         this.geminiAnalysisService = geminiAnalysisService;
+        this.botPublisherService = botPublisherService;
 
 
 
@@ -76,6 +79,7 @@ public class ControladorHome {
 @GetMapping("/home")
 public ModelAndView home(HttpServletRequest request,
                          @RequestParam(value = "filtro", defaultValue = "p") String filtro) {
+
     ModelMap model = new ModelMap();
     HttpSession session = request.getSession();
 
@@ -86,55 +90,96 @@ public ModelAndView home(HttpServletRequest request,
 
     Usuario usuarioReal = servicioUsuario.buscarPorId(usuarioLogueado.getId());
 
-    // 1. Inicializar listas de publicaciones
+    // Inicializo listas
     List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
     List<DatosPublicacion> datosPublisParaTi = new ArrayList<>();
 
-    // 2. Lógica de filtrado (Determina qué publicaciones cargar)
-    if ("r".equals(filtro)) {
-        //  FILTRO PARA TI (Recomendaciones IA/Lucene)
+    System.out.println("========== ENTRANDO A /home ==========");
+    System.out.println("Usuario logueado: " + usuarioReal.getNombre());
+    System.out.println("Filtro actual: " + filtro);
 
-        // Lógica de IA asíncrona (Solo consume si han pasado 6 horas)
-        geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
+    try {
+        if ("r".equals(filtro)) {
+            System.out.println(">> Cargando publicaciones 'Para ti'...");
 
-        // Obtener las publicaciones recomendadas
-        try {
-            List<Publicacion> publisParaTi = servicioRecomendaciones.recomendarParaUsuario(usuarioReal, 5);
-            datosPublisParaTi = publisParaTi.stream()
+            // 🔹 Análisis IA / gustos
+            geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
+
+            // 🔹 Publicaciones recomendadas (Lucene)
+            List<Publicacion> publisLucene = servicioRecomendaciones.recomendarParaUsuario(usuarioReal, 5);
+            System.out.println("Lucene devolvió: " + publisLucene.size() + " publicaciones.");
+
+            // 🔹 Generar contenido de bots
+            //botPublisherService.publicarContenidoParaUsuario(usuarioReal.getId());
+
+
+
+            // 🔹 Consultar publicaciones de bots
+            List<Publicacion> publisBots = servicioPublicacion.obtenerPublisBotsParaUsuario(usuarioReal);
+            System.out.println("Bots devolvieron: " + publisBots.size() + " publicaciones.");
+
+            // 🔹 Convertir a DTO
+            List<DatosPublicacion> datosLucene = publisLucene.stream()
                     .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
                     .collect(Collectors.toList());
-        } catch (Exception e) {
-            System.err.println("Error de IA/Lucene: " + e.getMessage());
+
+            List<DatosPublicacion> datosBots = publisBots.stream()
+                    .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
+                    .collect(Collectors.toList());
+
+            // 🔹 Combinar resultados
+            datosLucene.addAll(datosBots);
+            datosPublisParaTi = datosLucene;
+
+            // 🔹 Fallback si no hay nada
+            if (datosPublisParaTi.isEmpty()) {
+                System.out.println("⚠️ No se encontraron publicaciones recomendadas ni de bots. Cargando todas.");
+                datosPublisParaTi = servicioPublicacion.findAll().stream()
+                        .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
+                        .collect(Collectors.toList());
+            }
+
+        } else {
+            System.out.println(">> Cargando feed principal...");
+            List<Publicacion> publicaciones = servicioPublicacion.findAll();
+            System.out.println("Feed general tiene: " + publicaciones.size() + " publicaciones.");
+
+            datosPublicaciones = publicaciones.stream()
+                    .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
+                    .collect(Collectors.toList());
         }
 
-    } else {
-        //  FILTRO PRINCIPAL ('p' o por defecto)
-        List<Publicacion> publicaciones = servicioPublicacion.findAll();
-        datosPublicaciones = publicaciones.stream()
-                .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
-                .collect(Collectors.toList());
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println("❌ Error al cargar home: " + e.getMessage());
     }
 
-    // 3. Obtener y poblar DATOS COMUNES (Estos datos van siempre)
-
-    // Obtener la lista de usuarios para la columna derecha
+    // 🔹 Usuarios nuevos (columna derecha)
     List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos()
             .stream()
             .map(u -> new DatosUsuariosNuevos(u.getNombre(), u.getApellido(), u.getId()))
             .collect(Collectors.toList());
 
-    // 4. Poblar el modelo FINAL
+    // 🔹 Cargar modelo final
     model.addAttribute("usuario", usuarioLogueado);
-    model.addAttribute("usuariosNuevos", usuariosDTO); // ✅ Reintegrado
-    model.addAttribute("esPropio", true); // ✅ Reintegrado
-
-    // Publicaciones (una de estas listas estará llena)
+    model.addAttribute("usuariosNuevos", usuariosDTO);
+    model.addAttribute("esPropio", true);
     model.addAttribute("datosPublicaciones", datosPublicaciones);
     model.addAttribute("publisParaTi", datosPublisParaTi);
     model.addAttribute("filtro", filtro);
 
+    System.out.println("========== FIN /home ==========\n");
+
     return new ModelAndView("home", model);
 }
+
+
+    @GetMapping("/admin/publicar-anuncios")
+    public ModelAndView dispararBot() {
+        botPublisherService.publicarContenidoMasivo();
+        // Simplemente devuelve una página de confirmación.
+        return new ModelAndView("redirect:/home");
+    }
 
 }
 

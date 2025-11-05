@@ -23,4 +23,8 @@ public interface ServicioPublicacion {
     List <Publicacion> obtenerPublicacionesDeUsuario(long usuId);
 
 
+    // 2. 🔑 NUEVO MÉTODO PARA EL BOT (URL de la Imagen)
+    void guardarPubliBot(Publicacion publicacion, Usuario usuario, String urlImagen) throws PublicacionFallida;
+
+    List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario);
 }

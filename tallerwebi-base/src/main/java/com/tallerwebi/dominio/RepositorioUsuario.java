@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 
+import com.google.api.Usage;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -24,4 +25,5 @@ public interface RepositorioUsuario {
     List<Publicacion> obtenerPublicacionesDeUsuario(long usuId);
     Usuario findBySlugWithPublicaciones(String slug);
     List<Usuario> buscarUsuariosInactivosPorFechaUltimaPublicacionOSinPublicacion(LocalDate fechaUltimaPublicacion);
+    List <Usuario> buscarBots();
 }

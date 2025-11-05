@@ -61,18 +61,14 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
     @Override
     public Publicacion obtenerPublicacionCompleta(long id) {
-        Publicacion publicacion = sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT p FROM Publicacion p " +
-                        "LEFT JOIN FETCH p.usuario " +
-                        "LEFT JOIN FETCH p.archivo " +
-                        "WHERE p.id = :id", Publicacion.class)
-                .setParameter("id", id)
-                .uniqueResult();
+        // 🔑 CORRECCIÓN: Usar session.get() para asegurar la carga de TODAS las columnas simples.
+        Publicacion publicacion = sessionFactory.getCurrentSession().get(Publicacion.class, id);
 
-        // Cargamos manualmente las colecciones si las necesitamos
+        // Cargamos manualmente las colecciones LAZY si las necesitamos
         if (publicacion != null) {
+            // Inicializar las colecciones que son LAZY
             Hibernate.initialize(publicacion.getComentarios());
-            Hibernate.initialize(publicacion.getLikesDePublicacion());
+            Hibernate.initialize(publicacion.getLikesDePublicacion()); // Aunque esta es EAGER en tu entidad, es buena práctica si la cambias.
         }
 
         return publicacion;
@@ -110,6 +106,21 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                         Publicacion.class
                 )
                 .setParameter("usuarioId", usuarioId)
+                .getResultList();
+    }
+    @Override
+    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
+        return sessionFactory.getCurrentSession()
+                .createQuery(
+                        "SELECT DISTINCT p FROM Publicacion p " +
+                                "LEFT JOIN FETCH p.usuario u " +
+                                "LEFT JOIN FETCH p.comentarios " +
+                                "LEFT JOIN FETCH p.archivo " +
+                                "LEFT JOIN FETCH p.likesDePublicacion " +
+                                "WHERE u.esBot = true " +
+                                "ORDER BY p.fechaPublicacion DESC",
+                        Publicacion.class
+                )
                 .getResultList();
     }
 }

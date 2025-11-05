@@ -29,7 +29,7 @@ public class ControladorHomeTest {
     private HttpSession sessionMock;
     private Usuario usuarioLogueado;
     private ServicioLike servicioLikeMock;
-    private RepositorioUsuario repositorioUsuarioMock;
+    private BotPublisherService botPublisherServiceMock;
     private PublicacionMapper publicacionMapperMock;
     private ServicioUsuario servicioUsuarioMock;
     private ServicioRecomendaciones servicioRecomendacionesMock;
@@ -60,13 +60,13 @@ public class ControladorHomeTest {
         when(servicioPublicacionMock.findAll()).thenReturn(List.of(new Publicacion(), new Publicacion()));
 
         // Controlador
-        repositorioUsuarioMock = mock(RepositorioUsuario.class);
+        botPublisherServiceMock = mock(BotPublisherService.class);
         servicioLikeMock = mock(ServicioLike.class);
         publicacionMapperMock = mock (PublicacionMapper.class);
         servicioRecomendacionesMock = mock(ServicioRecomendaciones.class);
        geminiAnalysisServiceMock = mock(GeminiAnalysisService.class);
         controlador = new ControladorHome(servicioUsuarioMock, servicioPublicacionMock, servicioLikeMock,
-                publicacionMapperMock, servicioRecomendacionesMock, geminiAnalysisServiceMock);
+                publicacionMapperMock, servicioRecomendacionesMock, geminiAnalysisServiceMock, botPublisherServiceMock);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class ControladorHomeTest {
         servicioUsuarioMock = mock(ServicioUsuario.class);
         // Instanciar el controlador con mocks
         ControladorHome controlador = new ControladorHome(servicioUsuarioMock, servicioPublicacionMock,
-                servicioLikeMock, publicacionMapperMock, servicioRecomendacionesMock, geminiAnalysisServiceMock);
+                servicioLikeMock, publicacionMapperMock, servicioRecomendacionesMock, geminiAnalysisServiceMock, botPublisherServiceMock);
 
         // Ejecutar
         ModelAndView mav = controlador.home(requestMock, requestMock.getParameter("filtro"));

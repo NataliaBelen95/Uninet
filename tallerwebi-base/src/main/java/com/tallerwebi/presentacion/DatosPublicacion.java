@@ -54,11 +54,25 @@ public class DatosPublicacion {
     @JsonProperty("autor")
     private DatosUsuario autor;
 
+    @JsonProperty("urlImagen") // ⬅️ CAMPO NUEVO PARA LA IMAGEN DEL BOT
+    private String urlImagen;
+    @JsonProperty("esPublicidad")
+    private boolean esPublicidad;
+
     public DatosUsuario getAutor() { return autor; }
     public void setAutor(DatosUsuario autor) { this.autor = autor; }
 
 
     // Getters and setters
+
+    public boolean isEsPublicidad() {
+        return esPublicidad;
+    }
+
+    public void setEsPublicidad(boolean esPublicidad) {
+        this.esPublicidad = esPublicidad;
+    }
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -166,5 +180,13 @@ public class DatosPublicacion {
 
     public void setSlugUsuario(String slugUsuario) {
         this.slugUsuario = slugUsuario;
+    }
+
+    public String getUrlImagen() {
+        return urlImagen;
+    }
+
+    public void setUrlImagen(String urlImagen) {
+        this.urlImagen = urlImagen;
     }
 }

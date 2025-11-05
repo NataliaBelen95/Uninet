@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +35,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @ComponentScan({"com.tallerwebi.presentacion", "com.tallerwebi.dominio", "com.tallerwebi.infraestructura", "com.tallerwebi.config"})
 @PropertySource("classpath:application.properties")
 @EnableAsync
+@EnableScheduling
 @EnableTransactionManagement
 public class SpringWebConfig implements WebMvcConfigurer, org.springframework.scheduling.annotation.AsyncConfigurer {
 
@@ -57,6 +59,8 @@ public class SpringWebConfig implements WebMvcConfigurer, org.springframework.sc
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/archivosPublicacion/");
         registry.addResourceHandler("/perfiles/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/perfiles/");
+        registry.addResourceHandler("/imagenesPublicidad/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/imagenesPublicidad/");
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html

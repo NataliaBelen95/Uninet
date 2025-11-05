@@ -3,14 +3,6 @@ package com.tallerwebi.infraestructura;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.NoSeEncuentraPublicacion;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import com.tallerwebi.presentacion.DatosUsuario;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.fileupload.util.Streams;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;  // CORRECTO PARA PRODUCCIÓN
@@ -18,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;  // CORRECTO PARA PRODUC
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -29,8 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Service("servicioPublicado")
 @Transactional
@@ -74,6 +63,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         // Establecer fecha de publicación y usuario
         publicacion.setFechaPublicacion(LocalDateTime.now());
         publicacion.setUsuario(usuario);
+
+        publicacion.setEsPublicidad(false);
 
         // Verificar si ya existe un archivo asociado a esta publicación
         if (publicacion.getArchivo() != null) {
@@ -169,6 +160,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
         publicacion.setFechaPublicacion(LocalDateTime.now());
         publicacion.setUsuario(usuario);
+        publicacion.setEsPublicidad(false);
         usuario.setUltimaPublicacion(LocalDate.now());
 
 
@@ -211,6 +203,40 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     @Override
     public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
         return repositorioPublicacion.obtenerPublicacionesDeUsuario(usuId);
+    }
+
+    // 2. 🔑 NUEVO MÉTODO PARA EL BOT (URL de la Imagen)
+    @Override
+    public void guardarPubliBot(Publicacion publicacion, Usuario usuario, String urlImagen) throws PublicacionFallida {
+
+        boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
+
+        // La publicación debe tener texto o una URL de imagen
+        if (descripcionVacia && (urlImagen == null || urlImagen.isEmpty())) {
+            throw new PublicacionFallida("La publicación del bot debe tener contenido o imagen.");
+        }
+
+        // (Opcional: Verificar que la descripción no exceda los 200 caracteres si aplica al bot)
+        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
+            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
+        }
+
+        // Establecer datos
+        publicacion.setFechaPublicacion(LocalDateTime.now());
+        publicacion.setUsuario(usuario);
+        publicacion.setEsPublicidad(true);
+
+        // ASIGNAR LA URL GENERADA POR LA IA
+        publicacion.setUrlImagen(urlImagen);
+
+        // Guardar
+        usuario.setUltimaPublicacion(LocalDate.now());
+        repositorioUsuario.actualizar(usuario);
+        repositorio.guardar(publicacion);
+    }
+    @Override
+    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
+       return repositorioPublicacion.obtenerPublisBotsParaUsuario(usuario);
     }
 
 

@@ -93,4 +93,8 @@ public class LuceneService {
     public boolean isIndexado() {
         return indexado;
     }
+//    public void setIndexado(boolean estado) {
+//        // 🔑 Permite que el Bot le diga a Lucene que reinicie el índice.
+//        this.indexado = estado;
+//    }
 }

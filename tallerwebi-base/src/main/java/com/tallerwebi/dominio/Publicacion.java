@@ -47,10 +47,29 @@ public class Publicacion {
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Notificacion> notificaciones = new ArrayList<>();
 
+    @Column(nullable = true)
+    private String urlImagen; // ⬅️ CAMPO NUEVO PARA URLS EXTERNAS/MOCK DEL BOT
+    @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
+    private boolean esPublicidad = false; // ⬅️ Nuevo campo
+
+
 
     // getters y setters
+    public boolean isEsPublicidad() {
+        return esPublicidad;
+    }
 
+public void setEsPublicidad(boolean esPublicidad) {
+    this.esPublicidad = esPublicidad;
+}
 
+    public String getUrlImagen() {
+        return urlImagen;
+    }
+
+    public void setUrlImagen(String urlImagen) {
+        this.urlImagen = urlImagen;
+    }
     public Usuario getUsuario() {
         return usuario;
     }

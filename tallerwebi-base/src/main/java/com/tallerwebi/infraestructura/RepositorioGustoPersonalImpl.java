@@ -8,6 +8,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public class RepositorioGustoPersonalImpl implements RepositorioGustoPersonal {
@@ -34,10 +36,16 @@ public class RepositorioGustoPersonalImpl implements RepositorioGustoPersonal {
                 .setParameter("idUsuario", usuario.getId())
                 .uniqueResult();
     }
+//para saber a que usaurios publicarles
+    @Override
+    public List<Long> listarIdsDeUsuariosConPerfil() {
+        Session session = sessionFactory.getCurrentSession();
 
-//    @Override
-//    public void actualizar(GustosPersonal gustos) {
-//        sessionFactory.getCurrentSession().update(gustos);
-//
-//    }
+        // 🔑 Consulta HQL: Selecciona solo el ID de usuario (FK) de la tabla GustosPersonal
+
+        return session.createQuery(
+                        "SELECT g.usuario.id FROM GustosPersonal g", Long.class)
+                .getResultList();
+    }
+
 }

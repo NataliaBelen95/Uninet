@@ -37,6 +37,21 @@ INSERT INTO Usuario (email, password, rol, activo, nombre, apellido, dni, carrer
 ('nat@unlam.edu.ar', '123', 'ADMIN', true, 'Nat', 'alia',41123869, 1, 1, '1998-08-29', true, FALSE),
 ('ro@unlam.edu.ar', '1234', 'ADMIN', true, 'Ro', 'Campa',37659747, 1, 1, '1993-06-18', true, FALSE);
 
+-- 🤖 USUARIOS BOT (ASIGNADOS A IDs SUPERIORES)
+-- Asumiremos que los IDs 1-5 son humanos. Los bots serán 6, 7, 8.
+
+-- Bot 1: Publicidad General (Carrera 2: Sistemas)
+INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot)
+VALUES ('unibot@unlam.edu.ar', 'botpass', 'BOT', true, 'UNLaM', 'Informa', 99990001, 2, 1, '2025-01-01', true, TRUE);
+
+-- Bot 2: Departamento de Alumnos (Carrera 4: Gestión)
+INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot)
+VALUES ('alumnobot@unlam.edu.ar', 'botpass', 'BOT', true, 'Depto', 'Alumnos', 99990002, 4, 4, '2025-01-01', true, TRUE);
+
+-- Bot 3: Facultad/Departamento Temático (Carrera 1: Desarrollo Web)
+INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot)
+VALUES ('ingenieriabot@unlam.edu.ar', 'botpass', 'BOT', true, 'Ingeniería', 'Tech', 99990003, 1, 1, '2025-01-01', true, TRUE);
+
 INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot)
 VALUES ('admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, 2, '1990-01-01', true, FALSE);
 
@@ -56,51 +71,52 @@ CONVERT TO CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
 
 -- ID 1
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Publicación vieja de prueba', '2025-09-27 10:00:00', 3);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Publicación vieja de prueba', '2025-09-27 10:00:00', 3, false);
 UPDATE Usuario
 SET ultima_publicacion = '2025-09-27'
 WHERE id = 3;
 
 -- IDs 2 a 8 (Sentencias separadas para evitar errores)
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('Explorando la programación avanzada', '2025-10-01 09:00:00', 1);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('Mis apuntes de matemática I', '2025-10-02 14:30:00', 2);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('Economía general: conceptos clave', '2025-10-03 11:15:00', 4);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('Proyecto final de desarrollo web', '2025-10-04 16:45:00', 1);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('Inteligencia artificial aplicada a la cocina', '2025-10-08 09:00:00', 1);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('Cómo diseñar experiencias gastronómicas inmersivas', '2025-10-08 17:20:00', 2);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id) VALUES ('El futuro de la sostenibilidad alimentaria', '2025-10-09 13:15:00', 4);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Explorando la programación avanzada', '2025-10-01 09:00:00', 1, false);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Mis apuntes de matemática I', '2025-10-02 14:30:00', 2, false);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Economía general: conceptos clave', '2025-10-03 11:15:00', 4, false);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Proyecto final de desarrollo web', '2025-10-04 16:45:00', 1, false);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Inteligencia artificial aplicada a la cocina', '2025-10-08 09:00:00', 1,  false);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Cómo diseñar experiencias gastronómicas inmersivas', '2025-10-08 17:20:00', 2, false);
+
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('El futuro de la sostenibilidad alimentaria', '2025-10-09 13:15:00', 4, false);
 -- ID 9
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Análisis profundo de estructuras de datos y algoritmos avanzados en Java.', NOW(), 1);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Análisis profundo de estructuras de datos y algoritmos avanzados en Java.', NOW(), 1, false);
 
 -- ID 10
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('El impacto de la inflación en la toma de decisiones de inversión personal.', NOW(), 4);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('El impacto de la inflación en la toma de decisiones de inversión personal.', NOW(), 4, false);
 
 -- ID 11
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Introducción a la criptografía aplicada y la seguridad de la información en redes.', NOW(), 2);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Introducción a la criptografía aplicada y la seguridad de la información en redes.', NOW(), 2, false);
 
 -- ID 12
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Guía completa sobre el framework Spring Boot y su arquitectura de microservicios.', NOW(), 1);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Guía completa sobre el framework Spring Boot y su arquitectura de microservicios.', NOW(), 1, false);
 
 -- ID 13
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Conceptos clave de cálculo multivariable para el análisis de sistemas dinámicos.', NOW(), 2);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Conceptos clave de cálculo multivariable para el análisis de sistemas dinámicos.', NOW(), 2, false);
 
 -- ID 14
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Diseño de bases de datos NoSQL y su aplicación en proyectos de gran escala.', NOW(), 4);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Diseño de bases de datos NoSQL y su aplicación en proyectos de gran escala.', NOW(), 4, false);
 
 -- ID 15
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('La economía del comportamiento: sesgos cognitivos en el mercado financiero.', NOW(), 4);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('La economía del comportamiento: sesgos cognitivos en el mercado financiero.', NOW(), 4, false);
 
 -- ID 16
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id)
-VALUES ('Estrategias para la optimización de código y mejora del rendimiento de aplicaciones.', NOW(), 1);
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+VALUES ('Estrategias para la optimización de código y mejora del rendimiento de aplicaciones.', NOW(), 1, false);
 
 
 
