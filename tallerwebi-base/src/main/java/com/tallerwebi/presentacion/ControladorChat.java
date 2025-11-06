@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.ServicioChat;
 import com.tallerwebi.dominio.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,7 @@ public class ControladorChat {
 
     @MessageMapping("/chat/enviar")
     public void recibirMensaje(ChatMessage mensaje) {
+        System.out.println("STOMP -> recibirMensaje (RAW): " + mensaje);
         System.out.println("STOMP -> recibirMensaje: from=" + mensaje.getFromUserId() + " to=" + mensaje.getToUserId() + " content=" + mensaje.getContent());
         servicioChat.enviarMensaje(mensaje);
     }
@@ -59,14 +61,21 @@ public class ControladorChat {
 
     @GetMapping("/chat/conversacion")
     @ResponseBody
-    public List<ChatMessage> conversacion(@RequestParam Long withUser, HttpServletRequest request) {
-        var datos = (com.tallerwebi.presentacion.DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if (datos == null) {
-            System.out.println("ChatController.conversacion: usuario no logueado");
-            return List.of();
+    public ResponseEntity<List<ChatMessage>> conversacion(@RequestParam Long withUser, HttpServletRequest request) {
+        try {
+            var datos = (com.tallerwebi.presentacion.DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+            if (datos == null) {
+                System.out.println("ChatController.conversacion: usuario no logueado");
+                return ResponseEntity.ok(List.of());
+            }
+            Long mine = datos.getId();
+            System.out.println("ChatController.conversacion: cargando conversacion entre " + mine + " y " + withUser);
+            List<ChatMessage> lista = servicioChat.obtenerConversacion(mine, withUser);
+            return ResponseEntity.ok(lista);
+        } catch (Exception e) {
+            System.err.println("ControladorChat.conversacion: error al obtener conversacion: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(List.of());
         }
-        Long mine = datos.getId();
-        System.out.println("ChatController.conversacion: cargando conversacion entre " + mine + " y " + withUser);
-        return servicioChat.obtenerConversacion(mine, withUser);
     }
 }

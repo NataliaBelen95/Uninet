@@ -11,13 +11,21 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Mapeo explícito a columnas (evita problemas con naming_strategy/snake_case)
+    @Column(name = "from_user_id")
     private Long fromUserId;
+
+    @Column(name = "to_user_id")
     private Long toUserId;
+
+    @Column(name = "from_name")
     private String fromName;
 
     @Column(length = 2000)
     private String content;
 
+    // Si tu BD tiene el nombre 'timestamp' está OK; si no, ajustá el nombre aquí.
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
     public ChatMessage() {}

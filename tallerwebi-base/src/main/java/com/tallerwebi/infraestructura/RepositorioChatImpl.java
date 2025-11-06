@@ -23,14 +23,18 @@ public class RepositorioChatImpl implements RepositorioChat {
     public ChatMessage guardar(ChatMessage mensaje) {
         Session session = sessionFactory.getCurrentSession();
         try {
+            // LOG antes de persistir para verificar valores realmente recibidos
+            System.out.println("RepositorioChatImpl: intentando guardar mensaje - fromUserId=" + mensaje.getFromUserId()
+                    + " toUserId=" + mensaje.getToUserId() + " content=\"" + mensaje.getContent() + "\" timestamp=" + mensaje.getTimestamp());
+
             session.saveOrUpdate(mensaje);
-            session.flush();
+            session.flush(); // forzar INSERT/UPDATE inmediato para ver errores ahora
             System.out.println("RepositorioChatImpl: guardado mensaje id=" + mensaje.getId());
             return mensaje;
         } catch (Exception e) {
             System.err.println("RepositorioChatImpl: error guardando mensaje: " + e.getMessage());
             e.printStackTrace();
-            throw e;
+            throw e; // re-lanzar para que la transacción se marque rollback
         }
     }
 

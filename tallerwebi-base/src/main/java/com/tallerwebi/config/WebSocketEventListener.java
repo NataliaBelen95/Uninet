@@ -22,6 +22,7 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
-        log.info("STOMP Subscribe: headers={}", event.getMessage().getHeaders());
+        System.out.println("STOMP Subscribe headers: " + event.getMessage().getHeaders());
     }
+
 }
