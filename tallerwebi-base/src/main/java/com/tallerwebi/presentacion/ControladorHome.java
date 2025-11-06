@@ -127,31 +127,28 @@ public ModelAndView home(HttpServletRequest request,
                     .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
                     .collect(Collectors.toList());
 
-            // 🔹 Combinar resultados
+            // Combinar resultados
             datosLucene.addAll(datosBots);
             datosPublisParaTi = datosLucene;
 
-            // 🔹 Fallback si no hay nada
-            if (datosPublisParaTi.isEmpty()) {
-                System.out.println("⚠️ No se encontraron publicaciones recomendadas ni de bots. Cargando todas.");
-                datosPublisParaTi = servicioPublicacion.findAll().stream()
-                        .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
-                        .collect(Collectors.toList());
-            }
+
 
         } else {
+            // 🛑 FILTRO PRINCIPAL ('p' o por defecto)
             System.out.println(">> Cargando feed principal...");
             List<Publicacion> publicaciones = servicioPublicacion.findAll();
             System.out.println("Feed general tiene: " + publicaciones.size() + " publicaciones.");
 
+            // 🔑 CORRECCIÓN: Filtrar publicaciones del Bot (Publicidad)
             datosPublicaciones = publicaciones.stream()
+                    .filter(p -> !p.isEsPublicidad()) // ⬅️ AÑADE ESTE FILTRO
                     .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
                     .collect(Collectors.toList());
         }
 
     } catch (Exception e) {
         e.printStackTrace();
-        System.err.println("❌ Error al cargar home: " + e.getMessage());
+        System.err.println("Error al cargar home: " + e.getMessage());
     }
 
     // 🔹 Usuarios nuevos (columna derecha)

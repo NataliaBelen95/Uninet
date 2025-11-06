@@ -108,21 +108,47 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .setParameter("usuarioId", usuarioId)
                 .getResultList();
     }
+//    @Override
+//    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
+//        return sessionFactory.getCurrentSession()
+//                .createQuery(
+//                        "SELECT DISTINCT p FROM Publicacion p " +
+//                                "LEFT JOIN FETCH p.usuario u " +
+//                                "LEFT JOIN FETCH p.comentarios " +
+//                                "LEFT JOIN FETCH p.archivo " +
+//                                "LEFT JOIN FETCH p.likesDePublicacion " +
+//                                "WHERE u.esBot = true " +
+//                                "ORDER BY p.fechaPublicacion DESC",
+//                        Publicacion.class
+//                )
+//                .getResultList();
+//    }
+
     @Override
-    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
+    public List<Publicacion> obtenerPublicacionesDirigidasA(Usuario usuario) {
+        Long usuarioId = usuario.getId();
+
+        // 🔑 CORRECCIÓN: SOLO obtener anuncios dirigidos al usuario
         return sessionFactory.getCurrentSession()
                 .createQuery(
                         "SELECT DISTINCT p FROM Publicacion p " +
                                 "LEFT JOIN FETCH p.usuario u " +
                                 "LEFT JOIN FETCH p.comentarios " +
-                                "LEFT JOIN FETCH p.archivo " +
                                 "LEFT JOIN FETCH p.likesDePublicacion " +
-                                "WHERE u.esBot = true " +
+                                "LEFT JOIN FETCH p.archivo " +
+                                //  SOLO ANUNCIOS DIRIGIDOS A ESTE USUARIO
+                                "WHERE u.esBot = true AND p.usuarioDestinatarioId = :usuarioId " +
                                 "ORDER BY p.fechaPublicacion DESC",
                         Publicacion.class
                 )
+                .setParameter("usuarioId", usuarioId)
                 .getResultList();
     }
+
+//    @Override
+//    public List<Publicacion> obtenerPublicacionesOrganicas() {
+//        return List.of();
+//    }
 }
 
 

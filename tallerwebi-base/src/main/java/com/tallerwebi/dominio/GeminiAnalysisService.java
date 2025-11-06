@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class GeminiAnalysisService {
 
-    // ➡️ Todos los campos deben ser 'final' si usas inyección por constructor
+    // ➡Todos los campos deben ser 'final' si usas inyección por constructor
     // pero deben ser declarados:
     private final RepositorioInteraccion repositorioInteraccion;
     private final GeminiApiClient geminiApiClient;
@@ -43,9 +43,9 @@ public class GeminiAnalysisService {
         // Evita ejecutar dos análisis en paralelo para el mismo usuario
         if (enAnalisis.putIfAbsent(usuario.getId(), true) != null) {
             System.out.println("Ya hay un análisis en curso para el usuario " + usuario.getId());
-            return null;
+            return servicioGustoPersonal.buscarPorUsuario(usuario);
         }
-
+        GustosPersonal resultadoFinal = null;
         try {
             // 1️⃣ Control de frecuencia (no más de una vez cada 6h)
             GustosPersonal gustosExistentes = servicioGustoPersonal.buscarPorUsuario(usuario);
@@ -56,7 +56,8 @@ public class GeminiAnalysisService {
                     gustosExistentes.getFechaUltimoAnalisis().isAfter(LocalDateTime.now().minusHours(HORAS_PARA_REANALIZAR))) {
 
                 System.out.println("Análisis omitido: ya actualizado recientemente.");
-                return gustosExistentes;
+                resultadoFinal = gustosExistentes;
+                return resultadoFinal;
             }
 
             // 2️⃣ Recolectar interacciones
@@ -96,7 +97,7 @@ public class GeminiAnalysisService {
             servicioGustoPersonal.guardarOActualizar(gustos);
 
             System.out.println("Gustos actualizados correctamente para el usuario " + usuario.getId());
-
+            return gustos;
         } catch (Exception e) {
             System.err.println("------------------------------------------------------------------------");
             System.err.println(" ERROR AL PROCESAR/GUARDAR GUSTOS DE GEMINI:");
@@ -106,7 +107,7 @@ public class GeminiAnalysisService {
             // 🔓 Asegura liberar el bloqueo aunque haya error o return antes
             enAnalisis.remove(usuario.getId());
         }
-        return null;
+        return resultadoFinal;
     }
 
     // El método generarPrompt está correcto tal como lo tienes

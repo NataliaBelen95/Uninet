@@ -52,7 +52,8 @@ public class Publicacion {
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean esPublicidad = false; // ⬅️ Nuevo campo
 
-
+    @Column(nullable = true) // Puede ser nulo para publicaciones orgánicas
+    private Long usuarioDestinatarioId;
 
     // getters y setters
     public boolean isEsPublicidad() {
@@ -144,5 +145,13 @@ public void setEsPublicidad(boolean esPublicidad) {
 
     public void setNotificaciones(List<Notificacion> notificaciones) {
         this.notificaciones = notificaciones;
+    }
+
+    public Long getUsuarioDestinatarioId() {
+        return usuarioDestinatarioId;
+    }
+
+    public void setUsuarioDestinatarioId(Long usuarioDestinatarioId) {
+        this.usuarioDestinatarioId = usuarioDestinatarioId;
     }
 }

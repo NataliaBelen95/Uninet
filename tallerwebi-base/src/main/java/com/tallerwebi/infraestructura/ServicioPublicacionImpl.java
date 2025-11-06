@@ -236,7 +236,7 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     }
     @Override
     public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
-       return repositorioPublicacion.obtenerPublisBotsParaUsuario(usuario);
+       return repositorioPublicacion.obtenerPublicacionesDirigidasA(usuario);
     }
 
 

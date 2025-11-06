@@ -41,7 +41,7 @@ public class RepositorioGustoPersonalImpl implements RepositorioGustoPersonal {
     public List<Long> listarIdsDeUsuariosConPerfil() {
         Session session = sessionFactory.getCurrentSession();
 
-        // 🔑 Consulta HQL: Selecciona solo el ID de usuario (FK) de la tabla GustosPersonal
+        // Consulta HQL: Selecciona solo el ID de usuario (FK) de la tabla GustosPersonal
 
         return session.createQuery(
                         "SELECT g.usuario.id FROM GustosPersonal g", Long.class)

@@ -85,7 +85,7 @@ public class BotPublisherServiceImpl implements BotPublisherService {
             // 5. Crear la Publicación Final (Solo se crea el objeto, la asignación se hace en el servicio)
             Publicacion nuevaPublicacion = new Publicacion();
             nuevaPublicacion.setDescripcion(contenidoGenerado); // ⬅️ Seteamos la descripción ANTES de pasarla
-
+            nuevaPublicacion.setUsuarioDestinatarioId(usuarioReceptor.getId());
             // 6. 🔑 LLAMADA FINAL: Pasando el Bot como autor
             servicioPublicacion.guardarPubliBot(nuevaPublicacion, botUsuario, urlImagenGenerada); // ✅ CORREGIDO
             //luceneService.setIndexado(false);

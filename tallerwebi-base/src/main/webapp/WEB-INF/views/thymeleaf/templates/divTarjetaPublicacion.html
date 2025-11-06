@@ -38,7 +38,7 @@
     <div th:if="${dtopubli.archivoNombre != null and dtopubli.urlImagen == null}">
         <div th:switch="${dtopubli.archivoTipo}">
             <img th:case="'image/jpeg'" th:src="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
-                 style="max-width: 200px; max-height: 200px;" alt="Imagen" />
+                 style="max-width: 200px; max-height: 200px;" alt="Imagen"Nco />
             <img th:case="'image/png'" th:src="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"
                  style="max-width: 200px; max-height: 200px;" alt="Imagen" />
 

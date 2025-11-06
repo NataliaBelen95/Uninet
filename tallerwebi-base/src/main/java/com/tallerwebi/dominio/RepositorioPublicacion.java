@@ -17,6 +17,7 @@ public interface RepositorioPublicacion {
     boolean existeHashResumen(String hash, Long usuarioId);
     List<Publicacion> obtenerPublicacionesConLikeDeUsuario(Long usuarioId);
     List<Publicacion> obtenerPublicacionesDeUsuario(Long usuarioId);
+    //List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario);
+    List<Publicacion> obtenerPublicacionesDirigidasA(Usuario usuario);
 
-    List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario);
 }

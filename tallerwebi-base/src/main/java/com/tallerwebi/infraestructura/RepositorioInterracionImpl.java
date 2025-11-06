@@ -90,11 +90,9 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
             if (i.getContenido() != null && !i.getContenido().isEmpty()) {
                 textoConsolidado.append(i.getContenido()).append(". ");
             }
-            // Opcional: Podrías añadir el tipo de interacción para dar contexto, ej:
-            // textoConsolidado.append("[").append(i.getTipo()).append("]").append(" - ");
+
         }
 
-        // Devolvemos la cadena de texto limpia
         return textoConsolidado.toString().trim();
     }
 
