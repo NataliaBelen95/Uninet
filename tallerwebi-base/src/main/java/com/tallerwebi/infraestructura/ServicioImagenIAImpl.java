@@ -105,7 +105,6 @@ public class ServicioImagenIAImpl implements ServicioImagenIA {
         String temaLimpio = temaPrincipal.toLowerCase();
 
         System.out.println("🖼️ Generando imagen para el tema: " + temaPrincipal);
-
         // 🔑 LÓGICA DE MOCK CORREGIDA: Usar el prefijo /imagenesPublicidad/
         if (temaLimpio.contains("programación") || temaLimpio.contains("software") || temaLimpio.contains("tecnología")) {
             // ✅ CORREGIDO
@@ -120,8 +119,9 @@ public class ServicioImagenIAImpl implements ServicioImagenIA {
             return BASE_URL + "math-science-art.png";
         }
 
-        // ✅ CORREGIDO
+//        // ✅ CORREGIDO
         return BASE_URL + "default-university-ad.png";
     }
-
 }
+
+

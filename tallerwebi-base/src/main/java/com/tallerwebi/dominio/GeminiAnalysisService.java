@@ -71,6 +71,13 @@ public class GeminiAnalysisService {
             // 3️⃣ Generar prompt y enviar a Gemini
             String promptCompleto = generarPrompt(textoParaAnalizar);
             String respuestaGemini = geminiApiClient.enviarPromptAGemini(promptCompleto);
+            // ⬇️ 4️⃣ LÓGICA DE EXTRACCIÓN SEGURA DEL JSON ⬇️
+            String respuestaCompleta = respuestaGemini;
+            int inicioJson = respuestaCompleta.indexOf('{');
+            int finJson = respuestaCompleta.lastIndexOf('}');
+            if (inicioJson == -1 || finJson == -1) {
+                throw new IllegalStateException("Respuesta de Gemini incompleta o sin formato JSON.");
+            }
 
             GeminiResponseDTO geminiResponse = objectMapper.readValue(respuestaGemini, GeminiResponseDTO.class);
             String interesesJsonString = geminiResponse.getCandidates().get(0).getContent().getParts().get(0).getText();
