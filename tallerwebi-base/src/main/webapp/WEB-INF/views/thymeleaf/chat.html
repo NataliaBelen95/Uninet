@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Validar Código</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>UniNet</title>
+
+    <link rel="icon" th:href="@{/imagenes/isologo.png}" type="image/x-icon">
+    <!--<link rel="icon" href="../../../resources/core/imagenes/isologo.png" type="image/x-icon">-->
+
+    <link rel="stylesheet" th:href="@{/css/variables.css}"/>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <!--<link rel="stylesheet" href="/src/main/webapp/resources/core/css/variables.css">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/base.css">
+    <link rel="stylesheet" href="/src/main/webapp/resources/core/css/login.css">-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+</head>
+<body th:attr="data-user-id=${usuario.id}, data-context-path=${#httpServletRequest.contextPath}">
+<nav th:replace="templates/nav :: nav"></nav>
+
+</body>
+
+<main class="">
+    <div class="chat-layout">
+        <!-- parte de la lista de contactos -->
+        <aside class="lista-usuarios" id="panel-contactos">
+            <h3>
+                Contactos
+                <button id="btn-toggle-contactos" class="btn btn-small" type="button" aria-expanded="true">Ocultar</button>
+            </h3>
+            <ul id="lista-contactos">
+                <li th:each="u : ${usuariosNuevos}" class="contacto-item">
+                    <a href="#" th:attr="data-id=${u.id}" class="contacto">
+                        <img th:src="@{${u.fotoPerfil != null ? '/' + u.fotoPerfil : '/imagenes/user.png'}}" alt="user" class="thumb">
+                        <span th:text="${u.nombre} + ' ' + ${u.apellido}"></span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <section class="ventana-chat">
+            <div class="header-chat">
+                <h3 id="nombreContacto">Selecciona un contacto</h3>
+            </div>
+            <div id="conversacion" class="conversacion">
+                <!-- mensajes se cargarán por JS -->
+            </div>
+
+            <form id="formEnviar" onsubmit="return false;">
+                <input type="hidden" id="toUserId" value="">
+                <textarea id="mensajeTexto" placeholder="Escribe un mensaje..."></textarea>
+                <button id="btnEnviar" class="btn" type="button">Enviar</button>
+            </form>
+        </section>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script th:src="@{/js/chat.js}"></script>
+</body>
+</html>
