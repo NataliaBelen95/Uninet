@@ -22,21 +22,24 @@ public class BotPublisherServiceImpl implements BotPublisherService {
     private final RepositorioGustoPersonal repositorioGustoPersonal;
     private final RepositorioUsuario repositorioUsuario;
     private final ServicioPublicacion servicioPublicacion;
-    private final GeminiApiClient geminiApiClient;
+   // private final GeminiApiClient geminiApiClient;
     private final ObjectMapper objectMapper;
     private final ServicioImagenIA servicioImagenIA;
     private final LuceneService luceneService;
+    private final ServicioIntegracionIA servicioIntegracionIA;
 
     @Autowired
     public BotPublisherServiceImpl (RepositorioGustoPersonal repositorioGustoPersonal, RepositorioUsuario repositorioUsuario, ServicioPublicacion servicioPublicacion,
-                                    GeminiApiClient geminiApiClient, @Qualifier("objectMapperGemini") ObjectMapper objectMapper, ServicioImagenIA servicioImagenIA, LuceneService luceneService) {
+                                    GeminiApiClient geminiApiClient, @Qualifier("objectMapperGemini") ObjectMapper objectMapper, ServicioImagenIA servicioImagenIA, LuceneService luceneService,
+                                    ServicioIntegracionIA servicioIntegracionIA) {
         this.repositorioGustoPersonal = repositorioGustoPersonal;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioPublicacion = servicioPublicacion;
-        this.geminiApiClient = geminiApiClient;
+       // this.geminiApiClient = geminiApiClient;
         this.objectMapper = objectMapper;
         this.servicioImagenIA = servicioImagenIA;
         this.luceneService = luceneService;
+        this.servicioIntegracionIA = servicioIntegracionIA;
 
     }
     @Async("geminiTaskExecutor")
@@ -77,7 +80,7 @@ public class BotPublisherServiceImpl implements BotPublisherService {
 
         try {
             // 3. GENERAR TEXTO CON GEMINI
-            String jsonResponse = geminiApiClient.enviarPromptAGemini(promptGeneracion);
+            String jsonResponse = servicioIntegracionIA.enviarPromptYObtenerJson(promptGeneracion);
             String contenidoGenerado = extractTextFromGeminiResponse(jsonResponse);
 
             // 4. 🖼️ GENERAR Y ADJUNTAR IMAGEN

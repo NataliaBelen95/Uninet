@@ -3,6 +3,7 @@ package com.tallerwebi.infraestructura;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.ServicioImagenIA;
+import com.tallerwebi.dominio.ServicioIntegracionIA;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -16,112 +17,62 @@ public class ServicioImagenIAImpl implements ServicioImagenIA {
     private final String apiUrl;
     private final String apiKey;
     private final ObjectMapper objectMapper;
+    private final ServicioIntegracionIA servicioIntegracionIA;
 
     public ServicioImagenIAImpl(RestTemplate restTemplate,
                                 @Value("${image.generation.api.url}") String apiUrl,
-                                @Value("${image.generation.api.key}") String apiKey) {
+                                @Value("${image.generation.api.key}") String apiKey,
+                                ServicioIntegracionIA servicioIntegracionIA) {
         this.restTemplate = restTemplate;
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
         this.objectMapper = new ObjectMapper();
+        this.servicioIntegracionIA = servicioIntegracionIA;
     }
 
-//    @Override
-//    public String generarImagenRelacionada(String textoCompletoAnuncio) throws Exception {
-//        String promptParaImagen = "Crear un poster universitario moderno y atractivo para un evento: " + textoCompletoAnuncio;
 
-    /// / ⬅ Usa el texto del anuncio para crear un prompt visual de alta calidad
-//        // 1. Construir el Cuerpo de la Solicitud (JSON SIMPLE Y ROBUSTO)
-//        // 🔑 Usamos los campos esenciales que la API de Imagen necesita:
-//        String requestJson = String.format(
-//                "{\n" +
-//                        "  \"model\": \"imagen-3.0-generate-002\",\n" +
-//                        "  \"prompt\": \"%s\"\n" +
-//                        "}",
-//                // Escapar y limpiar saltos de línea para evitar romper el JSON
-//                promptParaImagen.replace("\"", "\\\"").replace("\n", " ")
+//    @Override
+//    public String generarImagenRelacionada(String temaPrincipal) throws Exception {
+//
+//        // 1. Crear un prompt más detallado para obtener mejores resultados de la IA
+//        String promptDetallado = String.format(
+//                "Genera una imagen publicitaria vibrante y moderna, con un estilo de arte digital minimalista, " +
+//                        "que represente el concepto de '%s' en un contexto universitario o tecnológico. " +
+//                        "Debe ser un fondo abstracto, limpio y atractivo, listo para un anuncio.",
+//                temaPrincipal
 //        );
 //
-//        // 2. Encabezados
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        // La autenticación va en la URL, pero es buena práctica tenerla en los headers también si fuera necesario
-//
-//        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-//
-//        // 3. Llamada al Endpoint Real de Imagen 3.0
-//        // Usamos la URL que configuraste con la clave de API
-//        String fullUrl = apiUrl + "?key=" + apiKey;
-//        try {
-//            ResponseEntity<String> response = restTemplate.exchange(
-//                    fullUrl,
-//                    HttpMethod.POST,
-//                    entity,
-//                    String.class
-//            );
-//
-//            // 4. Procesar la Respuesta (SOLO si es 200 OK)
-//            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-//                JsonNode root = objectMapper.readTree(response.getBody());
-//
-//                // 🔑 CORRECCIÓN: Declarar 'artifact' antes del bloque condicional
-//                JsonNode artifact = null;
-//
-//                // ⚠️ NOTA: El camino JSON es una suposición y puede fallar en Image 3.0
-//                JsonNode generatedArray = root.path("generated_images");
-//
-//                if (generatedArray.isArray() && generatedArray.size() > 0) {
-//                    // Asumiendo que el campo con la URL es 'image_url' dentro del primer elemento
-//                    artifact = generatedArray.path(0).path("image_url");
-//                }
-//
-//                if (artifact != null && !artifact.isMissingNode() && artifact.isTextual()) {
-//                    return artifact.asText(); // ⬅️ Devolver la URL REAL generada
-//                }
-//            }
-//        } catch (HttpStatusCodeException e) {
-//            // ❌ Esto se lanza si la API falla por error 400 (Auth/Sintaxis)
-//            System.err.println("❌ ERROR API IMAGEN (" + e.getStatusCode() + "): La llamada falló.");
-//            // Devolvemos el mock para que el Bot guarde la publicación.
-//            return "/imagenesPublicidad/default-university-ad.png";
-//        } catch (Exception e) {
-//            System.err.println("❌ ERROR GENERAL EN SERVICIO IMAGEN: " + e.getMessage());
-//            throw e;
-//        }
-//
-//        // Fallback si la API no devuelve una URL válida (requiere una imagen de recurso estático)
-//        System.err.println("⚠️ La respuesta de la API fue 200 OK pero no se encontró la URL en el JSON.");
-//        return "/imagenesPublicidad/default-university-ad.png";
+//        // 2. Llamar al servicio que maneja la API, el Base64 y el guardado de archivos.
+//        // Este método devuelve la URL pública del archivo guardado.
+//        return servicioIntegracionIA.generarImagenUrl(promptDetallado);
 //    }
-//}
 
-// CON IMG MIAS
-    @Override
-    public String generarImagenRelacionada(String temaPrincipal) throws Exception {
 
-        // 🔑 El prefijo lógico que Spring espera para el Resource Handler
-        final String BASE_URL = "/imagenesPublicidad/";
+   public String generarImagenRelacionada(String temaPrincipal) throws Exception {
+
+      //  El prefijo lógico que Spring espera para el Resource Handler
+      final String BASE_URL = "/imagenesPublicidad/";
 
         String temaLimpio = temaPrincipal.toLowerCase();
 
         System.out.println("🖼️ Generando imagen para el tema: " + temaPrincipal);
-        // 🔑 LÓGICA DE MOCK CORREGIDA: Usar el prefijo /imagenesPublicidad/
+//        //  LÓGICA DE MOCK CORREGIDA: Usar el prefijo /imagenesPublicidad/
         if (temaLimpio.contains("programación") || temaLimpio.contains("software") || temaLimpio.contains("tecnología")) {
-            // ✅ CORREGIDO
+
             return BASE_URL + "dev-background.png";
         }
         if (temaLimpio.contains("economía") || temaLimpio.contains("finanzas") || temaLimpio.contains("gestión")) {
-            // ✅ CORREGIDO
+
             return BASE_URL + "financial-chart-art.png";
         }
-        if (temaLimpio.contains("matemática") || temaLimpio.contains("algoritmos")) {
-            // ✅ CORREGIDO
+       if (temaLimpio.contains("matemática") || temaLimpio.contains("algoritmos")) {
+
             return BASE_URL + "math-science-art.png";
         }
 
-//        // ✅ CORREGIDO
-        return BASE_URL + "default-university-ad.png";
-    }
+
+       return BASE_URL + "default-university-ad.png";
+   }
 }
 
 

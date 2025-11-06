@@ -35,12 +35,20 @@ public class ServicioComentarioImpl implements ServicioComentario {
         interaccion.setUsuario(usuario);
         interaccion.setPublicacion(p);
         interaccion.setTipo("COMENTARIO");
-        if (p.getDescripcion() != null) {
-            interaccion.setContenido(p.getDescripcion());
+// Usamos el texto del comentario (dto.getTexto()) como contenido para el análisis de Gemini
+        if (dto.getTexto() != null && !dto.getTexto().isEmpty()) {
+            interaccion.setContenido(dto.getTexto());
         } else {
-            // Si no tiene descripción, al menos guarda una etiqueta para que no sea NULL
-            interaccion.setContenido("[COMENTARIO a publicación sin texto]");
+            // Si el comentario está vacío (por si acaso), usamos una etiqueta de fallback
+            interaccion.setContenido("[COMENTARIO vacío]");
         }
+
+//        if (p.getDescripcion() != null) {
+//            interaccion.setContenido(p.getDescripcion());
+//        } else {
+//            // Si no tiene descripción, al menos guarda una etiqueta para que no sea NULL
+//            interaccion.setContenido("[COMENTARIO a publicación sin texto]");
+//        }
         interaccion.setFecha(LocalDateTime.now());
         interaccion.setPeso(1.0); // o lo que uses para el peso
         interaccion.setVista(false);

@@ -86,7 +86,7 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
         // 3. Consolidar el texto
         StringBuilder textoConsolidado = new StringBuilder();
         for (Interaccion i : interaccionesRecientes) {
-            // Agrega el contenido solo si existe y no es solo el tipo (ej. "LIKE" no tiene contenido útil)
+
             if (i.getContenido() != null && !i.getContenido().isEmpty()) {
                 textoConsolidado.append(i.getContenido()).append(". ");
             }

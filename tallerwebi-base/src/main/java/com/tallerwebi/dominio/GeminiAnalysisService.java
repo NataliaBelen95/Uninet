@@ -17,25 +17,27 @@ public class GeminiAnalysisService {
     // ➡Todos los campos deben ser 'final' si usas inyección por constructor
     // pero deben ser declarados:
     private final RepositorioInteraccion repositorioInteraccion;
-    private final GeminiApiClient geminiApiClient;
+    //private final GeminiApiClient geminiApiClient;
     // Asumiendo que tu interfaz es RepositorioGustoPersonal (verificar la 's' o no)
     private final  ServicioGustoPersonal servicioGustoPersonal;
     private final ObjectMapper objectMapper;
     private final ServicioUsuario servicioUsuario;
     private final ConcurrentMap<Long, Boolean> enAnalisis = new ConcurrentHashMap<>();
+    private final ServicioIntegracionIA servicioIntegracionIA;
 
     @Autowired
     public GeminiAnalysisService(
             RepositorioInteraccion repositorioInteraccion,
-            GeminiApiClient geminiApiClient,
+
             ServicioGustoPersonal servicioGustoPersonal,  @Qualifier("objectMapperGemini") ObjectMapper objectMapper,
-            ServicioUsuario servicioUsuario ) { // ⬅️ ¡La dependencia faltante!
+            ServicioUsuario servicioUsuario, ServicioIntegracionIA servicioIntegracionIA ) { // ⬅️ ¡La dependencia faltante!
 
         this.repositorioInteraccion = repositorioInteraccion;
-        this.geminiApiClient = geminiApiClient;
+        //this.geminiApiClient = geminiApiClient;
         this.servicioGustoPersonal = servicioGustoPersonal;
         this.objectMapper  = objectMapper;
         this.servicioUsuario = servicioUsuario;
+        this.servicioIntegracionIA = servicioIntegracionIA;
     }
 
     @Async("geminiTaskExecutor")
@@ -72,7 +74,7 @@ public class GeminiAnalysisService {
 
             // 3️⃣ Generar prompt y enviar a Gemini
             String promptCompleto = generarPrompt(textoParaAnalizar);
-            String respuestaGemini = geminiApiClient.enviarPromptAGemini(promptCompleto);
+            String respuestaGemini = servicioIntegracionIA.enviarPromptYObtenerJson(promptCompleto);
             // ⬇️ 4️⃣ LÓGICA DE EXTRACCIÓN SEGURA DEL JSON ⬇️
             String respuestaCompleta = respuestaGemini;
             int inicioJson = respuestaCompleta.indexOf('{');
@@ -82,8 +84,19 @@ public class GeminiAnalysisService {
             }
 
             GeminiResponseDTO geminiResponse = objectMapper.readValue(respuestaGemini, GeminiResponseDTO.class);
-            String interesesJsonString = geminiResponse.getCandidates().get(0).getContent().getParts().get(0).getText();
-            String jsonLimpio = interesesJsonString.replace("```json\n", "").replace("```", "").trim();
+            String interesesJsonString = geminiResponse.getGeneratedText();
+            if (interesesJsonString == null || interesesJsonString.isBlank()) {
+                System.err.println("Gemini no devolvió texto válido para analizar gustos.");
+                return gustosExistentes;
+            }
+            String jsonLimpio = interesesJsonString
+                    .replaceAll("(?s).*?\\{", "{") // elimina texto antes del primer '{'
+                    .replaceAll("\\}.*", "}")     // elimina texto después del último '}'
+                    .replace("```json", "")
+                    .replace("```", "")
+                    .trim();
+
+            System.out.println("JSON limpio de gustos:\n" + jsonLimpio);
 
             InteresesGeneradosDTO data = objectMapper.readValue(jsonLimpio, InteresesGeneradosDTO.class);
 
