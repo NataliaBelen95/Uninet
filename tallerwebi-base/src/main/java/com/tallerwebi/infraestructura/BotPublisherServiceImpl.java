@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.tallerwebi.dominio.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class BotPublisherServiceImpl implements BotPublisherService {
 
     @Autowired
     public BotPublisherServiceImpl (RepositorioGustoPersonal repositorioGustoPersonal, RepositorioUsuario repositorioUsuario, ServicioPublicacion servicioPublicacion,
-                                    GeminiApiClient geminiApiClient, ObjectMapper objectMapper, ServicioImagenIA servicioImagenIA, LuceneService luceneService) {
+                                    GeminiApiClient geminiApiClient, @Qualifier("objectMapperGemini") ObjectMapper objectMapper, ServicioImagenIA servicioImagenIA, LuceneService luceneService) {
         this.repositorioGustoPersonal = repositorioGustoPersonal;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioPublicacion = servicioPublicacion;

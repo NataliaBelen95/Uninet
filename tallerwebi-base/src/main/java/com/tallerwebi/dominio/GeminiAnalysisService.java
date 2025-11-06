@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async; // ⬅️ IMPORTACIÓN CLAVE para resolver la lentitud
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class GeminiAnalysisService {
     public GeminiAnalysisService(
             RepositorioInteraccion repositorioInteraccion,
             GeminiApiClient geminiApiClient,
-           ServicioGustoPersonal servicioGustoPersonal, ObjectMapper objectMapper,
+            ServicioGustoPersonal servicioGustoPersonal,  @Qualifier("objectMapperGemini") ObjectMapper objectMapper,
             ServicioUsuario servicioUsuario ) { // ⬅️ ¡La dependencia faltante!
 
         this.repositorioInteraccion = repositorioInteraccion;
