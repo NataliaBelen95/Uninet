@@ -63,7 +63,9 @@ public class Publicacion {
 public void setEsPublicidad(boolean esPublicidad) {
     this.esPublicidad = esPublicidad;
 }
-
+public boolean getEsPublicidad() {
+      return esPublicidad;
+}
     public String getUrlImagen() {
         return urlImagen;
     }

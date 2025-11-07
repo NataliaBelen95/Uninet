@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class LuceneService {
 
@@ -18,29 +20,43 @@ public class LuceneService {
     private final Analyzer analyzer = new StandardAnalyzer();
     private boolean indexado = false;
 
+    // 1. Ya no se inicializa aquí para evitar la recursión.
+    private IndexWriterFactory indexWriterFactory;
+
     public LuceneService(LuceneDirectoryManager directoryManager) {
         this.directoryManager = directoryManager;
+
+        // 2. Se inyecta la implementación por defecto en el constructor.
+        this.indexWriterFactory = this::createDefaultIndexWriter;
     }
 
-    /** 🔹 Punto de entrada: indexa publicaciones */
+    /**
+     * 🔹 Punto de entrada: indexa publicaciones
+     */
     public void indexarPublicaciones(List<Publicacion> publicaciones) throws IOException {
         if (indexado) return;
-        System.out.println("Indexando " + publicaciones.size() + " publicaciones...");
 
-        try (IndexWriter writer = crearIndexWriter()) {
-            for (Publicacion p : publicaciones) {
+        // Filtramos solo las publicaciones orgánicas
+        List<Publicacion> publicacionesValidas = publicaciones.stream()
+                .filter(p -> !p.getEsPublicidad())
+                .collect(Collectors.toList());
+
+        System.out.println("Indexando " + publicacionesValidas.size() + " publicaciones no publicitarias...");
+        // 3. Usa la factory para crear el IndexWriter.
+        try (IndexWriter writer = indexWriterFactory.create()) {
+            for (Publicacion p : publicacionesValidas) {
                 writer.addDocument(crearDocumentoDesdePublicacion(p));
-            } indexado = true;
-            //no es necesario catch : Si algo falla, el writer se cierra automáticamente y la excepción sube limpia.
-        }catch (IOException e) {
+            }
+            indexado = true;
+        } catch (IOException e) {
             System.err.println("Error al indexar publicaciones: " + e.getMessage());
             e.printStackTrace();
         }
-
-
     }
 
-    /** 🔍 Busca publicaciones similares según texto */
+    /**
+     * 🔍 Busca publicaciones similares según texto
+     */
     public List<String> buscarSimilares(String textoUsuario, int limite) throws Exception {
         if (!indexado) return new ArrayList<>();
 
@@ -58,15 +74,30 @@ public class LuceneService {
         }
     }
 
-    //  (delegación interna)
+    // --- Implementación del IndexWriter por Defecto (Usada en el constructor) ---
 
-    /** Crea el IndexWriter con configuración */
-    private IndexWriter crearIndexWriter() throws IOException {
+    /**
+     * 🔨 Implementación por defecto del IndexWriterFactory
+     */
+    private IndexWriter createDefaultIndexWriter() throws IOException {
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         return new IndexWriter(directoryManager.getDirectory(), config);
     }
 
-    /** Convierte una publicación en un documento Lucene */
+    // --- Setter para Inyección/Test ---
+
+    /**
+     * 🧪 Permite inyectar una IndexWriterFactory (ej. un mock para pruebas)
+     */
+    public void setIndexWriterFactory(IndexWriterFactory factory) {
+        this.indexWriterFactory = factory;
+    }
+
+    // --- Métodos de utilidad ---
+
+    /**
+     * Convierte una publicación en un documento Lucene
+     */
     private Document crearDocumentoDesdePublicacion(Publicacion p) {
         Document doc = new Document();
         doc.add(new StringField("id", String.valueOf(p.getId()), Field.Store.YES));
@@ -75,8 +106,10 @@ public class LuceneService {
         }
         return doc;
     }
-    /** Construye una query segura para los tags del usuario */
-    //query parser consulta de lucene : descripcion:deporte OR descripcion:salud OR descripcion:energía
+
+    /**
+     * Construye una query segura para los tags del usuario
+     */
     private Query construirQuery(String textoUsuario) throws Exception {
         String queryInput = textoUsuario.replace(",", " ");
         QueryParser parser = new QueryParser("descripcion", analyzer);
@@ -85,17 +118,18 @@ public class LuceneService {
     }
 
 
-//    public void limpiarIndice() throws IOException {
-//        directoryManager.clearDirectory();
-//        indexado = false;
-//    }
-//
-//    public void reiniciarIndice() throws IOException {
-//        directoryManager.resetDirectory();
-//        indexado = false;
-//    }
-//
-//    public boolean isIndexado() {
-//        return indexado;
-//    }
+    public void setIndexado(boolean indexado) {
+        this.indexado = indexado;
+    }
+
+
+    public boolean isIndexado() {
+        return indexado;
+    }
+
+    public void limpiarIndice() throws IOException {
+        directoryManager.clearDirectory();
+        indexado = false;
+    }
+
 }

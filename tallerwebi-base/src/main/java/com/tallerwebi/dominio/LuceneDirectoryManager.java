@@ -24,6 +24,11 @@ public class LuceneDirectoryManager {
         return this.directory;
     }
 
+    public IndexWriter getIndexWriter() throws IOException {
+        IndexWriterConfig config = new IndexWriterConfig();
+        return new IndexWriter(directory, config);
+    }
+
     /**
      * 🔄 Limpia el índice actual sin reemplazar el Directory.
      * Elimina todos los documentos indexados.
@@ -57,4 +62,6 @@ public class LuceneDirectoryManager {
     public void close() throws IOException {
         this.directory.close();
     }
+
+
 }

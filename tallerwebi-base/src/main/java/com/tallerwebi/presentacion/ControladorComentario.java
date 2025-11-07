@@ -68,7 +68,7 @@ public class ControladorComentario {
         Comentario comentario = servicioComentario.comentar(dto, usuario, publicacion);
 
         Usuario receptor = publicacion.getUsuario();
-        // ✅ Crear notificación solo si dio like (no si quitó)
+        // Crearlo en servicioCOMENTARIO
 
         if (!Objects.equals(usuario.getId(), receptor.getId())) {
             servicioNotificacion.crear(

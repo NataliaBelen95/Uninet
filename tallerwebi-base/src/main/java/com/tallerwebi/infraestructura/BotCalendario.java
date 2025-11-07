@@ -35,8 +35,8 @@ public class BotCalendario {
         botPublisherService.publicarContenidoMasivo();
         System.out.println("---  SCHEDULER: Tarea de publicación delegada a hilos asíncronos ---");
     }
-
-    @Scheduled(fixedDelay = 21600000) // cada 6 horas
+//@Scheduled(fixedDelay = 60000) 1 min prueba
+    @Scheduled(fixedDelay =60000) //
     public void analizarGustos() {
         System.out.println("--- SCHEDULER: Analizando gustos de usuarios ---");
 
