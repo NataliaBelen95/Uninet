@@ -134,12 +134,10 @@ public class GeminiAnalysisService {
                 "  \"resumenPerfil\": \"Breve descripción del perfil del usuario.\"\n" + // ⬅️ Nuevo campo
                 "}";
 
-        // 2.  Modificar la instrucción para pedir el resumen
+        //prompt para pedirl resumen
         String prompt = "Eres un especialista en marketing universitario. Analiza el historial de interacciones " +
-                "y genera una publicación publicitaria CORTA (máximo 200 caracteres, sin hashtags) que use una LLAMADA A LA ACCIÓN directa." +
-                "El anuncio debe motivar al usuario a inscribirse o aprender más sobre el tema clave: " +
-                "Identifica sus 5 intereses principales, un tema dominante, Y UN RESUMEN BREVE DEL PERFIL. " +
-                "Utiliza frases como '¡Aprende con nosotros!' o '¡Inscríbete hoy!' en el contexto de la universidad." + // ⬅️ INSTRUCCIÓN DE CTA
+                "e identifica sus 5 intereses principales, un tema dominante, Y UN RESUMEN BREVE DEL PERFIL. " +
+
                 "\n\nTexto a analizar: " + textoInteracciones +
                 "\n\nFormato JSON requerido:\n" + formatoSalida;
 
