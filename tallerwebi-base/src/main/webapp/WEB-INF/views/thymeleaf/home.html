@@ -73,7 +73,7 @@
                 <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
             </th:block>
 
-            <th:block th:if="${filtro == 'r'}" th:each="dtopubli : ${publisParaTi}">
+            <th:block th:if="${filtro == 'r'}" th:each="dtopubli : ${datosPublicaciones}">
                 <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
             </th:block>
         </div>

@@ -18,29 +18,24 @@ import java.util.stream.Collectors;
 
 public class ControladorHome {
 
-    private final PublicacionMapper publicacionMapper;
-    private final ServicioPublicacion servicioPublicacion;
-    private final ServicioLike servicioLike;
+
     private final ServicioUsuario servicioUsuario;
-    private final ServicioRecomendaciones servicioRecomendaciones;
-    private final GeminiAnalysisService geminiAnalysisService;
     private final BotPublisherService botPublisherService;
+    private final ServicioFeed servicioFeed;
+    //para no esperar 6 hs
+    private final GeminiAnalysisService geminiAnalysisService;
 
 
 
 
 
-    public ControladorHome(ServicioUsuario servicioUsuario, ServicioPublicacion servicioPublicacion,
-                           ServicioLike servicioLike, PublicacionMapper publicacionMapper,
-                           ServicioRecomendaciones servicioRecomendaciones, GeminiAnalysisService geminiAnalysisService,
-                           BotPublisherService botPublisherService) {
-        this.servicioPublicacion = servicioPublicacion;
-        this.servicioLike = servicioLike;
-        this.publicacionMapper = publicacionMapper;
+    public ControladorHome(ServicioUsuario servicioUsuario,
+                           BotPublisherService botPublisherService, ServicioFeed servicioFeed, GeminiAnalysisService geminiAnalysisService) {
+
         this.servicioUsuario = servicioUsuario;
-        this.servicioRecomendaciones = servicioRecomendaciones;
-        this.geminiAnalysisService = geminiAnalysisService;
         this.botPublisherService = botPublisherService;
+        this.servicioFeed = servicioFeed;
+        this.geminiAnalysisService = geminiAnalysisService;
 
 
 
@@ -78,94 +73,32 @@ public class ControladorHome {
 */
 @GetMapping("/home")
 public ModelAndView home(HttpServletRequest request,
-                         @RequestParam(value = "filtro", defaultValue = "p") String filtro) {
+                         @RequestParam(value = "filtro", defaultValue = "p") String filtro) throws Exception {
 
     ModelMap model = new ModelMap();
-    HttpSession session = request.getSession();
 
-    DatosUsuario usuarioLogueado = (DatosUsuario) session.getAttribute("usuarioLogueado");
+
+    DatosUsuario usuarioLogueado = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
     if (usuarioLogueado == null) {
         return new ModelAndView("redirect:/login");
     }
 
     Usuario usuarioReal = servicioUsuario.buscarPorId(usuarioLogueado.getId());
 
-    // Inicializo listas
-    List<DatosPublicacion> datosPublicaciones = new ArrayList<>();
-    List<DatosPublicacion> datosPublisParaTi = new ArrayList<>();
 
-    System.out.println("========== ENTRANDO A /home ==========");
-    System.out.println("Usuario logueado: " + usuarioReal.getNombre());
-    System.out.println("Filtro actual: " + filtro);
+    List<DatosPublicacion> datosPublicaciones = "r".equals(filtro)
+            ? servicioFeed.obtenerFeedRecomendado(usuarioReal, usuarioLogueado.getId())
+            : servicioFeed.obtenerFeedPrincipal(usuarioLogueado.getId());
 
-    try {
-        if ("r".equals(filtro)) {
-            System.out.println(">> Cargando publicaciones 'Para ti'...");
-
-            // 🔹 Análisis IA / gustos
-            geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
-
-            // 🔹 Publicaciones recomendadas (Lucene)
-            List<Publicacion> publisLucene = servicioRecomendaciones.recomendarParaUsuario(usuarioReal, 5);
-            System.out.println("Lucene devolvió: " + publisLucene.size() + " publicaciones.");
-
-            // 🔹 Generar contenido de bots
-            //botPublisherService.publicarContenidoParaUsuario(usuarioReal.getId());
-
-
-
-            // 🔹 Consultar publicaciones de bots
-            List<Publicacion> publisBots = servicioPublicacion.obtenerPublisBotsParaUsuario(usuarioReal);
-            System.out.println("Bots devolvieron: " + publisBots.size() + " publicaciones.");
-
-            // 🔹 Convertir a DTO
-            List<DatosPublicacion> datosLucene = publisLucene.stream()
-                    .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
-                    .collect(Collectors.toList());
-
-            List<DatosPublicacion> datosBots = publisBots.stream()
-                    .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
-                    .collect(Collectors.toList());
-
-            // Combinar resultados
-            datosLucene.addAll(datosBots);
-            datosPublisParaTi = datosLucene;
-
-
-
-        } else {
-            // 🛑 FILTRO PRINCIPAL ('p' o por defecto)
-            System.out.println(">> Cargando feed principal...");
-            List<Publicacion> publicaciones = servicioPublicacion.findAll();
-            System.out.println("Feed general tiene: " + publicaciones.size() + " publicaciones.");
-
-            // 🔑 CORRECCIÓN: Filtrar publicaciones del Bot (Publicidad)
-            datosPublicaciones = publicaciones.stream()
-                    .filter(p -> !p.isEsPublicidad()) // ⬅️ AÑADE ESTE FILTRO
-                    .map(p -> publicacionMapper.toDto(p, usuarioLogueado.getId()))
-                    .collect(Collectors.toList());
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.err.println("Error al cargar home: " + e.getMessage());
-    }
-
-    // 🔹 Usuarios nuevos (columna derecha)
-    List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos()
-            .stream()
+    List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos().stream()
             .map(u -> new DatosUsuariosNuevos(u.getNombre(), u.getApellido(), u.getId()))
             .collect(Collectors.toList());
 
-    // 🔹 Cargar modelo final
     model.addAttribute("usuario", usuarioLogueado);
     model.addAttribute("usuariosNuevos", usuariosDTO);
     model.addAttribute("esPropio", true);
     model.addAttribute("datosPublicaciones", datosPublicaciones);
-    model.addAttribute("publisParaTi", datosPublisParaTi);
     model.addAttribute("filtro", filtro);
-
-    System.out.println("========== FIN /home ==========\n");
 
     return new ModelAndView("home", model);
 }
@@ -177,6 +110,18 @@ public ModelAndView home(HttpServletRequest request,
         // Simplemente devuelve una página de confirmación.
         return new ModelAndView("redirect:/home");
     }
+    @GetMapping("/admin/analizar-gustos")
+    public ModelAndView analizarGustos(HttpServletRequest request) {
+
+        DatosUsuario usuarioLogueado = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        Usuario usuarioReal = servicioUsuario.buscarPorId(usuarioLogueado.getId());
+        geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
+        // Simplemente devuelve una página de confirmación.
+        return new ModelAndView("redirect:/home");
+    }
+
+
+
 
 }
 

@@ -131,7 +131,7 @@ public class GeminiAnalysisService {
         String formatoSalida = "{\n" +
                 "  \"temaPrincipal\": \"Ejemplo de Tema Dominante\",\n" +
                 "  \"tagsIntereses\": [\"tag1\", \"tag2\", \"tag3\", \"tag4\", \"tag5\"],\n" +
-                "  \"resumenPerfil\": \"Breve descripción del perfil del usuario.\"\n" + // ⬅️ Nuevo campo
+                "  \"resumenPerfil\": \"Breve descripción del perfil del usuario.\"\n" + //
                 "}";
 
         //prompt para pedirl resumen

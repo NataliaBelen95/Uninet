@@ -109,7 +109,7 @@ public class ServicioLikeImpl implements ServicioLike {
                 interaccion.setPeso(1.0); // o lo que uses para el peso
                 interaccion.setVista(false);
                 servicioInteraccion.guardarInteraccion(interaccion);
-                geminiAnalysisService.analizarYGuardarGustos(usuario);
+                //geminiAnalysisService.analizarYGuardarGustos(usuario);
             }
     }
 
