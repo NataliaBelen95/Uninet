@@ -30,22 +30,18 @@ public class RepositorioGustoPersonalImpl implements RepositorioGustoPersonal {
     @Override
     public GustosPersonal buscarPorUsuario(Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
-
-
         return session.createQuery("FROM GustosPersonal g WHERE g.usuario.id = :idUsuario", GustosPersonal.class)
                 .setParameter("idUsuario", usuario.getId())
                 .uniqueResult();
     }
 //para saber a que usaurios publicarles
-    @Override
-    public List<Long> listarIdsDeUsuariosConPerfil() {
-        Session session = sessionFactory.getCurrentSession();
+@Override
+public List<Long> listarIdsDeUsuariosConPerfil() {
+    Session session = sessionFactory.getCurrentSession();
 
-        // Consulta HQL: Selecciona solo el ID de usuario (FK) de la tabla GustosPersonal
-
-        return session.createQuery(
-                        "SELECT g.usuario.id FROM GustosPersonal g", Long.class)
-                .getResultList();
-    }
+    return session.createQuery(
+                    "SELECT DISTINCT g.usuario.id FROM GustosPersonal g", Long.class)
+            .getResultList();
+}
 
 }
