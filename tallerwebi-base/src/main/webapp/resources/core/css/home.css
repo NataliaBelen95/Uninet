@@ -469,7 +469,7 @@ a {
 .mensaje-propio { text-align:right; margin:0.5rem;}
 .mensaje-otro { text-align:left; margin:0.5rem;}
 /* existentes ... */
-.lista-usuarios { width:220px; border-right:1px solid #ddd; padding:1rem; transition: width 0.25s ease; }
+.lista-usuarios { border-right:1px solid #ddd; padding:1rem; transition: width 0.25s ease; }
 .lista-usuarios.collapsed { width: 48px; overflow: hidden; }
 .lista-usuarios.collapsed #lista-contactos { display: none; }
 .lista-usuarios .thumb{width:36px;height:36px;border-radius:50%;margin-right:0.5rem;}

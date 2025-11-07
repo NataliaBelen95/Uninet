@@ -1,4 +1,4 @@
-// chat.js - ajuste: merge de historial, conservación de optimistas, logs más claros y re-subscribe
+// chat.js - Corregido: reemplaza optimista por persistido, evita duplicados y evita reenvío
 (function() {
     'use strict';
 
@@ -11,46 +11,133 @@
     let reconnectAttempts = 0;
     let reconnectTimer = null;
 
+    // cache por conversación: conversationsCache[otherId] = [mensaje,...]
     const conversationsCache = {};
     let activeConversationId = null;
+
+    // evita reenvíos idénticos mientras están "en vuelo"
+    const pendingSet = new Set();
 
     function log(...args) { console.log('[chat]', ...args); }
     function warn(...args) { console.warn('[chat]', ...args); }
     function error(...args) { console.error('[chat]', ...args); }
     function $(id) { return document.getElementById(id); }
 
-    function optimisticSignature(m) {
-        return `${m.fromUserId}|${m.toUserId}|${m.content}|${m.timestamp || ''}`;
+    // helper: generar tempId
+    function generateTempId() {
+        if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+        return 't-' + Date.now() + '-' + Math.random().toString(36).slice(2,9);
     }
 
+    // firma estable: from|to|normalized content (sin timestamp)
+    function signatureKey(m) {
+        const from = String(m.fromUserId || '');
+        const to = String(m.toUserId || '');
+        const content = (m.content || '').toString().trim().replace(/\s+/g, ' ');
+        return `${from}|${to}|${content}`;
+    }
+
+    // css escape fallback
+    function cssEscapeFallback(s) {
+        return s.replace(/(["'\\\[\]\s#.:,>+~*^$|=<>`!@%&(){}\/])/g, '\\$1');
+    }
+    function cssEscape(s) {
+        return (typeof CSS !== 'undefined' && CSS.escape) ? CSS.escape(s) : cssEscapeFallback(s);
+    }
+
+    function escapeHtml(s) {
+        return (s || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    function parseTimestamp(ts) {
+        if (!ts) return new Date();
+        if (typeof ts === 'string') {
+            const d = new Date(ts);
+            if (!isNaN(d)) return d;
+            const d2 = new Date(ts.replace(' ', 'T'));
+            if (!isNaN(d2)) return d2;
+        }
+        if (typeof ts === 'number') return new Date(ts);
+        if (typeof ts === 'object') {
+            const y = ts.year || ts.y || ts.Y || 0;
+            const mo = (ts.month || ts.monthValue || ts.m || 1) - 1;
+            const da = ts.day || ts.d || ts.dayOfMonth || 1;
+            const hh = ts.hour || ts.hourOfDay || 0;
+            const mm = ts.minute || ts.min || 0;
+            const ss = ts.second || ts.sec || 0;
+            return new Date(y, mo, da, hh, mm, ss);
+        }
+        return new Date(String(ts));
+    }
+
+    // Añadir a cache evitando duplicados (id o firma)
     function addToCache(otherId, msg) {
         conversationsCache[otherId] = conversationsCache[otherId] || [];
         const list = conversationsCache[otherId];
+
         if (msg.id) {
             if (list.some(x => x.id && String(x.id) === String(msg.id))) return false;
             list.push(msg);
             return true;
         } else {
-            const sig = optimisticSignature(msg);
-            if (list.some(x => !x.id && optimisticSignature(x) === sig)) return false;
+            const sig = msg.__sig || signatureKey(msg);
+            if (list.some(x => !x.id && ((x.__sig && x.__sig === sig) || signatureKey(x) === sig))) return false;
+            msg.__sig = sig;
             list.push(msg);
             return true;
         }
     }
 
+    // Reemplaza un optimista en DOM identificado por signature por la versión persistida
+    function replaceOptimisticInDOM(sig, persistedMsg) {
+        try {
+            const conv = $('conversacion');
+            if (!conv) return false;
+            const sel = `[data-sig="${cssEscape(sig)}"]`;
+            const el = conv.querySelector(sel);
+            if (!el) return false;
+            const isMine = String(persistedMsg.fromUserId) === String(myUserId);
+            const dateObj = parseTimestamp(persistedMsg.timestamp);
+            const time = !isNaN(dateObj) ? dateObj.toLocaleTimeString() : new Date().toLocaleTimeString();
+            const safeText = escapeHtml(persistedMsg.content || '');
+            el.innerHTML = `<div class="meta"><strong>${escapeHtml(persistedMsg.fromName || (isMine ? 'Yo' : 'Usuario'))}</strong> <span class="time">${time}</span></div>
+                      <div class="texto">${safeText}</div>`;
+            el.classList.remove('optimistic');
+            el.removeAttribute('data-sig');
+            if (persistedMsg.id) el.setAttribute('data-id', String(persistedMsg.id));
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // Reconciliar optimista y persistido: actualiza cache y DOM; devuelve true si reconcilió
     function reconcileWithPersisted(otherId, persistedMsg) {
-        const list = conversationsCache[otherId] || [];
-        const sig = optimisticSignature(persistedMsg);
-        const idx = list.findIndex(x => (!x.id) && optimisticSignature(x) === sig);
+        conversationsCache[otherId] = conversationsCache[otherId] || [];
+        const list = conversationsCache[otherId];
+
+        const sig = persistedMsg.__sig || signatureKey(persistedMsg);
+        // buscar optimista por __sig o por signatureKey
+        const idx = list.findIndex(x => (!x.id) && ((x.__sig && x.__sig === sig) || signatureKey(x) === sig));
+
         if (idx !== -1) {
             list.splice(idx, 1, persistedMsg);
             conversationsCache[otherId] = list;
+            // reemplazar visual
+            replaceOptimisticInDOM(sig, persistedMsg);
+            pendingSet.delete(sig);
             return true;
         }
+
+        // si no había optimista: evitar duplicar por id
+        if (!list.some(x => x.id && String(x.id) === String(persistedMsg.id))) {
+            list.push(persistedMsg);
+        }
+        pendingSet.delete(sig);
         return false;
     }
 
-    // Merge server list with cache: keep optimists not present on server
+    // Merge server list with cache (mantener optimistas)
     function mergeServerListWithCache(otherId, serverList) {
         const cache = conversationsCache[otherId] || [];
         const byId = new Map();
@@ -62,13 +149,13 @@
         (serverList || []).forEach(m => merged.push(m));
 
         merged.forEach(m => {
-            if (!m.id) optimistSigs.add(optimisticSignature(m));
+            if (!m.id) optimistSigs.add(m.__sig || signatureKey(m));
             else optimistSigs.add('id:' + String(m.id));
         });
 
         cache.forEach(m => {
             if (!m.id) {
-                const sig = optimisticSignature(m);
+                const sig = m.__sig || signatureKey(m);
                 if (!optimistSigs.has(sig)) merged.push(m);
             } else {
                 if (!byId.has(String(m.id))) merged.push(m);
@@ -78,13 +165,14 @@
         const seen = new Set();
         const finalList = [];
         merged.forEach(m => {
-            const key = m.id ? 'id:' + String(m.id) : 'sig:' + optimisticSignature(m);
+            const key = m.id ? 'id:' + String(m.id) : 'sig:' + (m.__sig || signatureKey(m));
             if (!seen.has(key)) { finalList.push(m); seen.add(key); }
         });
 
         conversationsCache[otherId] = finalList;
     }
 
+    // ---------- WS connect / subscribe ----------
     function conectar() {
         if (stompConnected) return;
         tryConnectEndpoints(['/spring/ws', contextPath + '/ws']);
@@ -97,7 +185,6 @@
         try {
             const socket = new SockJS(wsEndpoint);
             const client = Stomp.over(socket);
-            // habilitar debug temporal si necesitás ver frames (poner a console)
             client.debug = null;
 
             client.connect({}, function(frame) {
@@ -111,7 +198,8 @@
                 }
                 ensureSubscription();
             }, function(err) {
-                warn('Error conectando STOMP a', wsEndpoint, err);
+                stompConnected = false;
+                warn('STOMP connect error:', err);
                 tryConnectEndpoints(endpoints, i + 1);
             });
 
@@ -141,13 +229,10 @@
     function ensureSubscription() {
         try {
             if (!stompClient || !stompConnected || !myUserId) {
-                log('ensureSubscription: condiciones no cumplidas', { stompClient: !!stompClient, stompConnected, myUserId });
+                log('ensureSubscription: condiciones no cumplidas', {stompClient: !!stompClient, stompConnected, myUserId});
                 return;
             }
-            if (subscription) {
-                log('Ya existe subscription para', myUserId);
-                return;
-            }
+            if (subscription) { log('Ya existe subscription para', myUserId); return; }
             const destino = '/topic/chat/' + myUserId;
             log('Suscribiendo a destino:', destino);
             subscription = stompClient.subscribe(destino, function(message) {
@@ -164,16 +249,19 @@
         }
     }
 
+    // ---------- incoming ----------
     function handleIncomingMessage(msg) {
         try {
             const otherId = String(msg.fromUserId) === String(myUserId) ? String(msg.toUserId) : String(msg.fromUserId);
             log('handleIncomingMessage -> otherId=', otherId, 'msgId=', msg.id || '(no id)');
+
             if (msg.id) {
                 const reconciled = reconcileWithPersisted(otherId, msg);
                 if (!reconciled) addToCache(otherId, msg);
             } else {
                 addToCache(otherId, msg);
             }
+
             if (activeConversationId && String(activeConversationId) === String(otherId)) {
                 renderConversacionFromArray(conversationsCache[otherId]);
             } else {
@@ -188,44 +276,55 @@
         try { const a = document.querySelector(`.contacto[data-id="${otherId}"]`); if (a) a.classList.add('unread'); } catch (e) {}
     }
 
+    // ---------- render one message ----------
     function recibirMensaje(msg) {
         const conversacion = $('conversacion');
         if (!conversacion) return;
+
+        // si persistido y existe optimista con misma firma -> reemplazar
+        if (msg.id) {
+            const sig = msg.__sig || signatureKey(msg);
+            if (sig) {
+                const selector = `[data-sig="${cssEscape(sig)}"]`;
+                const existing = conversacion.querySelector(selector);
+                if (existing) {
+                    const isMine = String(msg.fromUserId) === String(myUserId);
+                    const dateObj = parseTimestamp(msg.timestamp);
+                    const time = !isNaN(dateObj) ? dateObj.toLocaleTimeString() : new Date().toLocaleTimeString();
+                    const safeText = escapeHtml(msg.content || '');
+                    existing.innerHTML = `<div class="meta"><strong>${escapeHtml(msg.fromName || (isMine ? 'Yo' : 'Usuario'))}</strong> <span class="time">${time}</span></div>
+                                <div class="texto">${safeText}</div>`;
+                    existing.classList.remove('optimistic');
+                    existing.removeAttribute('data-sig');
+                    existing.setAttribute('data-id', String(msg.id));
+                    return;
+                }
+            }
+        }
+
+        // append normal
         const isMine = String(msg.fromUserId) === String(myUserId);
         const cont = document.createElement('div');
         cont.className = isMine ? 'mensaje-propio' : 'mensaje-otro';
         const dateObj = parseTimestamp(msg.timestamp);
         const time = !isNaN(dateObj) ? dateObj.toLocaleTimeString() : new Date().toLocaleTimeString();
+        const safeText = escapeHtml(msg.content || '');
+
         cont.innerHTML = `<div class="meta"><strong>${escapeHtml(msg.fromName || (isMine ? 'Yo' : 'Usuario'))}</strong> <span class="time">${time}</span></div>
-                     <div class="texto">${escapeHtml(msg.content || '')}</div>`;
-        if (msg.__optimistic) cont.classList.add('optimistic');
+                     <div class="texto">${safeText}</div>`;
+
+        if (msg.__optimistic) {
+            cont.classList.add('optimistic');
+            if (msg.__sig) cont.setAttribute('data-sig', msg.__sig);
+        } else if (msg.id) {
+            cont.setAttribute('data-id', String(msg.id));
+        }
+
         conversacion.appendChild(cont);
         conversacion.scrollTop = conversacion.scrollHeight;
     }
 
-    function escapeHtml(s) {
-        return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
-    }
-
-    function parseTimestamp(ts) {
-        if (!ts) return new Date();
-        if (typeof ts === 'string') {
-            const d = new Date(ts); if (!isNaN(d)) return d;
-            const d2 = new Date(ts.replace(' ', 'T')); if (!isNaN(d2)) return d2;
-        }
-        if (typeof ts === 'number') return new Date(ts);
-        if (typeof ts === 'object') {
-            const y = ts.year || ts.y || ts.Y || 0;
-            const mo = (ts.month || ts.monthValue || ts.m || 1) - 1;
-            const da = ts.day || ts.d || ts.dayOfMonth || 1;
-            const hh = ts.hour || ts.hourOfDay || 0;
-            const mm = ts.minute || ts.min || 0;
-            const ss = ts.second || ts.sec || 0;
-            return new Date(y, mo, da, hh, mm, ss);
-        }
-        return new Date(String(ts));
-    }
-
+    // ---------- send ----------
     async function enviarMensaje() {
         const btn = $('btnEnviar'); if (btn) btn.disabled = true;
         try {
@@ -236,16 +335,37 @@
             if (!toUserId) { alert('Seleccioná un contacto'); return; }
             if (!texto) return;
 
-            const payload = { fromUserId: parseInt(myUserId), toUserId: parseInt(toUserId), fromName: null, content: texto, timestamp: new Date().toISOString() };
-            const optimistic = Object.assign({}, payload, { __optimistic: true });
+            const payload = {
+                fromUserId: parseInt(myUserId),
+                toUserId: parseInt(toUserId),
+                fromName: null,
+                content: texto,
+                timestamp: new Date().toISOString()
+            };
+
+            const sig = signatureKey(payload);
+            payload.__sig = sig;
+
+            if (pendingSet.has(sig)) {
+                log('Mensaje en vuelo ya existente, no se reenvía:', sig);
+                const optimistic = Object.assign({}, payload, { __optimistic: true, __sig: sig });
+                addToCache(toUserId, optimistic);
+                if (activeConversationId === String(toUserId)) recibirMensaje(optimistic);
+                txtEl.value = '';
+                return;
+            }
+
+            const optimistic = Object.assign({}, payload, { __optimistic: true, __sig: sig });
             addToCache(toUserId, optimistic);
             if (activeConversationId === String(toUserId)) recibirMensaje(optimistic);
 
             if (stompClient && stompConnected) {
                 try {
                     log('Enviando via STOMP', payload);
+                    pendingSet.add(sig);
                     stompClient.send('/app/chat/enviar', { 'content-type': 'application/json' }, JSON.stringify(payload));
                 } catch (e) {
+                    pendingSet.delete(sig);
                     warn('Error enviando por STOMP, fallback', e);
                     await fallbackEnviar(payload);
                 }
@@ -253,6 +373,7 @@
                 log('STOMP no conectado, fallback HTTP');
                 await fallbackEnviar(payload);
             }
+
             txtEl.value = '';
         } catch (e) {
             error('Error en enviarMensaje', e);
@@ -269,6 +390,7 @@
         log('Fallback OK', r.status);
     }
 
+    // ---------- conversation load ----------
     async function cargarConversacion(otherId, forceNetwork = false) {
         if (!otherId) return;
         if (!forceNetwork && conversationsCache[otherId]) { renderConversacionFromArray(conversationsCache[otherId]); return; }
@@ -309,10 +431,11 @@
         const conv = $('conversacion');
         if (!conv) return;
         conv.innerHTML = '';
-        const sorted = (arr || []).slice().sort((a, b) => parseTimestamp(a.timestamp).getTime() - parseTimestamp(b.timestamp).getTime());
+        const sorted = (arr || []).slice().sort((a,b) => parseTimestamp(a.timestamp).getTime() - parseTimestamp(b.timestamp).getTime());
         sorted.forEach(m => recibirMensaje(m));
     }
 
+    // ---------- select contact & init ----------
     function seleccionarContacto(element) {
         if (!element) return;
         const id = String(element.getAttribute('data-id'));
@@ -356,10 +479,7 @@
             if (lista) {
                 lista.addEventListener('click', function(evt) {
                     const a = evt.target.closest('.contacto');
-                    if (a) {
-                        evt.preventDefault();
-                        seleccionarContacto(a);
-                    }
+                    if (a) { evt.preventDefault(); seleccionarContacto(a); }
                 });
             }
 
@@ -376,28 +496,11 @@
 
     window.addEventListener('beforeunload', function() {
         try {
-            if (subscription) {
-                try {
-                    subscription.unsubscribe();
-                } catch (e) {}
-                subscription = null;
-            }
-            if (stompClient && stompConnected) {
-                try {
-                    stompClient.disconnect();
-                } catch (e) {}
-            }
+            if (subscription) { try { subscription.unsubscribe(); } catch (e) {} subscription = null; }
+            if (stompClient && stompConnected) { try { stompClient.disconnect(); } catch (e) {} }
         } catch (e) {}
     });
 
-    // export para debugging
-    window._chatDebug = {
-        conectar,
-        ensureSubscription,
-        enviarMensaje,
-        cargarConversacion,
-        conversationsCache,
-        activeConversationId
-    };
+    window._chatDebug = { conectar, ensureSubscription, enviarMensaje, cargarConversacion, conversationsCache, activeConversationId, pendingSet };
 
 })();
