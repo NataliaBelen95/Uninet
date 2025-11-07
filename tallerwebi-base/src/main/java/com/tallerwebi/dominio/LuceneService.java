@@ -83,7 +83,7 @@ public class LuceneService {
                 resultados.add(doc.get("id")); // devolvemos los IDs de las publicaciones
             }
             return resultados;
-        }
+        } //agregar catch.
     }
 
     public Directory getDirectory() {
