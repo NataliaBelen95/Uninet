@@ -15,6 +15,7 @@ public class GeminiResponseDTO {
     /**
      * Devuelve el texto generado por el primer candidato, o un mensaje por defecto.
      */
+    /*Acceder a content → parts → text, porque así es como Gemini organiza sus respuestas por diseño*/
     public String getGeneratedText() {
         if (candidates != null && !candidates.isEmpty()) {
             Candidate candidate = candidates.get(0);

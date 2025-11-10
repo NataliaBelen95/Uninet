@@ -64,6 +64,7 @@ public class SpringWebConfig implements WebMvcConfigurer, org.springframework.sc
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/imagenesPublicidad/");
         registry.addResourceHandler("/imagenesGeneradas/**")
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/imagenesGeneradas/");
+
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html

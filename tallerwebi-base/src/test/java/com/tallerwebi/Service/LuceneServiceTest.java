@@ -8,10 +8,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.ByteBuffersDirectory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,16 +26,33 @@ public class LuceneServiceTest {
 
     private LuceneService luceneService;
     private LuceneDirectoryManager directoryManager;
+    private Path tempDir;
 
     @BeforeEach
     void setUp() throws IOException {
-        // Usa un ByteBuffersDirectory para que el índice se mantenga en memoria para cada test
-        // LuceneDirectoryManager debería manejar internamente la lógica de Lucene.
-        // Aquí asumimos que directoryManager tiene un reset o es inicializado para cada test.
+        // directorio temporal para el test
+        tempDir = Files.createTempDirectory("lucene-test-");
+
+        // Inicializa el manager y el servicio
         directoryManager = new LuceneDirectoryManager();
+        directoryManager.switchToDisk(tempDir.toString());
+
         luceneService = new LuceneService(directoryManager);
-        // Aseguramos que el índice esté vacío y el flag indexado en false antes de cada test.
+
+        // Limpia el índice antes de cada test
         luceneService.limpiarIndice();
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        directoryManager.close();
+
+        // Borra el directorio temporal
+        if (tempDir != null && Files.exists(tempDir)) {
+            Files.walk(tempDir)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(p -> p.toFile().delete());
+        }
     }
 
     @Test

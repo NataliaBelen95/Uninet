@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class BotCalendario {
+public class ParaTiSchedule {
     private final BotPublisherService botPublisherService;
     private final GeminiAnalysisService geminiAnalysisService;
     private final ServicioUsuario servicioUsuario;
 
     @Autowired
-    public BotCalendario(BotPublisherService botPublisherService, GeminiAnalysisService geminiAnalysisService, ServicioUsuario servicioUsuario) {
+    public ParaTiSchedule(BotPublisherService botPublisherService, GeminiAnalysisService geminiAnalysisService, ServicioUsuario servicioUsuario) {
         this.botPublisherService = botPublisherService;
         this.geminiAnalysisService = geminiAnalysisService;
         this.servicioUsuario = servicioUsuario;

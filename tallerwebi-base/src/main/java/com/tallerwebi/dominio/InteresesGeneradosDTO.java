@@ -1,6 +1,13 @@
 package com.tallerwebi.dominio;
 
 import java.util.List;
+/*Gemini genera un JSON con los gustos/intereses del usuario.
+
+Ese JSON se mapea ACA
+
+Luego se actualiza gustosPersonaal en bdd con este DTO
+
+Después para ti usa GustosPersonal para el para ti.*/
 
 public class InteresesGeneradosDTO {
 

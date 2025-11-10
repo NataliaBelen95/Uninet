@@ -16,8 +16,15 @@ public class LuceneDirectoryManager {
     private Directory directory;
 
     public LuceneDirectoryManager() {
-        // Por defecto usamos memoria
-        this.directory = new ByteBuffersDirectory();
+        //usar disk
+        try {
+            this.directory = FSDirectory.open(Paths.get("lucene-index"));
+            System.out.println("Lucene: Índice persistente en 'lucene-index'");
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.directory = new ByteBuffersDirectory(); // fallback
+        }
+
     }
 
     public Directory getDirectory() {

@@ -68,6 +68,8 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
             session.delete(interaccion); // 🔹 Esto marca la entidad para borrado
         }
     }
+
+    //recorre las últimas N interacciones y junta el contenido textual en una sola cadena:
     @Override
     public String consolidarTextoInteraccionesRecientes(Usuario usuario, int limite) {
         // 1. Obtener la sesión actual de Hibernate
@@ -75,7 +77,7 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
 
         // 2. Consulta HQL:
         // - Filtra por el usuario
-        // - Ordena por fecha (asumiendo que Interaccion tiene un campo 'fecha') de forma descendente (más recientes primero)
+        // - Ordena por fecha de forma descendente (más recientes primero)
         // - Limita el número de resultados (las interacciones más recientes)
         List<Interaccion> interaccionesRecientes = session.createQuery(
                         "FROM Interaccion i WHERE i.usuario = :usuario ORDER BY i.fecha DESC", Interaccion.class)
