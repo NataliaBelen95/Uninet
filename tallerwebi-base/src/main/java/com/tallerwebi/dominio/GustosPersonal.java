@@ -15,6 +15,7 @@ public class GustosPersonal {
     private Usuario usuario;
 
     // Campos para almacenar los gustos analizados por Gemini
+
     @Column(columnDefinition = "TEXT") // Usar TEXT para almacenar listas de tags o resúmenes
     private String tagsIntereses; // Ej: "Ciencia Ficción, Programación, Deporte, Criptomonedas"
 

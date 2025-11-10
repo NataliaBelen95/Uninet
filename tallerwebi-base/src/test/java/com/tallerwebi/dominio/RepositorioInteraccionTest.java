@@ -4,6 +4,8 @@ import com.tallerwebi.dominio.Interaccion;
 import com.tallerwebi.dominio.Publicacion;
 import com.tallerwebi.dominio.RepositorioInteraccion;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.infraestructura.config.HibernateTestInfraesructuraConfig;
+import com.tallerwebi.integracion.config.HibernateTestConfig;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,65 +14,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {HibernateTestInfraesructuraConfig.class})
 @Transactional
 public class RepositorioInteraccionTest {
 
     @Autowired
     private RepositorioInteraccion repositorioInteraccion;
-
     @Autowired
     private SessionFactory sessionFactory;
 
-    @BeforeEach
-    public void setup() throws Exception {
-        DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName("org.hsqldb.jdbc.JDBCDriver");
-        ds.setUrl("jdbc:hsqldb:mem:db;DB_CLOSE_DELAY=-1");
-        ds.setUsername("sa");
-        ds.setPassword("");
-
-        LocalSessionFactoryBean lsf = new LocalSessionFactoryBean();
-        lsf.setDataSource(ds);
-        lsf.setPackagesToScan("com.tallerwebi.dominio");
-        Properties props = new Properties();
-        props.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-        props.put("hibernate.hbm2ddl.auto", "create");
-        lsf.setHibernateProperties(props);
-        lsf.afterPropertiesSet(); // importante
-        this.sessionFactory = lsf.getObject();
+    private Interaccion crearInteraccion(Usuario usuario, Publicacion publicacion, String tipo, String contenido, LocalDateTime fecha) {
+        Interaccion interaccion = new Interaccion();
+        interaccion.setTipo(tipo);
+        interaccion.setContenido(contenido);
+        interaccion.setUsuario(usuario);
+        interaccion.setPublicacion(publicacion);
+        interaccion.setFecha(fecha);
+        return interaccion;
+    }
+    private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
+        Usuario u = new Usuario();
+        u.setNombre(nombre);
+        u.setApellido(apellido);
+        u.setEmail(email);
+        u.setDni(dni);
+        u.setEsBot(false);
+        u.setPassword("password");
+        return u;
     }
 
     @Test
-    public void poderGuardarYBuscarInteraccion() {
-        // --- Crear datos de prueba ---
-        Usuario usuario = new Usuario();
-        usuario.setNombre("Luis");
+    public void poderGuardarUnsNuevaInteraccionDeUsuario() {
+
+        Usuario usuario = crearUsuario("Luis", "Perez", "luis@uninet.com", 123456);
         sessionFactory.getCurrentSession().save(usuario);
 
         Publicacion publicacion = new Publicacion();
         publicacion.setDescripcion("Contenido prueba");
         sessionFactory.getCurrentSession().save(publicacion);
 
-        Interaccion interaccion = new Interaccion();
-        interaccion.setTipo("LIKE");
-        interaccion.setContenido("les dejo lo nuevo de js");
-        interaccion.setUsuario(usuario);
-        interaccion.setPublicacion(publicacion);
+        //fecha
+        Interaccion interaccion = crearInteraccion(usuario, publicacion, "LIKE", "les dejo lo nuevo de js", LocalDateTime.now());
 
-        // --- Guardar ---
         repositorioInteraccion.guardar(interaccion);
 
-        // --- Verificar que se guardó ---
+
         Interaccion recuperada = repositorioInteraccion.encontrarInteraccionPorId(interaccion.getId());
         assertNotNull(recuperada);
         assertEquals("LIKE", recuperada.getTipo());
@@ -80,42 +81,64 @@ public class RepositorioInteraccionTest {
     }
 
     @Test
-    public void poderListarInteraccionesDeUnUsuario() {
-        // --- Crear usuario ---
-        Usuario usuario = new Usuario();
-        usuario.setNombre("Ana");
+    public void queSeEncuntreInteraccionPorId() {
+        Usuario usuario = crearUsuario("Luis", "Perez", "luis@uninet.com", 123456);
+        sessionFactory.getCurrentSession().save(usuario);
+        Publicacion publicacion = new Publicacion();
+        publicacion.setDescripcion("Contenido prueba");
+        sessionFactory.getCurrentSession().save(publicacion);
+
+        Interaccion interaccion = crearInteraccion(usuario, publicacion, "LIKE", "les dejo lo nuevo de js", LocalDateTime.now());
+        repositorioInteraccion.guardar(interaccion);
+
+                                                                                                //devuelve interaccion y despues getid
+        assertEquals(interaccion.getId(), repositorioInteraccion.encontrarInteraccionPorId(interaccion.getId()).getId());
+    }
+
+    @Test
+    public void queSePuedaArmarUnSoloTextoDeLasUltimas50InteraccionesDelUsuario(){
+        Usuario usuario = crearUsuario("Luis", "Limite", "luis.limit@uninet.com", 5);
         sessionFactory.getCurrentSession().save(usuario);
 
-        // --- Crear publicaciones ---
-        Publicacion pub1 = new Publicacion();
-        pub1.setDescripcion("Post 1");
-        sessionFactory.getCurrentSession().save(pub1);
+        Publicacion pub = new Publicacion();
+        pub.setDescripcion("Post de test");
+        sessionFactory.getCurrentSession().save(pub);
 
-        Publicacion pub2 = new Publicacion();
-        pub2.setDescripcion("Post 2");
-        sessionFactory.getCurrentSession().save(pub2);
+        sessionFactory.getCurrentSession().flush();
+        sessionFactory.getCurrentSession().clear();
+        final int LIMITE_A_PROBAR = 3;  //real son 50
+        LocalDateTime ahora = LocalDateTime.now();
+        //excluidas
+        Interaccion i1 = crearInteraccion(usuario, pub, "VISTA", "Texto antiguo excluido", ahora.minus(5, ChronoUnit.MINUTES));
+        Interaccion i2 = crearInteraccion(usuario, pub, "VISTA", "Texto viejo que no pasa el limite", ahora.minus(4, ChronoUnit.MINUTES));
 
-        // --- Crear interacciones ---
-        Interaccion i1 = new Interaccion();
-        i1.setTipo("LIKE");
-        i1.setContenido("Me gusta");
-        i1.setUsuario(usuario);
-        i1.setPublicacion(pub1);
-
-        Interaccion i2 = new Interaccion();
-        i2.setTipo("COMENTARIO");
-        i2.setContenido("Buen post");
-        i2.setUsuario(usuario);
-        i2.setPublicacion(pub2);
+        //recientes// chronounit permite  saber y forzar cuál es el registro más reciente y más antiguo, de forma totalmente predecible.
+        Interaccion i3 = crearInteraccion(usuario, pub, "LIKE", "El tercer item mas nuevo (tercero)", ahora.minus(3, ChronoUnit.MINUTES));
+        Interaccion i4 = crearInteraccion(usuario, pub, "COMENTARIO", "El segundo item mas nuevo (segundo)", ahora.minus(2, ChronoUnit.MINUTES));
+        Interaccion i5 = crearInteraccion(usuario, pub, "LIKE", "EL MAS NUEVO (primero en el resultado)", ahora.minus(1, ChronoUnit.MINUTES));
 
         repositorioInteraccion.guardar(i1);
         repositorioInteraccion.guardar(i2);
+        repositorioInteraccion.guardar(i3);
+        repositorioInteraccion.guardar(i4);
+        repositorioInteraccion.guardar(i5);
 
-        // --- Listar ---
-        List<Interaccion> interacciones = repositorioInteraccion.encontrarDeUsuario(usuario);
 
-        assertEquals(2, interacciones.size());
-        assertTrue(interacciones.stream().anyMatch(i -> "LIKE".equals(i.getTipo())));
-        assertTrue(interacciones.stream().anyMatch(i -> "COMENTARIO".equals(i.getTipo())));
+        String textoConsolidado = repositorioInteraccion.consolidarTextoInteraccionesRecientes(usuario, LIMITE_A_PROBAR);
+        //separador ". " (punto y espacio)
+        //funcion que tiene en cuenta cuantas oraciones hay por " . " ;
+        long numFrases = textoConsolidado.chars().filter(ch -> ch == '.').count();
+        //limite son 3 , y la funcion nuymfrases determina que son 3 tambien
+        assertEquals(LIMITE_A_PROBAR, numFrases, "El número de frases consolidadas debe ser igual al límite.");
+
+        //empezar por la mas reciente
+        assertTrue(textoConsolidado.startsWith("EL MAS NUEVO (primero en el resultado)"),
+                "El texto debe iniciar con la interacción más reciente (i5) debido al ORDER BY DESC.");
+
+        assertTrue(textoConsolidado.contains("El segundo item mas nuevo"), "i4 debe estar incluida.");
+        assertTrue(textoConsolidado.contains("El tercer item mas nuevo"), "i3 debe estar incluida.");
+        assertFalse(textoConsolidado.contains("Texto antiguo excluido"), "i1 debe haber sido excluido por el límite.");
+        assertFalse(textoConsolidado.contains("Texto viejo que no pasa el limite"), "i2 debe haber sido excluido por el límite.");
     }
+
 }
