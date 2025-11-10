@@ -44,7 +44,7 @@ public class ParaTiSchedule {
 
         for (Usuario usuario : usuarios) {
             try {
-                geminiAnalysisService.analizarYGuardarGustos(usuario);
+                geminiAnalysisService.analizarInteraccionesYActualizarGustos(usuario);
             } catch (Exception e) {
                 System.err.println("Error analizando gustos de usuario " + usuario.getId() + ": " + e.getMessage());
             }

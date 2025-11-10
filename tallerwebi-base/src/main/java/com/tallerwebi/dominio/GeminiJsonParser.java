@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.OneToMany;
-
 @Service
 public class GeminiJsonParser {
     private final ObjectMapper objectMapper;
@@ -18,7 +16,7 @@ public class GeminiJsonParser {
         this.objectMapper = objectMapper;
     }
 
-    public InteresesGeneradosDTO extraerIntereses(String respuestaGemini) throws JsonProcessingException {
+    public InteresesGeneradosDTO parsearJsonIntereses(String respuestaGemini) throws JsonProcessingException {
         if (respuestaGemini == null || respuestaGemini.isBlank()) {
             throw new IllegalArgumentException("Respuesta vacía de Gemini");
         }

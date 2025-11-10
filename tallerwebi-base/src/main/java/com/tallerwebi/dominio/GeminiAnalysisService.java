@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Async; // ⬅️ IMPORTACIÓN CLAVE para resolver la lentitud
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class GeminiAnalysisService {
@@ -38,7 +35,7 @@ public class GeminiAnalysisService {
 
 
     @Transactional
-    public GustosPersonal analizarYGuardarGustos(Usuario usuario) {
+    public GustosPersonal analizarInteraccionesYActualizarGustos(Usuario usuario) {
 
         try {
             if (!debeReanalizar(usuario)) {
@@ -62,10 +59,10 @@ public class GeminiAnalysisService {
             String textoGenerado = geminiResponse.getGeneratedText();
 
 // Ahora sí, ese texto es el JSON que querés procesar
-            InteresesGeneradosDTO data = geminiJsonParser.extraerIntereses(textoGenerado);
+            InteresesGeneradosDTO data = geminiJsonParser.parsearJsonIntereses(textoGenerado);
 
 
-            GustosPersonal gustos = actualizarYGuardardarGustos(usuario, data);
+            GustosPersonal gustos = guardarOActualizarGustosDeUsuario(usuario, data);
             System.out.println("Gustos actualizados correctamente para el usuario " + usuario.getId());
             return gustos;
 
@@ -113,7 +110,7 @@ public class GeminiAnalysisService {
         return repositorioInteraccion.consolidarTextoInteraccionesRecientes(usuario, LIMITE_INTERACCIONES);
     }
 
-    private GustosPersonal actualizarYGuardardarGustos(Usuario usuario, InteresesGeneradosDTO data) {
+    private GustosPersonal guardarOActualizarGustosDeUsuario(Usuario usuario, InteresesGeneradosDTO data) {
         GustosPersonal gustos = servicioGustoPersonal.buscarPorUsuario(usuario);
         if (gustos == null) {
             gustos = new GustosPersonal();

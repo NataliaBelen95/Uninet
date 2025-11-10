@@ -3,11 +3,8 @@ package com.tallerwebi.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.infraestructura.ServicioAmistadImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,10 +71,10 @@ public class GeminiAnalysisTest {
         dto.setTemaPrincipal("Programación Java");
         dto.setTagsIntereses(Arrays.asList("Spring", "Hibernate"));
         dto.setResumenPerfil("Desarrollador backend.");
-        when(jsonParserMock.extraerIntereses(anyString())).thenReturn(dto);
+        when(jsonParserMock.parsearJsonIntereses(anyString())).thenReturn(dto);
 
         // metodo real
-        geminiAnalysisService.analizarYGuardarGustos(u);
+        geminiAnalysisService.analizarInteraccionesYActualizarGustos(u);
 
         //
         verify(servicioGustoPersonalMock, times(1)).guardarOActualizar(argThat(g ->
