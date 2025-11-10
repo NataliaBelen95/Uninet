@@ -14,7 +14,7 @@ public class VistaLogin extends VistaWeb {
     }
 
     public String obtenerMensajeDeError(){
-        return this.obtenerTextoDelElemento("p.alert.alert-danger");
+        return this.obtenerTextoDelElemento("p.error");
     }
 
     public void escribirEMAIL(String email){
@@ -31,5 +31,10 @@ public class VistaLogin extends VistaWeb {
 
     public void darClickEnRegistrarse(){
         this.darClickEnElElemento("#btn-register");
+    }
+
+    public boolean existeIsologoDeUninet() {
+
+        return page.isVisible("nav img.logo");
     }
 }

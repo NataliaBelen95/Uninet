@@ -42,23 +42,23 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
                 .getResultList();
     }
 
-    @Override
-    public List<Interaccion> encontrarDeUsuarioAndTipo(Usuario usuario, String tipo) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Interaccion i WHERE i.usuario = :usuario AND i.tipo = :tipo", Interaccion.class)
-                .setParameter("usuario", usuario)
-                .setParameter("tipo", tipo)
-                .getResultList();
-    }
+//    @Override
+//    public List<Interaccion> encontrarDeUsuarioAndTipo(Usuario usuario, String tipo) {
+//        return sessionFactory.getCurrentSession()
+//                .createQuery("FROM Interaccion i WHERE i.usuario = :usuario AND i.tipo = :tipo", Interaccion.class)
+//                .setParameter("usuario", usuario)
+//                .setParameter("tipo", tipo)
+//                .getResultList();
+//    }
 
-    @Override
-    public List<Interaccion> encontrarPorUsuarioYPubli(Usuario usuario, Publicacion publicacion) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Interaccion i WHERE i.usuario = :usuario AND i.publicacion = :publicacion", Interaccion.class)
-                .setParameter("usuario", usuario)
-                .setParameter("publicacion", publicacion)
-                .getResultList();
-    }
+//    @Override
+//    public List<Interaccion> encontrarPorUsuarioYPubli(Usuario usuario, Publicacion publicacion) {
+//        return sessionFactory.getCurrentSession()
+//                .createQuery("FROM Interaccion i WHERE i.usuario = :usuario AND i.publicacion = :publicacion", Interaccion.class)
+//                .setParameter("usuario", usuario)
+//                .setParameter("publicacion", publicacion)
+//                .getResultList();
+//    }
 
     @Override
     public void eliminar(long interaccionId) {
@@ -96,6 +96,11 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
         }
 
         return textoConsolidado.toString().trim();
+    }
+
+    @Override
+    public Interaccion encontrarInteraccionPorId(long interaccionId) {
+        return sessionFactory.getCurrentSession().get(Interaccion.class, interaccionId);
     }
 
 }

@@ -110,16 +110,16 @@ public ModelAndView home(HttpServletRequest request,
         // Simplemente devuelve una página de confirmación.
         return new ModelAndView("redirect:/home");
     }
-    @GetMapping("/admin/analizar-gustos")
-    public ModelAndView analizarGustos(HttpServletRequest request) {
-
-        DatosUsuario usuarioLogueado = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        Usuario usuarioReal = servicioUsuario.buscarPorId(usuarioLogueado.getId());
-        geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
-        // Simplemente devuelve una página de confirmación.
-        return new ModelAndView("redirect:/home");
-    }
-
+//    @GetMapping("/admin/analizar-gustos")
+//    public ModelAndView analizarGustos(HttpServletRequest request) {
+//
+//        DatosUsuario usuarioLogueado = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+//        Usuario usuarioReal = servicioUsuario.buscarPorId(usuarioLogueado.getId());
+//        geminiAnalysisService.analizarYGuardarGustos(usuarioReal);
+//        // Simplemente devuelve una página de confirmación.
+//        return new ModelAndView("redirect:/home");
+//    }
+//
 
 
 

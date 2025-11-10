@@ -57,32 +57,51 @@ public class VistaMiPerfilE2E {
 
     @Test
     void deberiaMostrarElPerfilDelUsuarioLogueado() {
-        // login
+        // 1. LOGIN
         dadoQueElUsuarioEstaLogueadoCon("test@unlam.edu.ar", "test");
 
-        // esperamos a que se cargue /miPerfil
+        // 2. ESPERAR HOME (Esperamos la redirección tras el login exitoso)
+        // Redirige a /home según ControladorLogin.java
+        page.waitForURL("**/home", new Page.WaitForURLOptions().setTimeout(60000));
+
+        // 3. NAVEGAR A MI PERFIL
+        vistaPerfil.darClickEnMiPerfil();
+
+        // 4. ESPERAR PERFIL (El destino final después del clic)
         page.waitForURL("**/miPerfil");
 
-        // validamos que se vea el nombre
+        // --- VALIDACIONES ---
         String nombre = vistaPerfil.obtenerNombreUsuario();
         Assertions.assertTrue(nombre.toLowerCase().contains("test") || nombre.toLowerCase().contains("admin"));
 
         // validar título y datos de usuario
-        entoncesDeberiaVerTitulo("Mi perfil");
+        entoncesDeberiaVerTitulo("Test User");
         String carrera = vistaPerfil.obtenerCarreraUsuario();
         Assertions.assertNotNull(carrera);
     }
-
     @Test
     void deberiaMostrarPublicacionesDelUsuario() {
+        // 1. LOGIN
         dadoQueElUsuarioEstaLogueadoCon("test@unlam.edu.ar", "test");
+
+        // espero home
+        page.waitForURL("**/home");
+
+        // doy click en miPerfil
+        vistaPerfil.darClickEnMiPerfil();
+
+        // espero mi perfil
         page.waitForURL("**/miPerfil");
 
-        // Validar si hay publicaciones en el DOM
+        // Asegurarse  que el CONTENEDOR de publicaciones exista en el DOM.
+        Assertions.assertTrue(vistaPerfil.existeContenedorPublicaciones(),
+                "El contenedor de publicaciones no está presente.");
+
+        // verificar si hay publicaciones
         boolean hayPublicaciones = vistaPerfil.hayPublicaciones();
 
         if (hayPublicaciones) {
-            // se chequea contenido si solo hay publicacion
+            // Se chequea contenido si solo hay publicacion (solo si las hay)
             String textoPublicacion = vistaPerfil.obtenerTextoPrimeraPublicacion();
             Assertions.assertFalse(textoPublicacion.isEmpty(), "La publicación no tiene texto");
 
@@ -91,12 +110,9 @@ public class VistaMiPerfilE2E {
 
             String comentarios = vistaPerfil.obtenerTextoBotonComentariosPrimeraPublicacion();
             Assertions.assertNotNull(comentarios, "El botón de comentarios no debería ser null");
-        } else {
-            // Si no hay publicaciones, se valida que hayPublicaciones() devuelva false
-            Assertions.assertFalse(hayPublicaciones, "No deberían existir publicaciones");
         }
+        // Si no hay publicaciones, el test pasa.
     }
-
 
     // MÉTODOS AUXILIARES
 

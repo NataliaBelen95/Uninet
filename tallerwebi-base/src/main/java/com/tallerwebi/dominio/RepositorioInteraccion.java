@@ -11,12 +11,14 @@ public interface RepositorioInteraccion {
     List<Interaccion> encontrarDePubli(Publicacion publicacion);
 
     // Buscar interacciones por usuario y tipo (ej: todos los likes)
-    List<Interaccion> encontrarDeUsuarioAndTipo(Usuario usuario, String tipo);
+   // List<Interaccion> encontrarDeUsuarioAndTipo(Usuario usuario, String tipo);
 
     // Buscar interacciones de un usuario sobre una publicación específica
-    List<Interaccion> encontrarPorUsuarioYPubli(Usuario usuario, Publicacion publicacion);
+    //List<Interaccion> encontrarPorUsuarioYPubli(Usuario usuario, Publicacion publicacion);
 
     void eliminar(long interaccionId);
 
     String consolidarTextoInteraccionesRecientes(Usuario usuario, int limite);
+
+    Interaccion encontrarInteraccionPorId(long interaccionId);
 }

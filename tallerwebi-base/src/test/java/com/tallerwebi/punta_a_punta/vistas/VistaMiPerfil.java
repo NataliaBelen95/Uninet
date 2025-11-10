@@ -1,6 +1,7 @@
 package com.tallerwebi.punta_a_punta.vistas;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 public class VistaMiPerfil extends VistaWeb {
 
@@ -12,46 +13,61 @@ public class VistaMiPerfil extends VistaWeb {
     public void navegarAMiPerfil() {
         page.navigate("http://localhost:8080/spring/miPerfil");
     }
-    // --- Navegación ---
-    public void navegarAEditarInformacion() {
-        page.click("a[href='/spring/editar-informacion']");
-    }
 
-    public void navegarAMisLikes() {
-        page.click("a[href='/spring/misLikes']");
-    }
+//
 
-    // --- Datos del usuario (panel izquierdo) ---
+
     public String obtenerNombreUsuario() {
-        // ejemplo: "Admin Unlam"
-        return page.textContent("div.profile-card h2");
+        return page.textContent("div.estructura h2.palabra:nth-of-type(1)");
     }
 
     public String obtenerCarreraUsuario() {
         // ejemplo: "Profesorado en Matemática"
-        return page.textContent("div.profile-card li");
+        // El HTML usa 'ul li.titulo' dentro de 'contenedor_usuario'.
+        return page.textContent(".contenedor_usuario ul li.titulo");
     }
 
     // --- Publicaciones del usuario ---
+
+    /**
+     * Verifica que el contenedor principal de publicaciones esté presente y visible.
+     */
+    public boolean existeContenedorPublicaciones() {
+        // el ID 'contenedor-publicaciones'
+        return page.isVisible("#contenedor-publicaciones");
+    }
+
     public boolean hayPublicaciones() {
-        // devuelve true si hay al menos un <article class="estructura"> en la página
-        return !page.querySelectorAll("article.estructura").isEmpty();
+
+        return page.locator("#contenedor-publicaciones > div").count() > 0;
     }
 
     public String obtenerTextoPrimeraPublicacion() {
-        return hayPublicaciones() ? page.textContent("article.estructura p.texto") : "";
+
+        return hayPublicaciones() ? page.textContent("#contenedor-publicaciones > div:first-child p") : "";
     }
 
     public String obtenerLikesPrimeraPublicacion() {
-        return hayPublicaciones() ? page.textContent("article.estructura .like-container span") : "0";
+        // Se asume que los likes están en un span dentro del primer DIV de publicación.
+        return hayPublicaciones() ? page.textContent("#contenedor-publicaciones > div:first-child .like-count") : "0";
     }
+
     public String obtenerTextoBotonComentariosPrimeraPublicacion() {
-        return page.textContent("article.estructura .ver-comentariosBtn");
+        // Se asume que el botón de comentarios tiene un selector específico.
+        return page.textContent("#contenedor-publicaciones > div:first-child .boton-comentarios");
     }
 
     public String obtenerTitulo() {
         String nombre = page.textContent("div.estructura h2.palabra:nth-of-type(1)");
         String apellido = page.textContent("div.estructura h2.palabra:nth-of-type(2)");
         return (nombre != null ? nombre : "") + " " + (apellido != null ? apellido : "");
+    }
+    public void darClickEnMiPerfil() {
+        // 1. Clic en el título del menú para desplegar el submenú (selector: el enlace dentro del li.menu-perfil)
+        page.click("li.menu-perfil a.menu-titulo");
+
+        //  Clic en el enlace "Ver mi perfil" dentro del submenú
+        // href exacto para mayor seguridad.
+        page.click("li.menu-perfil ul.submenu a[href='/spring/miPerfil']");
     }
 }
