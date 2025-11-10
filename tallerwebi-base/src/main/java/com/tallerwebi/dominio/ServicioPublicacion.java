@@ -13,7 +13,7 @@ public interface ServicioPublicacion {
 
 
     void realizar(Publicacion publicacion, Usuario usuario, File archivo) throws PublicacionFallida, IOException;
-    public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivoSubido) throws PublicacionFallida;
+    public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivoSubido) throws PublicacionFallida, IOException;
     List<Publicacion> findAll();
     int obtenerCantidadDeLikes(long id);
     void eliminarPublicacionEntera(Publicacion publicacion);

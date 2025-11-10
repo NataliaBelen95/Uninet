@@ -22,7 +22,7 @@ public class Publicacion {
     @JoinColumn(name = "archivo_id")
     private ArchivoPublicacion archivo;
 
-    @Column(nullable = true, length = 200)
+    @Column(nullable = true, length = 400)
     private String descripcion;
 
 

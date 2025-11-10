@@ -43,6 +43,15 @@
                  style="max-width: 200px; max-height: 200px;" alt="Imagen" />
 
             <div th:case="'application/pdf'" class="archivo-pdf" style="margin-top: 10px;">
+                <button type="button"
+                        class="ver-pdf-btn"
+                        th:data-url="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}">
+                    Ver PDF
+                </button>
+                <!-- Botón de descarga opcional -->
+<!--                <a th:href="@{'/archivosPublicacion/' + ${dtopubli.archivoNombre}}"-->
+<!--                   download-->
+<!--                   style="margin-left: 10px;">Descargar PDF</a>-->
             </div>
         </div>
     </div>

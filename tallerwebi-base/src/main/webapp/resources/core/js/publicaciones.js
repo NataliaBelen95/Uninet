@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         });
 
-        // ---- Adjuntar archivo ----
+        // ---- Adjuntar archivo ---
         const botonAdjuntar = document.getElementById('botonAdjuntar');
         const inputArchivo = document.getElementById('inputArchivo');
 

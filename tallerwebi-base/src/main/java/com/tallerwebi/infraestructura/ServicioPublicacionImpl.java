@@ -5,8 +5,7 @@ import com.tallerwebi.dominio.excepcion.NoSeEncuentraPublicacion;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;  // CORRECTO PARA PRODUCCIÓN
-
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
@@ -31,87 +30,115 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario, RepositorioPublicacion repositorioPublicacion
-    , RepositorioUsuario repositorioUsuario) {
+    public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario,
+                                   RepositorioPublicacion repositorioPublicacion, RepositorioUsuario repositorioUsuario) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
         this.repositorioPublicacion = repositorioPublicacion;
         this.repositorioUsuario = repositorioUsuario;
     }
-@Override
-    public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida {
 
-        // Verificar si la descripción está vacía
-        boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
-        boolean sinArchivo = archivo == null || archivo.isEmpty(); // Verificar si no se ha subido archivo
+    // ----------------- PUBLICACIÓN CON MULTIPARTFILE (USUARIOS) -----------------
+    @Override
+    public void realizar(Publicacion publicacion, Usuario usuario, MultipartFile archivo) throws PublicacionFallida, IOException {
+        validarPublicacion(publicacion, 400, archivo);
 
-        // Si ni la descripción ni el archivo están presentes, lanzar excepción
-        if (descripcionVacia && sinArchivo) {
-            throw new PublicacionFallida("La publicación debe tener texto o al menos un archivo adjunto");
-        }
-
-        // Verificar que la descripción no exceda los 200 caracteres
-        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
-            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
-        }
-
-        // Verificar si ya existe una publicación igual
-        if (repositorio.existeIgual(publicacion)) {
-            throw new PublicacionFallida("Ya existe una publicación igual");
-        }
-
-        // Establecer fecha de publicación y usuario
         publicacion.setFechaPublicacion(LocalDateTime.now());
         publicacion.setUsuario(usuario);
-
         publicacion.setEsPublicidad(false);
 
-        // Verificar si ya existe un archivo asociado a esta publicación
-        if (publicacion.getArchivo() != null) {
-            throw new PublicacionFallida("Ya existe un archivo asociado a esta publicación");
-        }
-
-        // Si hay archivo
         if (archivo != null && !archivo.isEmpty()) {
-            String tipo = archivo.getContentType();
+            String nombreArchivo = archivo.getOriginalFilename();
+            if (nombreArchivo == null) throw new PublicacionFallida("El archivo no tiene nombre");
 
-            // Verificar si el archivo es del tipo permitido (PDF o imágenes)
-            if (!tipo.equals("application/pdf") && !tipo.startsWith("image/")) {
+            boolean esPdf = nombreArchivo.toLowerCase().endsWith(".pdf");
+            boolean esImagen = nombreArchivo.toLowerCase().matches(".*\\.(jpg|jpeg|png|gif)$");
+
+            if (!esPdf && !esImagen) {
                 throw new PublicacionFallida("Solo se permiten archivos JPG o PDF");
             }
 
-            // Obtener nombre original del archivo
-            String nombreOriginal = archivo.getOriginalFilename();
+            String tipoContenido = esPdf ? "application/pdf" : archivo.getContentType();
 
-            // Generar nombre único para el archivo
-            String nombreArchivo = UUID.randomUUID() + "_" + nombreOriginal;
-
-            // Ruta donde se guardará el archivo
-            Path rutaArchivo = Paths.get(System.getProperty("user.dir"), "archivosPublicacion", nombreArchivo);
-
+            Path rutaArchivo = Paths.get(System.getProperty("user.dir"), "archivosPublicacion",
+                    UUID.randomUUID() + "_" + nombreArchivo);
+            Files.createDirectories(rutaArchivo.getParent());
             try (InputStream is = archivo.getInputStream()) {
-                // Crear directorios si no existen
-                Files.createDirectories(rutaArchivo.getParent());
-                // Copiar archivo a la ruta especificada
                 Files.copy(is, rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new PublicacionFallida("Error al guardar archivo: " + archivo.getOriginalFilename());
             }
 
             ArchivoPublicacion archivoPub = new ArchivoPublicacion();
-            archivoPub.setNombreArchivo(nombreArchivo);
-            archivoPub.setRutaArchivo(rutaArchivo.toString());
-            archivoPub.setTipoContenido(tipo);
+            archivoPub.setNombreArchivo(rutaArchivo.getFileName().toString()); // Solo nombre para URL
+            archivoPub.setRutaArchivo(rutaArchivo.toString());                  // Ruta física
+            archivoPub.setTipoContenido(tipoContenido);
             archivoPub.setPublicacion(publicacion);
 
             publicacion.setArchivo(archivoPub);
         }
-        usuario.setUltimaPublicacion(LocalDate.now());
-        repositorioUsuario.actualizar(usuario); // 🔒 asegurar persistencia
-        repositorio.guardar(publicacion);
+
+        actualizarUsuarioYGuardar(publicacion, usuario);
     }
 
+    // ----------------- PUBLICACIÓN CON FILE (PDF INTERNOS) -----------------
+    @Override
+    public void realizar(Publicacion publicacion, Usuario usuario, File archivo) throws PublicacionFallida, IOException {
+        validarPublicacion(publicacion, 400, archivo);
 
+        publicacion.setFechaPublicacion(LocalDateTime.now());
+        publicacion.setUsuario(usuario);
+        publicacion.setEsPublicidad(false);
+
+        if (archivo != null && archivo.exists() && archivo.length() > 0) {
+            String nombreOriginal = archivo.getName();
+            if (!nombreOriginal.toLowerCase().endsWith(".pdf")) {
+                throw new PublicacionFallida("Solo se permiten archivos PDF generados automáticamente");
+            }
+
+            String tipoContenido = "application/pdf";
+
+
+            String nombreArchivoRelativo = UUID.randomUUID() + "_" + archivo.getName();
+
+            Path rutaArchivo = Paths.get(System.getProperty("user.dir"), "archivosPublicacion", nombreArchivoRelativo);
+            Files.createDirectories(rutaArchivo.getParent());
+            try (InputStream is = Files.newInputStream(archivo.toPath())) {
+                Files.copy(is, rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            ArchivoPublicacion archivoPub = new ArchivoPublicacion();
+            archivoPub.setNombreArchivo(nombreArchivoRelativo); // Solo nombre para URL
+            archivoPub.setRutaArchivo(rutaArchivo.toString());
+            archivoPub.setTipoContenido("application/pdf");
+            archivoPub.setPublicacion(publicacion);
+
+            publicacion.setArchivo(archivoPub);
+        }
+
+        actualizarUsuarioYGuardar(publicacion, usuario);
+    }
+
+    // ----------------- PUBLICACIÓN DEL BOT -----------------
+    @Override
+    public void guardarPubliBot(Publicacion publicacion, Usuario usuario, String urlImagen) throws PublicacionFallida {
+        boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
+
+        if (descripcionVacia && (urlImagen == null || urlImagen.isEmpty())) {
+            throw new PublicacionFallida("La publicación del bot debe tener contenido o imagen.");
+        }
+
+        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
+            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
+        }
+
+        publicacion.setFechaPublicacion(LocalDateTime.now());
+        publicacion.setUsuario(usuario);
+        publicacion.setEsPublicidad(true);
+        publicacion.setUrlImagen(urlImagen);
+
+        actualizarUsuarioYGuardar(publicacion, usuario);
+    }
+
+    // ----------------- MÉTODOS DE CONSULTA -----------------
     @Override
     public List<Publicacion> findAll() {
         return repositorio.listarTodas();
@@ -119,14 +146,12 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     @Override
     public int obtenerCantidadDeLikes(long id) {
-        Publicacion p = obtenerPublicacion(id);
-        return p.getLikes();
+        return obtenerPublicacion(id).getLikes();
     }
 
     @Override
     public void eliminarPublicacionEntera(Publicacion publicacion) {
         if (publicacion != null) {
-
             repositorio.eliminarPubli(publicacion);
         } else {
             throw new NoSeEncuentraPublicacion();
@@ -143,58 +168,6 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorioPublicacion.obtenerPublicacionCompleta(id);
     }
 
-
-
-    @Override
-    public void realizar(Publicacion publicacion, Usuario usuario, File archivo) throws PublicacionFallida, IOException {
-        boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
-        boolean sinArchivo = archivo == null || !archivo.exists();
-
-        if (descripcionVacia && sinArchivo) {
-            throw new PublicacionFallida("La publicación debe tener texto o al menos un archivo adjunto");
-        }
-
-        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
-            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
-        }
-
-        publicacion.setFechaPublicacion(LocalDateTime.now());
-        publicacion.setUsuario(usuario);
-        publicacion.setEsPublicidad(false);
-        usuario.setUltimaPublicacion(LocalDate.now());
-
-
-
-        if (archivo != null && archivo.exists()) {
-            String tipo = Files.probeContentType(archivo.toPath());
-            if (tipo == null || !tipo.equals("application/pdf")) {
-                throw new PublicacionFallida("Solo se permiten archivos PDF generados automáticamente");
-            }
-
-            String nombreOriginal = archivo.getName();
-            String nombreArchivo = UUID.randomUUID() + "_" + nombreOriginal;
-            Path rutaArchivo = Paths.get(System.getProperty("user.dir"), "archivosPublicacion", nombreArchivo);
-
-            try {
-                Files.createDirectories(rutaArchivo.getParent());
-                Files.copy(archivo.toPath(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new PublicacionFallida("Error al guardar archivo: " + nombreOriginal);
-            }
-
-            ArchivoPublicacion archivoPub = new ArchivoPublicacion();
-            archivoPub.setNombreArchivo(nombreArchivo);
-            archivoPub.setRutaArchivo(rutaArchivo.toString());
-            archivoPub.setTipoContenido(tipo);
-            archivoPub.setPublicacion(publicacion);
-
-            publicacion.setArchivo(archivoPub);
-        }
-        usuario.setUltimaPublicacion(LocalDate.now());
-        repositorioUsuario.actualizar(usuario); // 🔒 asegurar persistencia
-        repositorio.guardar(publicacion);
-    }
-
     @Override
     public List<Publicacion> obtenerPorLikeDeUsuario(long id) {
         return repositorioPublicacion.obtenerPublicacionesConLikeDeUsuario(id);
@@ -205,39 +178,41 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorioPublicacion.obtenerPublicacionesDeUsuario(usuId);
     }
 
-    // 2. 🔑 NUEVO MÉTODO PARA EL BOT (URL de la Imagen)
     @Override
-    public void guardarPubliBot(Publicacion publicacion, Usuario usuario, String urlImagen) throws PublicacionFallida {
+    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
+        return repositorioPublicacion.obtenerPublicacionesDirigidasA(usuario);
+    }
 
+    // ----------------- MÉTODOS PRIVADOS -----------------
+    private void validarPublicacion(Publicacion publicacion, int maxCaracteres, MultipartFile archivo) throws PublicacionFallida {
         boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
+        boolean sinArchivo = archivo == null || archivo.isEmpty();
 
-        // La publicación debe tener texto o una URL de imagen
-        if (descripcionVacia && (urlImagen == null || urlImagen.isEmpty())) {
-            throw new PublicacionFallida("La publicación del bot debe tener contenido o imagen.");
+        if (descripcionVacia && sinArchivo) {
+            throw new PublicacionFallida("La publicación debe tener texto o al menos un archivo adjunto");
         }
 
-        // (Opcional: Verificar que la descripción no exceda los 200 caracteres si aplica al bot)
-        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
-            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
+        if (!descripcionVacia && publicacion.getDescripcion().length() > maxCaracteres) {
+            throw new PublicacionFallida("Pasaste los " + maxCaracteres + " caracteres disponibles");
+        }
+    }
+
+    private void validarPublicacion(Publicacion publicacion, int maxCaracteres, File archivo) throws PublicacionFallida {
+        boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
+        boolean sinArchivo = archivo == null || !archivo.exists();
+
+        if (descripcionVacia && sinArchivo) {
+            throw new PublicacionFallida("La publicación debe tener texto o al menos un archivo adjunto");
         }
 
-        // Establecer datos
-        publicacion.setFechaPublicacion(LocalDateTime.now());
-        publicacion.setUsuario(usuario);
-        publicacion.setEsPublicidad(true);
+        if (!descripcionVacia && publicacion.getDescripcion().length() > maxCaracteres) {
+            throw new PublicacionFallida("Pasaste los " + maxCaracteres + " caracteres disponibles");
+        }
+    }
 
-        // ASIGNAR LA URL GENERADA POR LA IA
-        publicacion.setUrlImagen(urlImagen);
-
-        // Guardar
+    private void actualizarUsuarioYGuardar(Publicacion publicacion, Usuario usuario) {
         usuario.setUltimaPublicacion(LocalDate.now());
         repositorioUsuario.actualizar(usuario);
         repositorio.guardar(publicacion);
     }
-    @Override
-    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
-       return repositorioPublicacion.obtenerPublicacionesDirigidasA(usuario);
-    }
-
-
 }
