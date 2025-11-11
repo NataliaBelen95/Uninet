@@ -3,10 +3,13 @@ package com.tallerwebi.dominio;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class GeminiAnalysisService {
@@ -15,7 +18,7 @@ public class GeminiAnalysisService {
     private final RepositorioInteraccion repositorioInteraccion;
     private final  ServicioGustoPersonal servicioGustoPersonal;
     private final ObjectMapper objectMapper;
-   // private final ConcurrentMap<Long, Boolean> enAnalisis = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Boolean> enAnalisis = new ConcurrentHashMap<>();
     private final ServicioIntegracionIA servicioIntegracionIA;
     private final GeminiJsonParser geminiJsonParser;
 
@@ -34,19 +37,27 @@ public class GeminiAnalysisService {
     }
 
 
+    @Async("geminiTaskExecutor")
     @Transactional
     public GustosPersonal analizarInteraccionesYActualizarGustos(Usuario usuario) {
+        GustosPersonal resultadoFinal = null; // Inicializa el resultado fuera del try
+        if (enAnalisis.putIfAbsent(usuario.getId(), true) != null) {
+            System.out.println("Ya hay un análisis en curso para el usuario " + usuario.getId());
+            return servicioGustoPersonal.buscarPorUsuario(usuario);
 
+        }
         try {
             if (!debeReanalizar(usuario)) {
                 System.out.println("Análisis omitido: ya actualizado recientemente.");
-                return servicioGustoPersonal.buscarPorUsuario(usuario);
+                resultadoFinal = servicioGustoPersonal.buscarPorUsuario(usuario);
+                return resultadoFinal; // Retorno temprano
             }
 
             String texto = obtenerTextoInteracciones(usuario);
             if (texto.isEmpty()) {
                 System.out.println("No hay interacciones para analizar.");
-                return servicioGustoPersonal.buscarPorUsuario(usuario);
+                resultadoFinal = servicioGustoPersonal.buscarPorUsuario(usuario);
+                return resultadoFinal; // Retorno temprano
             }
 
             String prompt = generarPrompt(texto);
@@ -62,9 +73,9 @@ public class GeminiAnalysisService {
             InteresesGeneradosDTO data = geminiJsonParser.parsearJsonIntereses(textoGenerado);
 
 
-            GustosPersonal gustos = guardarOActualizarGustosDeUsuario(usuario, data);
+            resultadoFinal = guardarOActualizarGustosDeUsuario(usuario, data);
             System.out.println("Gustos actualizados correctamente para el usuario " + usuario.getId());
-            return gustos;
+
 
         } catch (Exception e) {
             System.err.println("------------------------------------------------------------------------");
@@ -72,7 +83,11 @@ public class GeminiAnalysisService {
             e.printStackTrace();
             System.err.println("------------------------------------------------------------------------");
             return null;
+        } finally {
+            // 🔓 Asegura liberar el bloqueo aunque haya error o return antes
+            enAnalisis.remove(usuario.getId());
         }
+        return resultadoFinal;
     }
 
 

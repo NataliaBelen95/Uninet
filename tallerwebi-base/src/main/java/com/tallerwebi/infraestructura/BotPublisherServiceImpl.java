@@ -24,20 +24,18 @@ public class BotPublisherServiceImpl implements BotPublisherService {
    // private final GeminiApiClient geminiApiClient;
     private final ObjectMapper objectMapper;
     private final ServicioImagenIA servicioImagenIA;
-    private final LuceneService luceneService;
+    //private final LuceneService luceneService;
     private final ServicioIntegracionIA servicioIntegracionIA;
 
     @Autowired
     public BotPublisherServiceImpl (RepositorioGustoPersonal repositorioGustoPersonal, RepositorioUsuario repositorioUsuario, ServicioPublicacion servicioPublicacion,
-                                    GeminiApiClient geminiApiClient, @Qualifier("objectMapperGemini") ObjectMapper objectMapper, ServicioImagenIA servicioImagenIA, LuceneService luceneService,
+                                    @Qualifier("objectMapperGemini") ObjectMapper objectMapper, ServicioImagenIA servicioImagenIA,
                                     ServicioIntegracionIA servicioIntegracionIA) {
         this.repositorioGustoPersonal = repositorioGustoPersonal;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioPublicacion = servicioPublicacion;
-       // this.geminiApiClient = geminiApiClient;
         this.objectMapper = objectMapper;
         this.servicioImagenIA = servicioImagenIA;
-        this.luceneService = luceneService;
         this.servicioIntegracionIA = servicioIntegracionIA;
 
     }
