@@ -36,25 +36,7 @@ public class RepositorioInteraccionTest {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private Interaccion crearInteraccion(Usuario usuario, Publicacion publicacion, String tipo, String contenido, LocalDateTime fecha) {
-        Interaccion interaccion = new Interaccion();
-        interaccion.setTipo(tipo);
-        interaccion.setContenido(contenido);
-        interaccion.setUsuario(usuario);
-        interaccion.setPublicacion(publicacion);
-        interaccion.setFecha(fecha);
-        return interaccion;
-    }
-    private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
-        Usuario u = new Usuario();
-        u.setNombre(nombre);
-        u.setApellido(apellido);
-        u.setEmail(email);
-        u.setDni(dni);
-        u.setEsBot(false);
-        u.setPassword("password");
-        return u;
-    }
+
 
     @Test
     public void poderGuardarUnsNuevaInteraccionDeUsuario() {
@@ -141,4 +123,24 @@ public class RepositorioInteraccionTest {
         assertFalse(textoConsolidado.contains("Texto viejo que no pasa el limite"), "i2 debe haber sido excluido por el límite.");
     }
 
+
+    private Interaccion crearInteraccion(Usuario usuario, Publicacion publicacion, String tipo, String contenido, LocalDateTime fecha) {
+        Interaccion interaccion = new Interaccion();
+        interaccion.setTipo(tipo);
+        interaccion.setContenido(contenido);
+        interaccion.setUsuario(usuario);
+        interaccion.setPublicacion(publicacion);
+        interaccion.setFecha(fecha);
+        return interaccion;
+    }
+    private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
+        Usuario u = new Usuario();
+        u.setNombre(nombre);
+        u.setApellido(apellido);
+        u.setEmail(email);
+        u.setDni(dni);
+        u.setEsBot(false);
+        u.setPassword("password");
+        return u;
+    }
 }
