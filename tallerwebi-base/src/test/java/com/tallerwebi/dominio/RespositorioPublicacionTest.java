@@ -83,6 +83,36 @@ public class RespositorioPublicacionTest {
 
     }
 
+    @Test
+    public void obtenerPublicacionesLikeadasDeUsuario() {
+        Usuario uLikeado = crearUsuario("Juan", "Perez", "jp@unlam.net", 2);
+        sessionFactory.getCurrentSession().save(uLikeado);
+        Publicacion p2 = crearPublicacion(uLikeado, false, LocalDateTime.now());
+        p2.setDescripcion("spring y hibernate (CON Like)");
+        repositorioPublicacion.guardar(p2);
+
+        Usuario uQuedaLike = crearUsuario("Ana", "Sanchez", "js@unlam.net", 3);
+        sessionFactory.getCurrentSession().save(uQuedaLike);
+
+        Like l = crearLike(uQuedaLike, p2, LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(l);
+
+        List<Publicacion> publicacionesLikeadasPorUqueDaLike = repositorioPublicacion.obtenerPublicacionesConLikeDeUsuario(uQuedaLike.getId());
+
+        assertEquals(1, publicacionesLikeadasPorUqueDaLike.size(), "deberia listar 1");
+
+    }
+    @Test
+    public void obtenerPublicacionesDeUsuarioPorSuId(){
+
+    }
+    @Test
+    public void obtenerPublicacionesDirigidasAUsuario_publicidadesHechasEnEspecialParaEseUsuario(){
+
+    }
+
+
+
 
 
 
@@ -113,13 +143,13 @@ public class RespositorioPublicacionTest {
       c.setPublicacion(publicacion);
       return c;
     }
-//    private Like crearLike(Usuario usuario, Publicacion publicacion, LocalDateTime fecha) {
-//        Like l = new Like();
-//        l.setUsuario(usuario);
-//        l.setPublicacion(publicacion);
-//        l.setFecha(fecha);
-//        return l;
-//    }
+      private Like crearLike(Usuario usuario, Publicacion publicacion, LocalDateTime fecha) {
+        Like l = new Like();
+        l.setUsuario(usuario);
+        l.setPublicacion(publicacion);
+        l.setFecha(fecha);
+        return l;
+   }
 
 
 

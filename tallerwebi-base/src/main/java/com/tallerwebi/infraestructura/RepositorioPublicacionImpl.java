@@ -101,7 +101,7 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
     public List<Publicacion> obtenerPublicacionesDirigidasA(Usuario usuario) {
         Long usuarioId = usuario.getId();
 
-        // 🔑 CORRECCIÓN: SOLO obtener anuncios dirigidos al usuario
+        // CORRECCIÓN: SOLO obtener anuncios dirigidos al usuario
         return sessionFactory.getCurrentSession()
                 .createQuery(
                         "SELECT DISTINCT p FROM Publicacion p " +
