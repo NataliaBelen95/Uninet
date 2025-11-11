@@ -65,7 +65,6 @@ public class ServicioRecomendaciones {
                 .map(id -> repositorioPublicacion.obtenerPublicacionCompleta(Long.parseLong(id)))
                 .filter(p -> p != null)
                 .filter(p -> p.getUsuario().getId() != usuario.getId())
-                .filter(p -> !p.getDescripcion().toLowerCase().contains("publicación vieja de prueba"))
                 .distinct()
                 .collect(Collectors.toList());
     }
