@@ -1,7 +1,9 @@
 package com.tallerwebi.infraestructura.config;
 
+import com.tallerwebi.dominio.RepositorioGustoPersonal;
 import com.tallerwebi.dominio.RepositorioInteraccion;
 import com.tallerwebi.dominio.RepositorioPublicacion;
+import com.tallerwebi.infraestructura.RepositorioGustoPersonalImpl;
 import com.tallerwebi.infraestructura.RepositorioInterracionImpl;
 import com.tallerwebi.infraestructura.RepositorioPublicacionImpl;
 import org.hibernate.SessionFactory;
@@ -60,6 +62,10 @@ public class HibernateTestInfraesructuraConfig {
     @Bean
     public RepositorioPublicacion repositorioPublicacion(SessionFactory sessionFactory) {
         return new RepositorioPublicacionImpl(sessionFactory);
+    }
+    @Bean
+    public RepositorioGustoPersonal repositorioGustoPersonal(SessionFactory sessionFactory) {
+        return new RepositorioGustoPersonalImpl(sessionFactory);
     }
 
 

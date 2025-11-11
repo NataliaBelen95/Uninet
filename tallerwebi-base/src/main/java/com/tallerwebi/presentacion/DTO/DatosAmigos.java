@@ -1,8 +1,4 @@
-package com.tallerwebi.presentacion;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.time.LocalDateTime;
+package com.tallerwebi.presentacion.DTO;
 
 public class DatosAmigos {
     private Long id;

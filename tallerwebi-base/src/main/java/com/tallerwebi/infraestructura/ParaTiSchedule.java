@@ -32,7 +32,7 @@ public class ParaTiSchedule {
     public void ejecutarPublicacionMasiva() {
         System.out.println("---  SCHEDULER: Iniciando ciclo de publicación dirigida ---");
         // Llama al método que se encarga de recorrer la lista de usuarios y publicar
-        botPublisherService.publicarContenidoMasivo();
+        botPublisherService.ejecutarCampañaPublicitariaDirigida();
         System.out.println("---  SCHEDULER: Tarea de publicación delegada a hilos asíncronos ---");
     }
 //@Scheduled(fixedDelay = 60000) 1 min prueba

@@ -2,7 +2,7 @@ package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
-import com.tallerwebi.presentacion.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ServicioSubirArchivoALaIA {

@@ -1,6 +1,9 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.presentacion.DTO.DatosAmigos;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.UsuarioMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;

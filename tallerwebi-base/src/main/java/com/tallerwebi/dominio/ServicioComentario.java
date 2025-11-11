@@ -1,7 +1,7 @@
 package com.tallerwebi.dominio;
 
 
-import com.tallerwebi.presentacion.DatosComentario;
+import com.tallerwebi.presentacion.DTO.DatosComentario;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

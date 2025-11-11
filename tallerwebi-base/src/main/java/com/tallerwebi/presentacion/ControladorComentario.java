@@ -2,6 +2,9 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.PublicacionNoEncontrada;
+import com.tallerwebi.presentacion.DTO.DatosComentario;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.PublicacionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

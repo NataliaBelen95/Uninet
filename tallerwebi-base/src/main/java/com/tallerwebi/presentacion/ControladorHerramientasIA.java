@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.excepcion.NoSePudoExtraerElTextoDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePudoGenerarResumenDelPDFException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;

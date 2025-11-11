@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -119,19 +118,19 @@ public class BotPublisherServiceImpl implements BotPublisherService {
 
 
     @Override
-    public void publicarContenidoMasivo() {
-        System.out.println("🤖 INICIANDO TAREA DE PUBLICACIÓN MASIVA DE BOTS...");
+    public void ejecutarCampañaPublicitariaDirigida() {
+        System.out.println("INICIANDO TAREA DE PUBLICACIÓN MASIVA DE BOTS...");
 
-        // 🔑 Paso 1: Obtener la lista de IDs de todos los usuarios que tienen un perfil de gustos
+        //  Paso 1: Obtener la lista de IDs de todos los usuarios que tienen un perfil de gustos
         // (Esto requiere un método en RepositorioGustoPersonal para listar IDs o perfiles)
-        List<Long> usuariosConGusto = repositorioGustoPersonal.listarIdsDeUsuariosConPerfil();
+        List<Long> usuariosConGusto = repositorioGustoPersonal.obtenerUsuariosAnalizadosId();
 
         if (usuariosConGusto.isEmpty()) {
             System.out.println("No se encontraron perfiles de IA para generar publicaciones.");
             return;
         }
 
-        // 🔑 Paso 2: Iterar y disparar el proceso asíncrono para cada usuario
+        //  Paso 2: Iterar y disparar el proceso asíncrono para cada usuario
         for (Long userId : usuariosConGusto) {
             // La llamada asíncrona no bloquea el bucle, permitiendo que la tarea se ejecute rápido.
             publicarContenidoParaUsuario(userId);

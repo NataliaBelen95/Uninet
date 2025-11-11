@@ -1,4 +1,4 @@
-package com.tallerwebi.presentacion;
+package com.tallerwebi.presentacion.DTO;
 
 import com.tallerwebi.dominio.Carrera;
 import com.tallerwebi.dominio.Genero;

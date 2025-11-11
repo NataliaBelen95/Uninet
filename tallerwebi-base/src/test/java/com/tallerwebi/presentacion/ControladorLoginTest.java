@@ -24,13 +24,14 @@ public class ControladorLoginTest {
 
     private ControladorLogin controladorLogin;
     private Usuario usuarioMock;
-    private DatosLogin datosLoginMock;
+    //private DatosLogin datosLoginMock;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private ServicioLogin servicioLoginMock;
     private RepositorioUsuario repositorioUsuarioMock;
     private RepositorioUsuarioImpl servicioUsuarioMock;
     private ServicioCarrera servicioCarreraMock;
+
 
 
 

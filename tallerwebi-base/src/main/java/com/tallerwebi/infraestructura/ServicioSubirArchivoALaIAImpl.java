@@ -5,7 +5,7 @@ import com.tallerwebi.dominio.ServicioSubirArchivoALaIA;
 import com.tallerwebi.dominio.excepcion.NoSePuedeCopiarArchivoDesdeTempACarpetaFinalException;
 import com.tallerwebi.dominio.excepcion.NoSePuedeSubirArchivoPorFallaException;
 
-import com.tallerwebi.presentacion.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

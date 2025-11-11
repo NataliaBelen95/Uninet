@@ -1,4 +1,4 @@
-package com.tallerwebi.presentacion;
+package com.tallerwebi.presentacion.DTO;
 import com.tallerwebi.dominio.Usuario;
 import org.springframework.stereotype.Component;
 

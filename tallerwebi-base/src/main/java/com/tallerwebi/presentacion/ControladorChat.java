@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.ChatMessage;
 import com.tallerwebi.dominio.ServicioChat;
 import com.tallerwebi.dominio.ServicioUsuario;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class ControladorChat {
 
     @GetMapping("/chat")
     public String verChat(HttpServletRequest request, Model model) {
-        var datos = (com.tallerwebi.presentacion.DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        var datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         if (datos == null) {
             return "redirect:/login";
         }
@@ -35,7 +36,7 @@ public class ControladorChat {
         model.addAttribute("usuariosNuevos", servicioUsuario.mostrarTodos().stream()
                 .filter(u -> !java.util.Objects.equals(u.getId(), datos.getId()))
                 .map(u -> {
-                    com.tallerwebi.presentacion.DatosUsuario du = new com.tallerwebi.presentacion.DatosUsuario();
+                    DatosUsuario du = new DatosUsuario();
                     du.setId(u.getId());
                     du.setNombre(u.getNombre());
                     du.setApellido(u.getApellido());
@@ -63,7 +64,7 @@ public class ControladorChat {
     @ResponseBody
     public ResponseEntity<List<ChatMessage>> conversacion(@RequestParam Long withUser, HttpServletRequest request) {
         try {
-            var datos = (com.tallerwebi.presentacion.DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+            var datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
             if (datos == null) {
                 System.out.println("ChatController.conversacion: usuario no logueado");
                 return ResponseEntity.ok(List.of());

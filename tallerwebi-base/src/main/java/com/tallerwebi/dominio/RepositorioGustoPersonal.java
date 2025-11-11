@@ -11,5 +11,5 @@ public interface RepositorioGustoPersonal {
     // Método para encontrar los gustos de un usuario específico.
     GustosPersonal buscarPorUsuario(Usuario usuario);
 
-    List<Long> listarIdsDeUsuariosConPerfil();
+    List<Long> obtenerUsuariosAnalizadosId();
 }

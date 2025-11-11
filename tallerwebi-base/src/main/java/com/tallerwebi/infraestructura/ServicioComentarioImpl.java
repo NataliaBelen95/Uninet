@@ -2,7 +2,7 @@ package com.tallerwebi.infraestructura;
 
 
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.presentacion.DatosComentario;
+import com.tallerwebi.presentacion.DTO.DatosComentario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

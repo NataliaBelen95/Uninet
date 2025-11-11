@@ -1,8 +1,6 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import com.tallerwebi.presentacion.DatosUsuario;
-import io.grpc.ClientStreamTracer;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;

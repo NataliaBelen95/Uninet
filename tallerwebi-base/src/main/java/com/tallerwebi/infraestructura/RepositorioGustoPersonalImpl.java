@@ -36,7 +36,7 @@ public class RepositorioGustoPersonalImpl implements RepositorioGustoPersonal {
     }
 //para saber a que usaurios publicarles
 @Override
-public List<Long> listarIdsDeUsuariosConPerfil() {
+public List<Long> obtenerUsuariosAnalizadosId() {
     Session session = sessionFactory.getCurrentSession();
 
     return session.createQuery(

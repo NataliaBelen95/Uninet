@@ -2,6 +2,9 @@ package com.tallerwebi.presentacion;
 
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.presentacion.DTO.DatosPublicacion;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.DatosUsuariosNuevos;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -106,7 +107,7 @@ public ModelAndView home(HttpServletRequest request,
 
     @GetMapping("/admin/publicar-anuncios")
     public ModelAndView dispararBot() {
-        botPublisherService.publicarContenidoMasivo();
+        botPublisherService.ejecutarCampañaPublicitariaDirigida();
         // Simplemente devuelve una página de confirmación.
         return new ModelAndView("redirect:/home");
     }

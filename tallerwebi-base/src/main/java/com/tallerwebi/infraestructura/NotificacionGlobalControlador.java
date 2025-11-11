@@ -3,20 +3,13 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.ServicioNotificacion;
 import com.tallerwebi.dominio.ServicioUsuario;
-import com.tallerwebi.dominio.Usuario;
-import com.tallerwebi.presentacion.DatosUsuario;
-import com.tallerwebi.presentacion.UsuarioMapper;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class NotificacionGlobalControlador {

@@ -1,7 +1,7 @@
 package com.tallerwebi.dominio;
 
-import com.tallerwebi.presentacion.DatosPublicacion;
-import com.tallerwebi.presentacion.PublicacionMapper;
+import com.tallerwebi.presentacion.DTO.DatosPublicacion;
+import com.tallerwebi.presentacion.DTO.PublicacionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
