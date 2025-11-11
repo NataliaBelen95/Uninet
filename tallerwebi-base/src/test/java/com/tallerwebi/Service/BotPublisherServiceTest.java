@@ -114,24 +114,6 @@ public class BotPublisherServiceTest {
 
 
 
-    private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
-        Usuario u = new Usuario();
-        u.setNombre(nombre);
-        u.setApellido(apellido);
-        u.setEmail(email);
-        u.setDni(dni);
-        u.setEsBot(false);
-        u.setPassword("password");
-        return u;
-    }
-    private GustosPersonal crearGustosPersonal(Usuario usuario, String tagIntereses, String resumenPerfil, String temaPrincipal, LocalDateTime fechaUltimoAnalisis) {
-        GustosPersonal g = new GustosPersonal();
-        g.setUsuario(usuario);
-        g.setTagsIntereses(tagIntereses);
-        g.setResumenPerfil(resumenPerfil);
-        g.setTemaPrincipal(temaPrincipal);
-        g.setFechaUltimoAnalisis(fechaUltimoAnalisis);
-        return g;
-    }
+
 
 }

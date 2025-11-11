@@ -26,15 +26,15 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
     private final RepositorioComentario repositorioComentario;
-    private final RepositorioPublicacion repositorioPublicacion;
+
     private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
     public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario,
-                                   RepositorioPublicacion repositorioPublicacion, RepositorioUsuario repositorioUsuario) {
+                                   RepositorioUsuario repositorioUsuario) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
-        this.repositorioPublicacion = repositorioPublicacion;
+
         this.repositorioUsuario = repositorioUsuario;
     }
 
@@ -126,8 +126,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
             throw new PublicacionFallida("La publicación del bot debe tener contenido o imagen.");
         }
 
-        if (!descripcionVacia && publicacion.getDescripcion().length() > 200) {
-            throw new PublicacionFallida("Pasaste los 200 caracteres disponibles");
+        if (!descripcionVacia && publicacion.getDescripcion().length() > 400) {
+            throw new PublicacionFallida("Pasaste los 400 caracteres disponibles");
         }
 
         publicacion.setFechaPublicacion(LocalDateTime.now());
@@ -165,22 +165,22 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     @Override
     public Publicacion obtenerPublicacion(long id) {
-        return repositorioPublicacion.obtenerPublicacionCompleta(id);
+        return repositorio.obtenerPublicacionCompleta(id);
     }
 
     @Override
     public List<Publicacion> obtenerPorLikeDeUsuario(long id) {
-        return repositorioPublicacion.obtenerPublicacionesConLikeDeUsuario(id);
+        return repositorio.obtenerPublicacionesConLikeDeUsuario(id);
     }
 
     @Override
     public List<Publicacion> obtenerPublicacionesDeUsuario(long usuId) {
-        return repositorioPublicacion.obtenerPublicacionesDeUsuario(usuId);
+        return repositorio.obtenerPublicacionesDeUsuario(usuId);
     }
 
     @Override
     public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
-        return repositorioPublicacion.obtenerPublicacionesDirigidasA(usuario);
+        return repositorio.obtenerPublicacionesDirigidasA(usuario);
     }
 
     // ----------------- MÉTODOS PRIVADOS -----------------
