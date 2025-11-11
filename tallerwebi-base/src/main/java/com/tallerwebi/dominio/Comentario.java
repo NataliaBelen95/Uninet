@@ -58,5 +58,5 @@ public class Comentario {
     public LocalDateTime getFechaComentario() {
         return fechaComentario;
     }
-    public void setFechaComentario(LocalDateTime fechaComentario) {}
+    public void setFechaComentario(LocalDateTime fechaComentario) {this.fechaComentario = fechaComentario;}
 }

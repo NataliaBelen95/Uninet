@@ -15,9 +15,12 @@ import java.util.List;
 
 @Repository
 public class RepositorioComentarioImpl implements RepositorioComentario {
-
+    private final SessionFactory sessionFactory;
     @Autowired
-    private SessionFactory sessionFactory;
+    public RepositorioComentarioImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
 
 
     @Override
@@ -55,19 +58,22 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
     public List<Comentario> findComentariosByPublicacionId(long publicacionId) {
         return sessionFactory.getCurrentSession()
                 .createQuery("SELECT c FROM Comentario c " +
-                        "WHERE c.publicacion.id = :id", Comentario.class)
+                                "LEFT JOIN FETCH c.usuario " +
+                                "WHERE c.publicacion.id = :id " +
+                                "ORDER BY c.fechaComentario DESC", //
+                        Comentario.class)
                 .setParameter("id", publicacionId)
                 .getResultList();
     }
 
-    @Override
-    public Usuario encontrarUsuarioQueHizoComentario(long comentarioId) {
-        String hql = "SELECT c.usuario FROM Comentario c WHERE c.id = :comentarioId";
-        return (Usuario) sessionFactory.getCurrentSession()
-                .createQuery(hql)
-                .setParameter("comentarioId", comentarioId)
-                .uniqueResult();
-    }
+//    @Override
+//    public Usuario encontrarUsuarioQueHizoComentario(long comentarioId) {
+//        String hql = "SELECT c.usuario FROM Comentario c WHERE c.id = :comentarioId";
+//        return (Usuario) sessionFactory.getCurrentSession()
+//                .createQuery(hql)
+//                .setParameter("comentarioId", comentarioId)
+//                .uniqueResult();
+//    }
 
 
 }

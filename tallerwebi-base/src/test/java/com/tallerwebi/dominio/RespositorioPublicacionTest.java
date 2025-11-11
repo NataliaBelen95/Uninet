@@ -58,7 +58,7 @@ public class RespositorioPublicacionTest {
             sessionFactory.getCurrentSession().save(c);
 
             // se vacia la sesión para forzar la lectura desde la DB y el FETCH JOIN
-            sessionFactory.getCurrentSession().flush();
+
             sessionFactory.getCurrentSession().clear();
 
             //Ejecución y Verificación ---

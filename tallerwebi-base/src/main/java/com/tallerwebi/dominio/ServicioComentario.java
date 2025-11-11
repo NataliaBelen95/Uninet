@@ -12,6 +12,6 @@ public interface ServicioComentario {
     void editarComentario(Comentario comentario);
     int contarComentarios(long id);
     List<Comentario> encontrarComentariosPorId(long id);
-    Usuario usuarioqueComento(long usuId);
+//    /Usuario usuarioqueComento(long usuId);
 
 }

@@ -76,9 +76,9 @@ public class ServicioComentarioImpl implements ServicioComentario {
         return repositorioComentario.findComentariosByPublicacionId(id);
     }
 
-    @Override
-    public Usuario usuarioqueComento(long usuId) {
-        return repositorioComentario.encontrarUsuarioQueHizoComentario(usuId);
-    }
+//    @Override
+//    public Usuario usuarioqueComento(long usuId) {
+//        return repositorioComentario.encontrarUsuarioQueHizoComentario(usuId);
+//    }
 
 }

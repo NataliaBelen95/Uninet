@@ -86,7 +86,7 @@ public class RepositorioInteraccionTest {
         pub.setDescripcion("Post de test");
         sessionFactory.getCurrentSession().save(pub);
 
-        sessionFactory.getCurrentSession().flush();
+
         sessionFactory.getCurrentSession().clear();
         final int LIMITE_A_PROBAR = 3;  //real son 50
         LocalDateTime ahora = LocalDateTime.now();

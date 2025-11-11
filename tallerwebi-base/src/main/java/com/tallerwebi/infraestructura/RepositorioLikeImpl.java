@@ -3,6 +3,7 @@ package com.tallerwebi.infraestructura;
 import com.tallerwebi.dominio.Like;
 import com.tallerwebi.dominio.Publicacion;
 import com.tallerwebi.dominio.RepositorioLike;
+import com.tallerwebi.dominio.RepositorioNotificacion;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,12 @@ import java.util.List;
 
 @Repository
 public class RepositorioLikeImpl implements RepositorioLike {
+    private final SessionFactory sessionFactory;
 
     @Autowired
-    private SessionFactory sessionFactory;
+    public RepositorioLikeImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public boolean existePorUsuarioYPublicacion(long usuId, long publiId) {

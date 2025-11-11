@@ -11,5 +11,5 @@ public interface RepositorioComentario {
     Comentario buscar(long id);
     int contarComentarioPorPublicacion(long publicacion);
     List<Comentario> findComentariosByPublicacionId(long publicacionId);
-    Usuario encontrarUsuarioQueHizoComentario(long comentarioId);
+    //Usuario encontrarUsuarioQueHizoComentario(long comentarioId);
 }
