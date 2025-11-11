@@ -1,13 +1,10 @@
-package com.tallerwebi.Service;
+package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.IndexWriterFactory;
 import com.tallerwebi.dominio.LuceneDirectoryManager;
 import com.tallerwebi.dominio.LuceneService;
 import com.tallerwebi.dominio.Publicacion;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.ByteBuffersDirectory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,7 +74,6 @@ public class LuceneServiceTest {
 
         // Ejecución
         luceneService.indexarPublicaciones(publicaciones);
-
 
         // Verifica que la publicación orgánica (ID 2) haya sido agregada
         verify(writerMock, times(1)).addDocument(argThat(new ArgumentMatcher<Document>() {

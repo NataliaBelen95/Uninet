@@ -25,10 +25,10 @@ public class ServicioFeed {
         this.publicacionMapper = publicacionMapper;
     }
 
-    public List<DatosPublicacion> obtenerFeedPrincipal(Long idUsuario) {
-        return servicioPublicacion.findAll().stream()
-                .filter(p -> !p.isEsPublicidad())
-                .map(p -> publicacionMapper.toDto(p, idUsuario))
+    public List<DatosPublicacion> obtenerFeedPrincipal(long usuarioId) {
+        List<Publicacion> publicacionesOrganicas = servicioPublicacion.obtenerTodasPublicacionesIgnorandoPublicidades();
+        return publicacionesOrganicas.stream()
+                .map(p -> publicacionMapper.toDto(p, usuarioId)) // Usa el mapper y el ID
                 .collect(Collectors.toList());
     }
 
@@ -53,4 +53,5 @@ public class ServicioFeed {
         return resultado;
 
     }
+
 }

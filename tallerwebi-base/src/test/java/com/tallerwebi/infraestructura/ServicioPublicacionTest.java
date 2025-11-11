@@ -1,9 +1,8 @@
-package com.tallerwebi.Service;
+package com.tallerwebi.infraestructura;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import com.tallerwebi.infraestructura.ServicioPublicacionImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

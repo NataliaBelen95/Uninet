@@ -1,4 +1,4 @@
-package com.tallerwebi.Service;
+package com.tallerwebi.infraestructura;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,13 +35,15 @@ public class GeminiAnalysisTest {
 
     }
 
+
+
     @Test
     public void queSePuedanAnalizarLosGustosYSeGuardenEnGustosPersonalEntity() throws JsonProcessingException {
         Usuario u = new Usuario();
         u.setNombre("Luis");
         u.setId(2L);
 
-        // 1. Configuración de Mocks de ENTRADA
+        //  Configuración de Mocks de ENTRADA
         when(servicioGustoPersonalMock.buscarPorUsuario(u)).thenReturn(null);
         when(repositorioInteraccionMock.consolidarTextoInteraccionesRecientes(any(Usuario.class), anyInt()))
                 .thenReturn("Me gustan las publicaciones sobre Java, Spring y bases de datos.");
@@ -58,9 +59,10 @@ public class GeminiAnalysisTest {
 
         // Crear un mock del DTO de respuesta de Gemini.
         GeminiResponseDTO mockGeminiResponse = mock(GeminiResponseDTO.class);
-        // Cuando el servicio llame a getGeneratedText(), devuelve el JSON de intereses.
-        when(mockGeminiResponse.getGeneratedText()).thenReturn(jsonGeneradoPorGemini);
-
+        // Mockeo: Cuando el ObjectMapper reciba la respuesta COMPLETA (respuestaGeminiJsonCompleta),
+        // NO debe ejecutar la lógica de deserialización real, sino devolver el objeto mockeado.
+        when(objectMapperMock.readValue(eq(respuestaGeminiJsonCompleta), eq(GeminiResponseDTO.class)))
+                .thenReturn(mockGeminiResponse);
         // Mockear el ObjectMapper para que, al deserializar la String, devuelva el mock.
         when(objectMapperMock.readValue(eq(respuestaGeminiJsonCompleta), eq(GeminiResponseDTO.class)))
                 .thenReturn(mockGeminiResponse);
@@ -74,10 +76,10 @@ public class GeminiAnalysisTest {
         // Mockea la llamada al parser con el JSON generado por Gemini.
         when(jsonParserMock.parsearJsonIntereses(eq(jsonGeneradoPorGemini))).thenReturn(dto);
 
-        // 4. Ejecución
+        //  Ejecución
         geminiAnalysisService.analizarInteraccionesYActualizarGustos(u);
 
-        // 5. Verificación
+        //  Verificación
         verify(servicioGustoPersonalMock, times(1)).guardarOActualizar(argThat(g ->
                 g.getUsuario().equals(u)
                         && g.getTemaPrincipal().equals("Programación Java")
@@ -91,15 +93,16 @@ public class GeminiAnalysisTest {
         verify(jsonParserMock, times(1)).parsearJsonIntereses(anyString());
     }
 
+
     @Test
     public void queElPromptSeGenereCorrectamenteConElTextoYFormatoRequerido() {
-        //
+
         String textoConsolidado = "Me gusta la física cuántica, la programación en C++ y las novelas de ciencia ficción.";
 
-        // 2. Ejecución del método
+        // Ejecución metodo
         String promptGenerado = geminiAnalysisService.generarPrompt(textoConsolidado);
 
-        // 3. Verificaciones
+        // Verificaciones:
 
         // a) Debe contener el texto de las interacciones.
         assertTrue(promptGenerado.contains(textoConsolidado),

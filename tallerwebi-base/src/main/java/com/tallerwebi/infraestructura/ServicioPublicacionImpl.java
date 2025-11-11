@@ -183,6 +183,12 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorio.obtenerPublicacionesDirigidasA(usuario);
     }
 
+    @Override
+    public List <Publicacion> obtenerTodasPublicacionesIgnorandoPublicidades() {
+        return repositorio.listarNoPublicitarias();
+    }
+
+
     // ----------------- MÉTODOS PRIVADOS -----------------
     private void validarPublicacion(Publicacion publicacion, int maxCaracteres, MultipartFile archivo) throws PublicacionFallida {
         boolean descripcionVacia = publicacion.getDescripcion() == null || publicacion.getDescripcion().trim().isEmpty();
@@ -215,4 +221,6 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         repositorioUsuario.actualizar(usuario);
         repositorio.guardar(publicacion);
     }
+
+
 }

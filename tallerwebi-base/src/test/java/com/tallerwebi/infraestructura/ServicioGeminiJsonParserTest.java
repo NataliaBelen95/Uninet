@@ -1,4 +1,4 @@
-package com.tallerwebi.Service;
+package com.tallerwebi.infraestructura;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,6 @@ import com.tallerwebi.dominio.GeminiJsonParser;
 import com.tallerwebi.dominio.InteresesGeneradosDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import static org.junit.jupiter.api.Assertions.*;

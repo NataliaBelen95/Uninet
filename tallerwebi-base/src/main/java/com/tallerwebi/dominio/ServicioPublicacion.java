@@ -25,4 +25,6 @@ public interface ServicioPublicacion {
     void guardarPubliBot(Publicacion publicacion, Usuario usuario, String urlImagen) throws PublicacionFallida;
 
     List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario);
+
+    List <Publicacion> obtenerTodasPublicacionesIgnorandoPublicidades();
 }

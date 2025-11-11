@@ -5,7 +5,6 @@ import com.tallerwebi.dominio.RepositorioPublicacion;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,19 +37,19 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .getResultList();
     }
 
-//    @Override
-//    public boolean existeIgual(Publicacion publicacion) {
-//
-//        String hql = "FROM Publicacion WHERE descripcion = :descripcion AND usuario = :usuario";
-//        Publicacion resultado = sessionFactory.getCurrentSession()
-//                .createQuery(hql, Publicacion.class)
-//                .setParameter("descripcion", publicacion.getDescripcion())
-//                .setParameter("usuario", publicacion.getUsuario())
-//                .uniqueResult();
-//
-//        return resultado != null;
-//    }
+    @Override
+    public List<Publicacion> listarNoPublicitarias() {
+        return sessionFactory.getCurrentSession()
+                .createQuery(
+                        "SELECT DISTINCT p FROM Publicacion p " +
+                                "LEFT JOIN FETCH p.usuario " +
+                                "LEFT JOIN FETCH p.comentarios " +
+                                "LEFT JOIN FETCH p.archivo " +
 
+                                "WHERE p.esPublicidad = false",
+                        Publicacion.class)
+                .getResultList();
+    }
 
     public void eliminarPubli(Publicacion publicacion) {
         sessionFactory.getCurrentSession().delete(publicacion);

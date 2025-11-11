@@ -10,6 +10,9 @@ public interface RepositorioPublicacion {
     void guardar(Publicacion publicacion);
     Publicacion buscarPorId(Long id);
     List<Publicacion> listarTodas();
+
+    List<Publicacion> listarNoPublicitarias();
+
     void eliminarPubli(Publicacion publicacion);
     Publicacion obtenerPublicacionCompleta(long id);
     List<Publicacion> obtenerPublicacionesConLikeDeUsuario(Long usuarioId);

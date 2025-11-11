@@ -1,19 +1,15 @@
-package com.tallerwebi.Service;
+package com.tallerwebi.infraestructura;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.dominio.excepcion.PublicacionFallida;
-import com.tallerwebi.infraestructura.BotPublisherServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class BotPublisherServiceTest {
 
@@ -53,11 +49,11 @@ public class BotPublisherServiceTest {
         final long targetUserId = 5L;
         Usuario usuarioReceptor = new Usuario();
         usuarioReceptor.setId(targetUserId);
-        usuarioReceptor.setEsBot(false); // Asegurarse de que el receptor no sea bot
+        usuarioReceptor.setEsBot(false);
 
         Usuario botUsuario = new Usuario();
         botUsuario.setId(99L);
-        botUsuario.setEsBot(true); // El autor debe ser bot
+        botUsuario.setEsBot(true); // el autor es bot
 
         // Gustos del usuario receptor
         GustosPersonal gustos = new GustosPersonal();
