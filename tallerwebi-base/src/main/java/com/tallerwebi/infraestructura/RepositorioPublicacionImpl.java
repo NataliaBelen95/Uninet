@@ -12,8 +12,10 @@ import java.util.List;
 @Repository
 public class RepositorioPublicacionImpl implements RepositorioPublicacion {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+    public RepositorioPublicacionImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void guardar(Publicacion publicacion) {
@@ -36,23 +38,19 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .getResultList();
     }
 
-    @Override
-    public boolean existeIgual(Publicacion publicacion) {
+//    @Override
+//    public boolean existeIgual(Publicacion publicacion) {
+//
+//        String hql = "FROM Publicacion WHERE descripcion = :descripcion AND usuario = :usuario";
+//        Publicacion resultado = sessionFactory.getCurrentSession()
+//                .createQuery(hql, Publicacion.class)
+//                .setParameter("descripcion", publicacion.getDescripcion())
+//                .setParameter("usuario", publicacion.getUsuario())
+//                .uniqueResult();
+//
+//        return resultado != null;
+//    }
 
-        String hql = "FROM Publicacion WHERE descripcion = :descripcion AND usuario = :usuario";
-        Publicacion resultado = sessionFactory.getCurrentSession()
-                .createQuery(hql, Publicacion.class)
-                .setParameter("descripcion", publicacion.getDescripcion())
-                .setParameter("usuario", publicacion.getUsuario())
-                .uniqueResult();
-
-        return resultado != null;
-    }
-
-    public List<Publicacion> findByUsuarioId(Long id) {
-       Usuario usuario = sessionFactory.getCurrentSession().get(Usuario.class, id);
-       return usuario.getPublicaciones();
-    }
 
     public void eliminarPubli(Publicacion publicacion) {
         sessionFactory.getCurrentSession().delete(publicacion);
@@ -72,17 +70,6 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
         }
 
         return publicacion;
-    }
-     //ver si existe por hash Para que no se repita E impida Crear Una publi nueva
-    @Override
-    public boolean existeHashResumen(String hash, Long usuarioId) {
-        Long count = sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(p) FROM Publicacion p WHERE p.hashResumen = :hash AND p.usuario.id = :usuarioId", Long.class)
-                .setParameter("hash", hash)
-                .setParameter("usuarioId", usuarioId)
-                .uniqueResult();
-
-        return count != null && count > 0;
     }
 
     @Override
@@ -108,21 +95,7 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .setParameter("usuarioId", usuarioId)
                 .getResultList();
     }
-//    @Override
-//    public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
-//        return sessionFactory.getCurrentSession()
-//                .createQuery(
-//                        "SELECT DISTINCT p FROM Publicacion p " +
-//                                "LEFT JOIN FETCH p.usuario u " +
-//                                "LEFT JOIN FETCH p.comentarios " +
-//                                "LEFT JOIN FETCH p.archivo " +
-//                                "LEFT JOIN FETCH p.likesDePublicacion " +
-//                                "WHERE u.esBot = true " +
-//                                "ORDER BY p.fechaPublicacion DESC",
-//                        Publicacion.class
-//                )
-//                .getResultList();
-//    }
+
 
     @Override
     public List<Publicacion> obtenerPublicacionesDirigidasA(Usuario usuario) {
@@ -145,10 +118,20 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .getResultList();
     }
 
+    //NO SE USA, chequear
 //    @Override
-//    public List<Publicacion> obtenerPublicacionesOrganicas() {
-//        return List.of();
+//    public boolean existeHashResumen(String hash, Long usuarioId) {
+//        Long count = sessionFactory.getCurrentSession()
+//                .createQuery("SELECT COUNT(p) FROM Publicacion p WHERE p.hashResumen = :hash AND p.usuario.id = :usuarioId", Long.class)
+//                .setParameter("hash", hash)
+//                .setParameter("usuarioId", usuarioId)
+//                .uniqueResult();
+//
+//        return count != null && count > 0;
 //    }
+
+
+
 }
 
 

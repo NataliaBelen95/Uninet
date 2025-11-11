@@ -1,7 +1,9 @@
 package com.tallerwebi.infraestructura.config;
 
 import com.tallerwebi.dominio.RepositorioInteraccion;
+import com.tallerwebi.dominio.RepositorioPublicacion;
 import com.tallerwebi.infraestructura.RepositorioInterracionImpl;
+import com.tallerwebi.infraestructura.RepositorioPublicacionImpl;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,12 +51,16 @@ public class HibernateTestInfraesructuraConfig {
         properties.setProperty("hibernate.hbm2ddl.auto", "create");
         return properties;
 
-    }  @Bean
+    }
+    @Bean
     public RepositorioInteraccion repositorioInteraccion(SessionFactory sessionFactory) {
         // CORREGIDO: Debes instanciar la clase concreta (Impl)
         return new RepositorioInterracionImpl(sessionFactory);
     }
-
+    @Bean
+    public RepositorioPublicacion repositorioPublicacion(SessionFactory sessionFactory) {
+        return new RepositorioPublicacionImpl(sessionFactory);
+    }
 
 
 }

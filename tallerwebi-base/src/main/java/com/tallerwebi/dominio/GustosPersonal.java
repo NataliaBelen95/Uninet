@@ -16,10 +16,11 @@ public class GustosPersonal {
 
     // Campos para almacenar los gustos analizados por Gemini
 
-    @Column(columnDefinition = "TEXT") // Usar TEXT para almacenar listas de tags o resúmenes
+    @Lob // Usar TEXT para almacenar listas de tags o resúmenes
     private String tagsIntereses; // Ej: "Ciencia Ficción, Programación, Deporte, Criptomonedas"
 
-    @Column(columnDefinition = "TEXT", nullable = true)
+    @Lob
+    @Column(nullable = true)
     private String resumenPerfil; // Un breve resumen del perfil del usuario generado por la IA
 
     @Column(nullable = true)
