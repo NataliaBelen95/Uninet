@@ -34,7 +34,6 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
     public void guardar(SolicitudAmistad solicitud) {
         sessionFactory.getCurrentSession().save(solicitud);
     }
-
     @Override
     public SolicitudAmistad buscarPorId(Long id) {
         return sessionFactory.getCurrentSession().get(SolicitudAmistad.class, id);

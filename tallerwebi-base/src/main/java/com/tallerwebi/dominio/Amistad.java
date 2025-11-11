@@ -45,4 +45,19 @@ public class Amistad {
 
     public void setEstado(EstadoAmistad estado) { this.estado = estado; }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSolicitante(Usuario solicitante) {
+        this.solicitante = solicitante;
+    }
+
+    public void setSolicitado(Usuario solicitado) {
+        this.solicitado = solicitado;
+    }
+
+    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
 }

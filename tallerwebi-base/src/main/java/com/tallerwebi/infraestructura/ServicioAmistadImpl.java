@@ -1,7 +1,6 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.dominio.RepositorioSolicitudAmistad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,23 +21,33 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     }
 
     @Override
-    public void enviarSolicitud(Usuario solicitante, Usuario receptor) {
+    public SolicitudAmistad enviarSolicitud(Usuario solicitante, Usuario receptor) {
         SolicitudAmistad solicitud = new SolicitudAmistad();
         solicitud.setSolicitante(solicitante);
         solicitud.setReceptor(receptor);
         repo.guardar(solicitud);
+        // si repo.guardar usa session.save(solicitud) con IDENTITY, solicitud.getId() ya estará poblado
+        return solicitud;
     }
 
     @Override
     public void aceptarSolicitud(Long idSolicitud) {
         SolicitudAmistad solicitud = repo.buscarPorId(idSolicitud);
+        if (solicitud == null) return;
         solicitud.setEstado(EstadoSolicitud.ACEPTADA);
         repo.actualizar(solicitud);
+
+        // crear entidad de amistad si tu modelo la requiere
+        Amistad amistad = new Amistad();
+        amistad.setSolicitante(solicitud.getSolicitante());
+        amistad.setSolicitado(solicitud.getReceptor());
+        repoAmistad.guardar(amistad);
     }
 
     @Override
     public void rechazarSolicitud(Long idSolicitud) {
         SolicitudAmistad solicitud = repo.buscarPorId(idSolicitud);
+        if (solicitud == null) return;
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
         repo.actualizar(solicitud);
     }

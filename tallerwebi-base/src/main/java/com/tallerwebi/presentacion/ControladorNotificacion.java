@@ -71,24 +71,40 @@ public class ControladorNotificacion {
         }
         return "ok";
     }
+
     @GetMapping("/notificaciones-dropdown")
     @ResponseBody
     public List<DatosNotificacion> notificacionesDropdown(HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if(datos != null){
+        if (datos != null) {
             Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
-            // Solo devolver las no leídas si querés que desaparezcan al marcar como leída
             return servicioNotificacion.obtenerPorUsuario(usuario.getId())
                     .stream()
-                    .filter(n -> !n.isLeida())  // FILTRAR LEIDAS
-                    .map(n -> new DatosNotificacion(
-                            n.getId(),
-                            n.getMensaje(),
-                            n.isLeida(),
-                            n.getFechaCreacion(),
-                            n.getUsuarioEmisor() != null ? n.getUsuarioEmisor().getNombre() : "Uninet",
-                            n.getUrl()
-                    ))
+                    .filter(n -> !n.isLeida())
+                    .map(n -> {
+                        // extraer solicitudId de la URL si existe
+                        Long amistadId = null;
+                        try {
+                            String url = n.getUrl();
+                            if (url != null && url.contains("solicitudId=")) {
+                                java.util.regex.Matcher m = java.util.regex.Pattern.compile("[?&]solicitudId=(\\d+)").matcher(url);
+                                if (m.find()) amistadId = Long.parseLong(m.group(1));
+                            }
+                        } catch (Exception ex) { /* ignore */ }
+
+                        Long emisorId = n.getUsuarioEmisor() != null ? n.getUsuarioEmisor().getId() : null;
+                        Long receptorId = n.getUsuarioReceptor() != null ? n.getUsuarioReceptor().getId() : usuario.getId();
+
+                        return new DatosNotificacion(
+                                n.getId(),
+                                n.getMensaje(),
+                                n.isLeida(),
+                                n.getFechaCreacion(),
+                                n.getUsuarioEmisor() != null ? n.getUsuarioEmisor().getNombre() : "Uninet",
+                                n.getUrl(),
+                                amistadId
+                        );
+                    })
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();

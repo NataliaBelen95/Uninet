@@ -2,12 +2,15 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-
+import java.util.List;
+import java.util.Objects;
+import java.util.Comparator;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,26 +35,6 @@ public class ControladorAmistad {
         this.servicioNotificacion = servicioNotificacion;
     }
 
-
-
-
-
-
-    @PostMapping("/enviar/{idReceptor}")
-    public String enviarSolicitud(@PathVariable Long idReceptor, HttpServletRequest request) {
-        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
-        Usuario receptor = servicioUsuario.buscarPorId(idReceptor);
-
-        servicioAmistad.enviarSolicitud(solicitante, receptor);
-        return "redirect:/usuarios";
-    }
-
-    @PostMapping("/aceptar/{idSolicitud}")
-    public String aceptarSolicitud(@PathVariable Long idSolicitud) {
-        servicioAmistad.aceptarSolicitud(idSolicitud);
-        return "redirect:/amistad/solicitudes";
-    }
 
     @PostMapping("/rechazar/{idSolicitud}")
     public String rechazarSolicitud(@PathVariable Long idSolicitud) {
@@ -97,34 +80,72 @@ public class ControladorAmistad {
         return "lista-amigos";
     }
 
-    @PostMapping("/enviar")
-    public String enviarSolicitudForm(@RequestParam("receptorId") Long receptorId, HttpServletRequest request) {
-        // 1) obtener datos de sesión
+
+    @PostMapping("/enviar/{idReceptor}")
+    public String enviarSolicitud(@PathVariable Long idReceptor, HttpServletRequest request) {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         if (datos == null) {
             return "redirect:/login";
         }
 
-        // 2) buscar entidades
         Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
-        Usuario receptor = servicioUsuario.buscarPorId(receptorId);
+        Usuario receptor = servicioUsuario.buscarPorId(idReceptor);
         if (solicitante == null || receptor == null) {
-            // manejo simple de error: redirigir a la lista de usuarios
             return "redirect:/usuarios";
         }
 
-        // 3) enviar la solicitud (persistir la solicitud de amistad)
+        // persistir la solicitud como antes
         servicioAmistad.enviarSolicitud(solicitante, receptor);
 
-        // 4) crear notificación persistente y enviar en tiempo real
-        // Delegamos la creación y envío a ServicioNotificacion:
+        // buscar la solicitud recién creada entre pendientes para obtener su id sin cambiar firmas:
+        Long solicitudId = null;
+        List<SolicitudAmistad> pendientes = servicioAmistad.listarSolicitudesPendientes(receptor);
+        if (pendientes != null && !pendientes.isEmpty()) {
+            solicitudId = pendientes.stream()
+                    .filter(s -> s.getSolicitante() != null
+                            && Objects.equals(s.getSolicitante().getId(), solicitante.getId()))
+                    // ordenar por fecha de solicitud descendente (más reciente primero), tolerando nulls
+                    .sorted(Comparator.comparing(SolicitudAmistad::getFechaSolicitud,
+                            Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+                    .map(SolicitudAmistad::getId)
+                    .findFirst()
+                    .orElse(null);
+        }
+
         try {
-            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD);
+            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitudId);
         } catch (Exception e) {
-            // en caso de fallo en la notificación no interrumpimos el flujo; opcional: loguear
+            System.err.println("Error al notificar solicitud de amistad: " + e.getMessage());
+        }
+        return "redirect:/usuarios";
+    }
+
+    @PostMapping("/enviar")
+    public String enviarSolicitudForm(@RequestParam("receptorId") Long receptorId, HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return "redirect:/login";
+        }
+        Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
+        Usuario receptor = servicioUsuario.buscarPorId(receptorId);
+        if (solicitante == null || receptor == null) {
+            return "redirect:/usuarios";
+        }
+
+        // Llamada como antes
+        servicioAmistad.enviarSolicitud(solicitante, receptor);
+        try {
+            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitante.getId());
+        } catch (Exception e) {
             System.err.println("Error al notificar solicitud de amistad: " + e.getMessage());
         }
 
         return "redirect:/home";
+    }
+
+    @PostMapping("/aceptar/{idSolicitud}")
+    public ResponseEntity<Void> aceptarSolicitud(@PathVariable Long idSolicitud) {
+        servicioAmistad.aceptarSolicitud(idSolicitud);
+        return ResponseEntity.ok().build();
     }
 }
