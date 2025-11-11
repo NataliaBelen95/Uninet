@@ -80,18 +80,18 @@ public class BotPublisherServiceImpl implements BotPublisherService {
             String jsonResponse = servicioIntegracionIA.enviarPromptYObtenerJson(promptGeneracion);
             String contenidoGenerado = extractTextFromGeminiResponse(jsonResponse);
 
-            // 4. 🖼️ GENERAR Y ADJUNTAR IMAGEN
+            // 4. 🖼GENERAR Y ADJUNTAR IMAGEN
             String urlImagenGenerada = servicioImagenIA.generarImagenRelacionada(contenidoGenerado); // Usa el texto generado
 
             // 5. Crear la Publicación Final (Solo se crea el objeto, la asignación se hace en el servicio)
             Publicacion nuevaPublicacion = new Publicacion();
-            nuevaPublicacion.setDescripcion(contenidoGenerado); // ⬅️ Seteamos la descripción ANTES de pasarla
+            nuevaPublicacion.setDescripcion(contenidoGenerado); // ⬅ Seteamos la descripción ANTES de pasarla
             nuevaPublicacion.setUsuarioDestinatarioId(usuarioReceptor.getId());
-            // 6. 🔑 LLAMADA FINAL: Pasando el Bot como autor
+            // 6. LLAMADA FINAL: Pasando el Bot como autor
             servicioPublicacion.guardarPubliBot(nuevaPublicacion, botUsuario, urlImagenGenerada); // ✅ CORREGIDO
             //luceneService.setIndexado(false);
             // 7. Mensaje de éxito
-            System.out.println("🤖 Bot publicó anuncio dirigido sobre " + temaPrincipal);
+            System.out.println(" Bot publicó anuncio dirigido sobre " + temaPrincipal);
 
         } catch (Exception e) {
             System.err.println("Error en el proceso de publicación del Bot: " + e.getMessage());

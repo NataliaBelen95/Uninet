@@ -2,10 +2,18 @@ package com.tallerwebi.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.excepcion.PublicacionFallida;
 import com.tallerwebi.infraestructura.BotPublisherServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.mock;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class BotPublisherServiceTest {
 
@@ -17,7 +25,7 @@ public class BotPublisherServiceTest {
     private LuceneService luceneServiceMock;
     private ServicioIntegracionIA servicioIntegracionIAMock;
     private GeminiAnalysisService geminiAnalysisServiceMock;
-    private BotPublisherService botPublisherService;
+    private BotPublisherServiceImpl botPublisherService;
 
     @BeforeEach
     public void init() {
@@ -29,11 +37,101 @@ public class BotPublisherServiceTest {
         luceneServiceMock = mock(LuceneService.class);
         servicioIntegracionIAMock = mock(ServicioIntegracionIA.class);
         botPublisherService = new BotPublisherServiceImpl(repositorioGustoPersonalMock, repositorioUsuarioMock,
-                          servicioPublicacionMock, objectMapperMock, servicioImagenIAMock, servicioIntegracionIAMock) {
-        };
+                servicioPublicacionMock, objectMapperMock, servicioImagenIAMock, servicioIntegracionIAMock);
+        {
 
 
-
+        }
 
     }
+
+
+    @Test
+    public void queUnUsuarioBotPuedaPublicarPublicidadParaUnUsuarioEnParticular() throws Exception {
+
+        // 1. Datos de prueba:
+        final long targetUserId = 5L;
+        Usuario usuarioReceptor = new Usuario();
+        usuarioReceptor.setId(targetUserId);
+        usuarioReceptor.setEsBot(false); // Asegurarse de que el receptor no sea bot
+
+        Usuario botUsuario = new Usuario();
+        botUsuario.setId(99L);
+        botUsuario.setEsBot(true); // El autor debe ser bot
+
+        // Gustos del usuario receptor
+        GustosPersonal gustos = new GustosPersonal();
+        gustos.setTemaPrincipal("Java");
+        gustos.setTagsIntereses("Spring, Backend");
+        gustos.setResumenPerfil("Desarrollador web backend.");
+
+        // 2. Mockear Repositorios y Servicios (Flujo de Negocio)
+        when(repositorioUsuarioMock.buscarBots()).thenReturn(List.of(botUsuario)); // Lista de bots disponibles
+        when(repositorioUsuarioMock.buscarPorId(eq(targetUserId))).thenReturn(usuarioReceptor);
+        when(repositorioGustoPersonalMock.buscarPorUsuario(eq(usuarioReceptor))).thenReturn(gustos);
+        when(servicioImagenIAMock.generarImagenRelacionada(anyString())).thenReturn("url_imagen_generada.jpg");
+
+        // 3. Mockear la Cadena de Deserialización de la IA
+
+        final String contenidoGeneradoIA = "¡No te pierdas el evento de Spring Boot en Madrid!";
+        final String jsonResponse = "{ \"candidates\": [...] }"; // El contenido real del JSON
+
+        // Mocks anidados para simular la estructura de GeminiResponseDTO
+        GeminiResponseDTO.Part mockPart = mock(GeminiResponseDTO.Part.class);
+        when(mockPart.getText()).thenReturn(contenidoGeneradoIA);
+
+        GeminiResponseDTO.Content mockContent = mock(GeminiResponseDTO.Content.class);
+        when(mockContent.getParts()).thenReturn(List.of(mockPart));
+
+        GeminiResponseDTO.Candidate mockCandidate = mock(GeminiResponseDTO.Candidate.class);
+        when(mockCandidate.getContent()).thenReturn(mockContent);
+
+        GeminiResponseDTO mockGeminiResponse = mock(GeminiResponseDTO.class);
+        when(mockGeminiResponse.getCandidates()).thenReturn(List.of(mockCandidate));
+
+        // Mockear la integración con la IA
+        when(servicioIntegracionIAMock.enviarPromptYObtenerJson(anyString())).thenReturn(jsonResponse);
+
+        // Mockear el ObjectMapper para que devuelva la estructura mockeada de Gemini
+        when(objectMapperMock.readValue(anyString(), eq(GeminiResponseDTO.class)))
+                .thenReturn(mockGeminiResponse);
+
+        // 4. Ejecución (publicarContenidoParaUsuario)
+        botPublisherService.publicarContenidoParaUsuario(targetUserId);
+
+        // 5. Verificación (Verificamos que el método final de guardado fue llamado)
+        verify(servicioPublicacionMock, times(1)).guardarPubliBot(
+                argThat(p -> p.getDescripcion().contains("Spring Boot")), // Se generó y se asignó el contenido
+                eq(botUsuario),
+                eq("url_imagen_generada.jpg")
+        );
+
+        // Verificamos que se llamó a la IA con el prompt correcto (que usa los datos de GustosPersonal)
+        verify(servicioIntegracionIAMock, times(1)).enviarPromptYObtenerJson(
+                argThat(prompt -> prompt.contains("Java") && prompt.contains("Spring, Backend") && prompt.contains("Desarrollador web backend."))
+        );
+        }
+
+
+
+    private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
+        Usuario u = new Usuario();
+        u.setNombre(nombre);
+        u.setApellido(apellido);
+        u.setEmail(email);
+        u.setDni(dni);
+        u.setEsBot(false);
+        u.setPassword("password");
+        return u;
+    }
+    private GustosPersonal crearGustosPersonal(Usuario usuario, String tagIntereses, String resumenPerfil, String temaPrincipal, LocalDateTime fechaUltimoAnalisis) {
+        GustosPersonal g = new GustosPersonal();
+        g.setUsuario(usuario);
+        g.setTagsIntereses(tagIntereses);
+        g.setResumenPerfil(resumenPerfil);
+        g.setTemaPrincipal(temaPrincipal);
+        g.setFechaUltimoAnalisis(fechaUltimoAnalisis);
+        return g;
+    }
+
 }
