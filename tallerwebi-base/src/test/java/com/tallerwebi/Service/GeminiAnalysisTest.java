@@ -173,4 +173,24 @@ public class GeminiAnalysisTest {
         verify(servicioIntegracionIAMock, times(1)).enviarPromptYObtenerJson(anyString());
     }
 
+    @Test
+    public void queOmiteElAnalisisSiNoHayInteracciones() throws JsonProcessingException {
+        Usuario u = new Usuario();
+        // 1. Mockear para que DEBA analizar (nuevo usuario o tiempo expirado)
+        when(servicioGustoPersonalMock.buscarPorUsuario(u)).thenReturn(null);
+
+        // 2. Mockear el repositorio para que devuelva texto vacío
+        when(repositorioInteraccionMock.consolidarTextoInteraccionesRecientes(any(), anyInt()))
+                .thenReturn("");
+
+        // Ejecución
+        geminiAnalysisService.analizarInteraccionesYActualizarGustos(u);
+
+        // Verificación: No debe llamar a generar el prompt ni a la IA.
+        verify(servicioIntegracionIAMock, never()).enviarPromptYObtenerJson(anyString());
+
+        // Debe intentar buscar los gustos para devolverlos (si existen, aunque el mock devuelva null)
+        verify(servicioGustoPersonalMock, times(2)).buscarPorUsuario(u); // 1 en debeReanalizar, 1 en el bloque 'if'
+    }
+
 }
