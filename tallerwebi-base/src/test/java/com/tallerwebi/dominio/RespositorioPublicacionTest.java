@@ -104,18 +104,48 @@ public class RespositorioPublicacionTest {
     }
     @Test
     public void obtenerPublicacionesDeUsuarioPorSuId(){
+        Usuario u1 = crearUsuario("Juan", "Perez", "jp@unlam.net", 2);
+        sessionFactory.getCurrentSession().save(u1);
+        Publicacion p1 = crearPublicacion(u1, false, LocalDateTime.now());
+        p1.setDescripcion("spring y js");
+        repositorioPublicacion.guardar(p1);
+        Publicacion p2 = crearPublicacion(u1, false, LocalDateTime.now());
+        p2.setDescripcion("no puedo creerlo..");
+        repositorioPublicacion.guardar(p2);
+
+        Usuario u2 = crearUsuario("Ana", "Sanchez", "js@unlam.net", 3);
+        sessionFactory.getCurrentSession().save(u2);
+        Publicacion p3 = crearPublicacion(u2, false, LocalDateTime.now());
+        p1.setDescripcion("no mostrar esta publi");
+        repositorioPublicacion.guardar(p3);
+
+        List<Publicacion> publicacionesDeUsuario = repositorioPublicacion.obtenerPublicacionesDeUsuario(u1.getId());
+        assertEquals(2, publicacionesDeUsuario.size(), "deberia listar 2 publicaciones de u1");
+
 
     }
     @Test
-    public void obtenerPublicacionesDirigidasAUsuario_publicidadesHechasEnEspecialParaEseUsuario(){
+    public void obtenerPublicacionesDirigidasAUsuario_publicidadesHechasPorBotParaEseUsuario(){
+        Usuario u1 = crearUsuario("Juan", "Perez", "jp@unlam.net", 2);
+        sessionFactory.getCurrentSession().save(u1);
 
+        Usuario bot = crearUsuario("Unlam", "Admin", "admin@unlam.net", 25555);
+        bot.setEsBot(true);
+        sessionFactory.getCurrentSession().save(bot);
+        Publicacion publicidad = crearPublicacion(bot, true, LocalDateTime.now());
+        publicidad.setDescripcion("Curso de spring y hibernate");
+        publicidad.setUsuarioDestinatarioId(u1.getId());
+        repositorioPublicacion.guardar(publicidad);
+
+        List <Publicacion> publicidadesDirigidas = repositorioPublicacion.obtenerPublicacionesDirigidasA(u1);
+        assertEquals(1, publicidadesDirigidas .size(), "deberia listar 1 publicidad  para u1");
     }
 
 
 
 
 
-
+/// ******  fn creadoras de entidades que necesito******///
     private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
         Usuario u = new Usuario();
         u.setNombre(nombre);
