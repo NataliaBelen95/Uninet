@@ -14,4 +14,5 @@ public interface RepositorioAmistad {
     List<Usuario> listarAmigosPorUsuario(long l);
 
     List<Usuario> obtenerAmigosDeUsuario(long l);
+    boolean sonAmigos(Usuario u1, Usuario u2);
 }
