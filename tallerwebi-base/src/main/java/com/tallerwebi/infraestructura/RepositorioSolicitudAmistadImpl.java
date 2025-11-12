@@ -34,7 +34,6 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
     public void guardar(SolicitudAmistad solicitud) {
         sessionFactory.getCurrentSession().save(solicitud);
     }
-
     @Override
     public SolicitudAmistad buscarPorId(Long id) {
         return sessionFactory.getCurrentSession().get(SolicitudAmistad.class, id);
@@ -78,5 +77,43 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
         sessionFactory.getCurrentSession().update(solicitud);
     }
 
+    @Override
+    public List<SolicitudAmistad> buscarSolicitudPendientePorUsuarios(Usuario solicitante, Usuario receptor) {
+        final Session session = sessionFactory.getCurrentSession();
+
+        // HQL para buscar la solicitud específica:
+        // Solicitante = primer usuario, Receptor = segundo usuario, Estado = PENDIENTE
+        String hql = "FROM SolicitudAmistad s " +
+                "WHERE s.solicitante = :solicitante " +
+                "AND s.receptor = :receptor " +
+                "AND s.estado = 'PENDIENTE'"; // Usamos 'PENDIENTE' como String o como referencia a la enum
+
+        Query<SolicitudAmistad> query = session.createQuery(hql, SolicitudAmistad.class);
+        query.setParameter("solicitante", solicitante);
+        query.setParameter("receptor", receptor);
+        // Si tu campo 'estado' en SolicitudAmistad es un Enum, podría ser:
+        // query.setParameter("estado", EstadoSolicitud.PENDIENTE);
+        // Pero asumiendo que es un String, la consulta HQL de arriba es suficiente.
+
+        return query.list();
+    }
+
+    @Override
+    public SolicitudAmistad buscarSolicitudActiva(Usuario u1, Usuario u2) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "FROM SolicitudAmistad s WHERE " +
+                // Caso A->B o B->A
+                "((s.solicitante = :u1 AND s.receptor = :u2) OR " +
+                " (s.solicitante = :u2 AND s.receptor = :u1)) AND " +
+                // Solo buscamos las que están en curso o ya completadas
+                "s.estado IN ('PENDIENTE', 'ACEPTADA')";
+
+        Query<SolicitudAmistad> query = session.createQuery(hql, SolicitudAmistad.class);
+        query.setParameter("u1", u1);
+        query.setParameter("u2", u2);
+        query.setMaxResults(1);
+
+        return query.uniqueResult(); // Devuelve una Solicitud o null
+    }
 
 }

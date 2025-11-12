@@ -43,7 +43,8 @@ public class ServicioNotificacion {
         notificacionService.enviarNotificacion(receptor, notificacion);
     }
 
-    public void crearAmistad(Usuario receptor, Usuario emisor, TipoNotificacion tipo) {
+    // Modifica el método crearAmistad para que incluya emisorId y receptorId en la URL
+    public void crearAmistad(Usuario receptor, Usuario emisor, TipoNotificacion tipo, Long solicitudId) {
         String mensaje;
         if (tipo == TipoNotificacion.INACTIVIDAD) {
             mensaje = generarMensajeInactividad(receptor);
@@ -55,14 +56,50 @@ public class ServicioNotificacion {
             return; // no se crea notificación
         }
 
+        // dedupe simple: evitar crear notificación idéntica pendiente
+        List<Notificacion> existentes = repoNotificacion.buscarPorReceptor(receptor.getId());
+        boolean existeSimilar = existentes.stream()
+                .anyMatch(n ->
+                        n.getTipo() == tipo &&
+                                n.getUsuarioEmisor() != null &&
+                                emisor != null &&
+                                java.util.Objects.equals(n.getUsuarioEmisor().getId(), emisor.getId()) &&
+                                !n.isLeida() &&
+                                n.getMensaje() != null &&
+                                n.getMensaje().equals(mensaje)
+                );
+        if (existeSimilar) {
+            // ya existe una notificación pendiente idéntica -> no crear otra
+            return;
+        }
+
         Notificacion notificacion = new Notificacion();
         notificacion.setUsuarioReceptor(receptor);
         notificacion.setUsuarioEmisor(emisor);
         notificacion.setTipo(tipo);
         notificacion.setMensaje(mensaje);
-        notificacion.setFechaCreacion(LocalDateTime.now());
-        String url = generarUrlAmistad(tipo, emisor, receptor);
-        notificacion.setUrl(url);
+        notificacion.setFechaCreacion(java.time.LocalDateTime.now());
+
+        // generar URL base (por ejemplo el perfil del emisor) y anexar emisorId/receptorId/solicitudId
+        String url = generarUrlAmistad(tipo, emisor, receptor); // mantén la lógica existente que apunta a perfil
+
+        // añadir parámetros para que el frontend o controlador puedan leer los ids
+        StringBuilder sb = new StringBuilder(url != null ? url : "/notificaciones");
+        if (!sb.toString().contains("?")) sb.append("?");
+        else if (!sb.toString().endsWith("&") && !sb.toString().endsWith("?")) sb.append("&");
+
+        // anexar emisorId y receptorId siempre (si existen y tienen un ID válido > 0)
+        // Se usa emisor.getId() != 0 para comprobar el ID si es primitivo 'long' (o Long si es objeto)
+        if (emisor != null && emisor.getId() >0) sb.append("emisorId=").append(emisor.getId()).append("&");
+        if (receptor != null && receptor.getId() > 0) sb.append("receptorId=").append(receptor.getId()).append("&");
+
+        // anexar solicitudId si la tuvieras (opcional)
+        if (solicitudId != null) sb.append("solicitudId=").append(solicitudId).append("&");
+
+        // quitar posible & final
+        if (sb.charAt(sb.length()-1) == '&') sb.setLength(sb.length()-1);
+
+        notificacion.setUrl(sb.toString());
 
         repoNotificacion.guardar(notificacion);
         notificacionService.enviarNotificacion(receptor, notificacion);
@@ -128,11 +165,7 @@ public class ServicioNotificacion {
                     return "/perfil/" + publicacion.getUsuario().getSlug() + "#publicacion-" + publicacion.getId();
                 }
 
-            case SOLICITUD_AMISTAD:
-                // si alguien me envía solicitud → ver su perfil
-                return "/perfil/" + emisor.getSlug();
-
-
+//
 
             default:
                 return "/notificaciones";
@@ -144,9 +177,9 @@ public class ServicioNotificacion {
                 && emisor != null;
 
         switch (tipo) {
-           case SOLICITUD_AMISTAD:
-                // si alguien me envía solicitud → ver su perfil
-                return "/perfil/" + emisor.getSlug();
+            case SOLICITUD_AMISTAD:
+                // Cuando recibes una solicitud de amistad queremos llevar al usuario a la pestaña de solicitudes
+                return "/notificaciones?tab=solicitudes";
             default:
                 return "/notificaciones";
         }

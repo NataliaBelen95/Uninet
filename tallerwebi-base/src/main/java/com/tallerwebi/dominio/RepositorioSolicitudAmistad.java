@@ -10,4 +10,6 @@ public interface RepositorioSolicitudAmistad {
     List<SolicitudAmistad> buscarPendientes(Usuario usuario);
     List<Usuario> buscarAmigos(Usuario usuario);
     void actualizar(SolicitudAmistad solicitud);
+    List<SolicitudAmistad> buscarSolicitudPendientePorUsuarios(Usuario solicitante, Usuario receptor);
+    SolicitudAmistad buscarSolicitudActiva(Usuario u1, Usuario u2);
 }

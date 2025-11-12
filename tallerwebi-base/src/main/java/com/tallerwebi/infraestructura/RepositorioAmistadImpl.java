@@ -89,4 +89,32 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
     public void actualizar(Amistad amistad) {
         sessionFactory.getCurrentSession().update(amistad);
     }
+
+    // RepositorioAmistadImpl.java
+
+    @Override
+    public boolean sonAmigos(Usuario u1, Usuario u2) {
+        // Es crucial que la transacción ya esté abierta (gracias a @Transactional en el servicio)
+        final Session session = sessionFactory.getCurrentSession();
+
+        String hql = "SELECT 1 FROM Amistad a WHERE " +
+                // Opción 1: u1 es solicitante y u2 es solicitado
+                " (a.solicitante = :usuario1 AND a.solicitado = :usuario2) " +
+                " OR " +
+                // Opción 2: u2 es solicitante y u1 es solicitado
+                " (a.solicitante = :usuario2 AND a.solicitado = :usuario1)";
+
+        // Usamos Query<Long> o Query<Integer> si solo queremos verificar existencia (SELECT 1)
+        Query<Integer> query = session.createQuery(hql, Integer.class);
+
+        query.setParameter("usuario1", u1);
+        query.setParameter("usuario2", u2);
+
+        // Solo necesitamos verificar si existe un resultado, no cargar la entidad completa.
+        query.setMaxResults(1);
+
+        // Si getSingleResult() encuentra una fila, devuelve el 1. Si no encuentra nada, lanza NoResultException.
+        // Usamos list() para evitar NoResultException y es más limpio para booleans.
+        return !query.list().isEmpty();
+    }
 }
