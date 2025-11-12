@@ -23,12 +23,23 @@ public class ServicioAmistadImpl implements ServicioAmistad {
 
     @Override
     public SolicitudAmistad enviarSolicitud(Usuario solicitante, Usuario receptor) {
+        // 🛑 Bloqueo si ya existe una solicitud pendiente o ya son amigos
+        SolicitudAmistad activa = repo.buscarSolicitudActiva(solicitante, receptor);
+
+        if (activa != null) {
+            // Devuelve la solicitud existente para evitar la duplicación en la DB
+            // Esto también asegura que los botones de 'amigo' y 'solicitud enviada' se muestren correctamente.
+            return activa;
+        }
+
+        // Si no existe, crea una nueva solicitud.
         SolicitudAmistad solicitud = new SolicitudAmistad();
         solicitud.setSolicitante(solicitante);
         solicitud.setReceptor(receptor);
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
-        solicitud.setFechaSolicitud(LocalDateTime.now()); // Inicializa la fecha
+        solicitud.setFechaSolicitud(LocalDateTime.now());
         repo.guardar(solicitud);
+
         return solicitud;
     }
 

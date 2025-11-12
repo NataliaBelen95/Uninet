@@ -1,11 +1,24 @@
 document.addEventListener("DOMContentLoaded", function() {
     console.log("JS de notificaciones cargado");
 
+    // Función Helper (necesaria para la lógica de la vista principal)
+    function extraerSolicitudId(url) {
+        try {
+            // Se usa new URL() para parsear la URL completa si tiene la base /spring
+            const urlObj = new URL(url.startsWith('http') ? url : window.location.origin + url);
+            const params = new URLSearchParams(urlObj.search);
+            return params.get('solicitudId');
+        } catch (e) {
+            console.error("URL inválida para extraer solicitudId:", url);
+            return null;
+        }
+    }
+
     const btnNotificaciones = document.getElementById('btn-notificaciones');
     const dropdown = document.getElementById('dropdown-notificaciones');
     const lista = document.getElementById('listaNotificaciones');
 
-    // 🛑 CORRECCIÓN DE DESPLIEGUE: Si falta cualquier elemento, salimos.
+    // 🛑 VERIFICACIÓN DE ELEMENTOS CLAVE
     if (!btnNotificaciones || !dropdown || !lista) {
         console.error("Faltan elementos HTML del dropdown (btn-notificaciones, dropdown-notificaciones, o listaNotificaciones).");
         return;
@@ -13,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const userId = btnNotificaciones.dataset.userId || 0;
 
-    // 🔌 Conexión WebSocket (Sin cambios)
+    // 🔌 Conexión WebSocket
     const socket = new SockJS('/spring/ws');
     const stompClient = Stomp.over(socket);
 
@@ -64,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(data => {
                 lista.innerHTML = '';
 
-                // 🛑 FILTRO DE INACTIVIDAD: Excluir por Tipo de Notificación
+                // 🛑 FILTRO ROBUSTO: Excluir por Tipo de Notificación
                 const datosFiltrados = data.filter(n =>
                     n.tipo !== "INACTIVIDAD"
                 );
@@ -80,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     datosFiltrados.forEach(n => {
                         const li = document.createElement('li');
 
+                        // Detección de amistad
                         const esSolicitudAmistad = n.tipo === "SOLICITUD_AMISTAD" || n.amistadId != null;
                         const emisor = n.usuarioEmisor || 'Sistema';
                         const fechaStr = n.fecha ? n.fecha.split('.')[0] : '';
@@ -94,10 +108,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
                         // --- INICIO DE LÓGICA DE EVENTOS ---
                         if (esSolicitudAmistad) {
+
+                            // *** CONTENEDOR DE BOTONES ***
+                            const btnContainer = document.createElement('div');
+                            btnContainer.classList.add('action-buttons-group');
+                            li.appendChild(btnContainer);
+
+                            // *** BOTÓN ACEPTAR ***
                             const btnAceptar = document.createElement('button');
                             btnAceptar.textContent = 'Aceptar';
-                            btnAceptar.classList.add('btn-aceptar-dropdown');
-                            li.appendChild(btnAceptar);
+                            btnAceptar.classList.add('btn-aceptar-dropdown', 'btn-action');
+                            btnContainer.appendChild(btnAceptar);
+
+                            // *** BOTÓN RECHAZAR ***
+                            const btnRechazar = document.createElement('button');
+                            btnRechazar.textContent = 'Rechazar';
+                            btnRechazar.classList.add('btn-rechazar-dropdown', 'btn-action');
+                            btnContainer.appendChild(btnRechazar);
+
+                            // --- LISTENERS DE ACCIÓN ---
 
                             // Evento Clic del botón ACEPTAR (AJAX)
                             btnAceptar.addEventListener('click', (e) => {
@@ -136,10 +165,49 @@ document.addEventListener("DOMContentLoaded", function() {
                                 });
                             });
 
+                            // Evento Clic del botón RECHAZAR (AJAX)
+                            btnRechazar.addEventListener('click', (e) => {
+                                e.stopPropagation();
+
+                                const notificacionId = n.id;
+                                const solicitudId = n.amistadId;
+
+                                if (!solicitudId) {
+                                    console.error("Falta el ID de la Solicitud para rechazar.");
+                                    alert("Error: No se encontró el ID de la solicitud.");
+                                    return;
+                                }
+
+                                // Llama al endpoint de rechazo
+                                fetch(`/spring/amistad/rechazar/${solicitudId}`, {
+                                    method: 'POST'
+                                })
+                                .then(res => {
+                                    if (!res.ok) {
+                                        return res.text().then(text => { throw new Error('Error al rechazar: ' + text); });
+                                    }
+
+                                    // Si el rechazo fue 200 OK, marcamos como leída
+                                    return fetch(`/spring/marcar-leida/${notificacionId}`, { method: 'POST' });
+                                })
+                                .then(res => {
+                                    if (!res.ok) throw new Error('Error al marcar como leída.');
+
+                                    // Éxito: Eliminar LI y recargar
+                                    li.remove();
+                                    cargarNotificaciones();
+                                })
+                                .catch(err => {
+                                    console.error("Fallo en la acción de rechazar:", err);
+                                    alert("Hubo un error al procesar el rechazo: " + err.message);
+                                });
+                            });
+
+
                             // Evento Clic del LI (Redirigir a Solicitudes)
                             li.addEventListener('click', (e) => {
                                 // Evitar redirección si se hizo clic en el botón.
-                                if (e.target.classList.contains('btn-aceptar-dropdown')) {
+                                if (e.target.classList.contains('btn-aceptar-dropdown') || e.target.classList.contains('btn-rechazar-dropdown')) {
                                     return;
                                 }
 

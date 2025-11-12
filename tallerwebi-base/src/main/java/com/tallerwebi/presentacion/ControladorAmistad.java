@@ -33,6 +33,7 @@ public class ControladorAmistad {
     @PostMapping("/rechazar/{idSolicitud}")
     public String rechazarSolicitud(@PathVariable Long idSolicitud) {
         servicioAmistad.rechazarSolicitud(idSolicitud);
+        // ✅ Esto ya está correcto
         return "redirect:/notificaciones?tab=solicitudes";
     }
 
@@ -87,20 +88,17 @@ public class ControladorAmistad {
     }
 
     @PostMapping("/aceptar/{idSolicitud}")
-    public ResponseEntity<String> aceptarSolicitud(@PathVariable Long idSolicitud) {
+    public String aceptarSolicitud(@PathVariable Long idSolicitud) { // Cambia ResponseEntity<String> a String
 
-        try {
-            boolean exito = servicioAmistad.aceptarSolicitud(idSolicitud);
+        boolean exito = servicioAmistad.aceptarSolicitud(idSolicitud);
 
-            if (exito) {
-                return ResponseEntity.ok("Amistad aceptada con éxito.");
-            } else {
-                return ResponseEntity.status(404).body("Solicitud no encontrada o ya ha sido procesada.");
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error al aceptar solicitud: " + e.getMessage());
-            return ResponseEntity.status(500).body("Error interno al procesar la amistad.");
+        if (exito) {
+            // ✅ ÉXITO: Redirige de vuelta a la lista de solicitudes (actualizando la tabla)
+            return "redirect:/notificaciones?tab=solicitudes";
+        } else {
+            // 🛑 FALLO: Redirige de vuelta con un mensaje de error (opcional)
+            // Podrías redirigir a una página de error o simplemente de vuelta a la lista:
+            return "redirect:/notificaciones?tab=solicitudes&error=solicitudInvalida";
         }
     }
 }

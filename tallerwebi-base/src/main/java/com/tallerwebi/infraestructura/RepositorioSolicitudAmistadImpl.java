@@ -98,4 +98,22 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
         return query.list();
     }
 
+    @Override
+    public SolicitudAmistad buscarSolicitudActiva(Usuario u1, Usuario u2) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "FROM SolicitudAmistad s WHERE " +
+                // Caso A->B o B->A
+                "((s.solicitante = :u1 AND s.receptor = :u2) OR " +
+                " (s.solicitante = :u2 AND s.receptor = :u1)) AND " +
+                // Solo buscamos las que están en curso o ya completadas
+                "s.estado IN ('PENDIENTE', 'ACEPTADA')";
+
+        Query<SolicitudAmistad> query = session.createQuery(hql, SolicitudAmistad.class);
+        query.setParameter("u1", u1);
+        query.setParameter("u2", u2);
+        query.setMaxResults(1);
+
+        return query.uniqueResult(); // Devuelve una Solicitud o null
+    }
+
 }
