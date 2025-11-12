@@ -94,7 +94,6 @@
             </div>
             <h2>Quizás conozcas...</h2>
             <ul>
-                <!-- Iteramos sobre la lista de usuarios -->
                 <li th:each="usuario : ${usuariosNuevos}">
                     <span th:text="${usuario.nombreUsuario}"></span>
                     <span th:text="${usuario.apellidoUsuario}"></span>
@@ -105,7 +104,6 @@
                     </form>
                 </li>
             </ul>
-
         </div>
     </aside>
 </main>
