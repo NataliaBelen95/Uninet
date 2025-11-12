@@ -7,10 +7,8 @@ public class DatosAmigos {
     private String foto;
 
 
-    // Constructor vacío (necesario para Jackson)
     public DatosAmigos() {}
 
-    // Constructor
     public DatosAmigos(Long id, String nombre, String apellido, String foto) {
         this.id = id;
         this.foto = foto;
@@ -38,6 +36,14 @@ public class DatosAmigos {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     // Getters y setters

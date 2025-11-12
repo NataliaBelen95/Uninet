@@ -32,11 +32,15 @@
             <h3>
                 Contactos
             </h3>
+            <!-- fragmento de lista de contactos en chat.html -->
             <ul id="lista-contactos">
-                <li th:each="u : ${usuariosNuevos}" class="contacto-item">
-                    <a href="#" th:attr="data-id=${u.id}" class="contacto">
-                        <img th:src="@{${u.fotoPerfil != null ? '/' + u.fotoPerfil : '/imagenes/user.png'}}" alt="user" class="thumb">
-                        <span th:text="${u.nombre} + ' ' + ${u.apellido}"></span>
+                <li th:each="amigoDTO : ${amigos}" class="contacto-item">
+                    <!-- añadimos data-id al <a> para que el JS lo lea con element.getAttribute('data-id') -->
+                    <a th:href="@{/perfil/id/{id}(id=${amigoDTO.id})}"
+                       th:attr="data-id=${amigoDTO.id}"
+                       class="contacto">
+                        <img th:src="@{${amigoDTO.foto != null ? '/' + amigoDTO.foto : '/imagenes/user.png'}}" alt="user" class="thumb">
+                        <span th:text="${amigoDTO.nombre} + ' ' + ${amigoDTO.apellido}"></span>
                     </a>
                 </li>
             </ul>
