@@ -10,7 +10,7 @@ public interface ServicioAmistad {
     List<Usuario> listarAmigos(Usuario usuario);
     List<SolicitudAmistad> listarSolicitudesPendientes(Usuario usuario);
     List<Usuario> obtenerAmigosDeUsuario(long l);
-    List <SolicitudAmistad> buscarSolicitudPendientePorUsuarios (Usuario usuario, Usuario emisor);
 
-
+    // 🛑 CAMBIO CLAVE: De List<SolicitudAmistad> a SolicitudAmistad
+    SolicitudAmistad buscarSolicitudPendientePorUsuarios (Usuario solicitante, Usuario receptor);
 }

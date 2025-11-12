@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
+import com.tallerwebi.dominio.SolicitudAmistad;
 @Service
 @Transactional
 public class ServicioAmistadImpl implements ServicioAmistad {
@@ -25,8 +26,9 @@ public class ServicioAmistadImpl implements ServicioAmistad {
         SolicitudAmistad solicitud = new SolicitudAmistad();
         solicitud.setSolicitante(solicitante);
         solicitud.setReceptor(receptor);
+        solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+        solicitud.setFechaSolicitud(LocalDateTime.now()); // Inicializa la fecha
         repo.guardar(solicitud);
-        // si repo.guardar usa session.save(solicitud) con IDENTITY, solicitud.getId() ya estará poblado
         return solicitud;
     }
 
@@ -35,16 +37,14 @@ public class ServicioAmistadImpl implements ServicioAmistad {
         SolicitudAmistad solicitud = repo.buscarPorId(idSolicitud);
 
         if (solicitud == null || solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
-            return false; // Falla si no existe o ya está procesada
+            return false;
         }
 
         solicitud.setEstado(EstadoSolicitud.ACEPTADA);
         repo.actualizar(solicitud);
 
         // Crear la entidad Amistad
-        Amistad amistad = new Amistad();
-        amistad.setSolicitante(solicitud.getSolicitante());
-        amistad.setSolicitado(solicitud.getReceptor());
+        Amistad amistad = new Amistad(solicitud.getSolicitante(), solicitud.getReceptor());
         repoAmistad.guardar(amistad);
 
         return true;
@@ -74,8 +74,16 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     }
 
     @Override
-    public List<SolicitudAmistad> buscarSolicitudPendientePorUsuarios(Usuario usuario, Usuario emisor) {
-        return repo.buscarSolicitudPendientePorUsuarios(usuario, emisor);
-    }
+    public SolicitudAmistad buscarSolicitudPendientePorUsuarios(Usuario usuario, Usuario emisor) {
+        // Renombramos los parámetros para reflejar la lógica del repositorio:
+        // Buscamos la solicitud donde 'emisor' (quien envió) es el solicitante
+        // y 'usuario' (el logueado) es el receptor.
+        List<SolicitudAmistad> solicitudes = repo.buscarSolicitudPendientePorUsuarios(emisor, usuario);
 
+        if (solicitudes.isEmpty()) {
+            return null;
+        }
+        // Devolvemos el primer (y único esperado) resultado.
+        return solicitudes.get(0);
+    }
 }

@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     datosFiltrados.forEach(n => {
                         const li = document.createElement('li');
 
-                      const esSolicitudAmistad = n.tipo === "SOLICITUD_AMISTAD" || n.amistadId != null;
+                        const esSolicitudAmistad = n.tipo === "SOLICITUD_AMISTAD" || n.amistadId != null;
                         const emisor = n.usuarioEmisor || 'Sistema';
                         const fechaStr = n.fecha ? n.fecha.split('.')[0] : '';
                         const fechaObj = new Date(fechaStr);

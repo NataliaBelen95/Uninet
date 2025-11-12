@@ -22,28 +22,20 @@ public class Amistad {
     @JoinColumn(name = "solicitado_id")
     private Usuario solicitado;
 
-    @Enumerated(EnumType.STRING)
-    private EstadoAmistad estado;
-
-    private LocalDateTime fechaSolicitud;
 
     public Amistad() {}
 
-    public Amistad(Usuario solicitante, Usuario solicitado, EstadoAmistad estado) {
+    public Amistad(Usuario solicitante, Usuario solicitado) {
         this.solicitante = solicitante;
         this.solicitado = solicitado;
-        this.estado = estado;
-        this.fechaSolicitud = LocalDateTime.now();
+
     }
 
     // Getters y Setters
     public Long getId() { return id; }
     public Usuario getSolicitante() { return solicitante; }
     public Usuario getSolicitado() { return solicitado; }
-    public EstadoAmistad getEstado() { return estado; }
-    public LocalDateTime getFechaSolicitud() { return fechaSolicitud; }
 
-    public void setEstado(EstadoAmistad estado) { this.estado = estado; }
 
     public void setId(Long id) {
         this.id = id;
@@ -57,7 +49,5 @@ public class Amistad {
         this.solicitado = solicitado;
     }
 
-    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
-    }
+
 }
