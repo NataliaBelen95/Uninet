@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -35,62 +36,72 @@ public class GeminiAnalysisTest {
 
     }
 
-
-
     @Test
-    public void queSePuedanAnalizarLosGustosYSeGuardenEnGustosPersonalEntity() throws JsonProcessingException {
+    public void queSePuedanAnalizarLosGustosYSeGuardenEnGustosPersonalEntity() throws Exception {
+
         Usuario u = new Usuario();
         u.setNombre("Luis");
         u.setId(2L);
 
-        //  Configuración de Mocks de ENTRADA
-        when(servicioGustoPersonalMock.buscarPorUsuario(u)).thenReturn(null);
+        //  el usuario no tiene gustos previos y tiene interacciones
+        when(servicioGustoPersonalMock.buscarPorUsuario(any(Usuario.class))).thenReturn(null);
         when(repositorioInteraccionMock.consolidarTextoInteraccionesRecientes(any(Usuario.class), anyInt()))
                 .thenReturn("Me gustan las publicaciones sobre Java, Spring y bases de datos.");
 
-        // Respuesta JSON que simula lo que devuelve el servicio de IA (String completa)
-        final String respuestaGeminiJsonCompleta = "{ \"candidates\": [ { \"content\": { \"parts\": [ { \"text\": \"{\\n  \\\"temaPrincipal\\\": \\\"Programación Java\\\",\\n  \\\"tagsIntereses\\\": [\\\"Spring\\\", \\\"Hibernate\\\", \\\"Backend\\\"],\\n  \\\"resumenPerfil\\\": \\\"Usuario con interés en desarrollo web backend.\\\"\\n}\" } ] } } ] }";
+        // Simular la respuesta JSON RAW de Gemini
+        final String jsonInteresesLimpio = "{\n  \"temaPrincipal\": \"Programación Java\",\n  \"tagsIntereses\": [\"Spring\", \"Hibernate\", \"Backend\"],\"resumenPerfil\": \"Usuario con interés en desarrollo web backend.\"\n}";
+        final String respuestaGeminiJsonCompleta = "{\"candidates\": [{\"content\": {\"parts\": [{\"text\": \""+ jsonInteresesLimpio.replace("\"", "\\\"").replace("\n", "\\n") +"\"}]}}]}";
         when(servicioIntegracionIAMock.enviarPromptYObtenerJson(anyString())).thenReturn(respuestaGeminiJsonCompleta);
 
-        // 2. Mockear el FLUJO INTERNO (ObjectMapper y GeminiResponseDTO)
+        // Mock de PARSEO : Simula la respuesta de los DTOs
 
-        // El JSON plano que está ANIDADO en la respuesta de la IA.
-        final String jsonGeneradoPorGemini = "{\"temaPrincipal\": \"Programación Java\", \"tagsIntereses\": [\"Spring\", \"Hibernate\", \"Backend\"], \"resumenPerfil\": \"Usuario con interés en desarrollo web backend.\"}";
-
-        // Crear un mock del DTO de respuesta de Gemini.
+        //  Simular la PRIMERA respuesta del ObjectMapper (GeminiResponseDTO)
+        // mock de GeminiResponseDTO
         GeminiResponseDTO mockGeminiResponse = mock(GeminiResponseDTO.class);
-        // Mockeo: Cuando el ObjectMapper reciba la respuesta COMPLETA (respuestaGeminiJsonCompleta),
-        // NO debe ejecutar la lógica de deserialización real, sino devolver el objeto mockeado.
-        when(objectMapperMock.readValue(eq(respuestaGeminiJsonCompleta), eq(GeminiResponseDTO.class)))
-                .thenReturn(mockGeminiResponse);
-        // Mockear el ObjectMapper para que, al deserializar la String, devuelva el mock.
-        when(objectMapperMock.readValue(eq(respuestaGeminiJsonCompleta), eq(GeminiResponseDTO.class)))
-                .thenReturn(mockGeminiResponse);
+        when(mockGeminiResponse.getGeneratedText()).thenReturn(jsonInteresesLimpio);
 
-        //  PARSER del DTO final
-        InteresesGeneradosDTO dto = new InteresesGeneradosDTO();
-        dto.setTemaPrincipal("Programación Java");
-        dto.setTagsIntereses(Arrays.asList("Spring", "Hibernate"));
-        dto.setResumenPerfil("Desarrollador backend.");
+        // Simular la SEGUNDA respuesta/resultado (InteresesGeneradosDTO)
+        InteresesGeneradosDTO data = new InteresesGeneradosDTO();
+        data.setTemaPrincipal("Programación Java");
+        data.setTagsIntereses(Arrays.asList("Spring", "Hibernate", "Backend"));
+        data.setResumenPerfil("Usuario con interés en desarrollo web backend.");
 
-        // Mockea la llamada al parser con el JSON generado por Gemini.
-        when(jsonParserMock.parsearJsonIntereses(eq(jsonGeneradoPorGemini))).thenReturn(dto);
 
-        //  Ejecución
-        geminiAnalysisService.analizarInteraccionesYActualizarGustos(u);
+        // Encadenamiento de Mocks: Le decimos a Mockito qué devolver para cada clase:
+        // LÍNEA 70: objectMapper.readValue(respuesta, GeminiResponseDTO.class);
+        when(objectMapperMock.readValue(anyString(), eq(GeminiResponseDTO.class)))
+                .thenReturn(mockGeminiResponse); // Devuelve el mock configurado
 
-        //  Verificación
+
+        // El parser recibe el texto limpio que viene del mock de getGeneratedText()
+        when(jsonParserMock.parsearJsonIntereses(eq(jsonInteresesLimpio))).thenReturn(data);
+
+
+        // Ejecución
+        GustosPersonal resultado = geminiAnalysisService.analizarInteraccionesYActualizarGustos(u);
+
+        //erificación
+        assertNotNull(resultado, "Debe devolver un objeto GustosPersonal no nulo.");
+
+        // Verificar que se intentó guardar el resultado final en la BDD
         verify(servicioGustoPersonalMock, times(1)).guardarOActualizar(argThat(g ->
                 g.getUsuario().equals(u)
                         && g.getTemaPrincipal().equals("Programación Java")
-                        && g.getTagsIntereses().contains("Spring")
-                        && g.getResumenPerfil().contains("backend")
+                        && g.getTagsIntereses().contains("Spring") // Verifica que contenga al menos un tag
+                        && g.getResumenPerfil().contains("backend") // Verifica que contenga parte del resumen
         ));
 
-        // Verificar que los pasos de integración y parseo intermedio fueron llamados
+        // 2. Verificar que se llamó al servicio de integración
         verify(servicioIntegracionIAMock, times(1)).enviarPromptYObtenerJson(anyString());
-        verify(objectMapperMock, times(1)).readValue(anyString(), eq(GeminiResponseDTO.class));
-        verify(jsonParserMock, times(1)).parsearJsonIntereses(anyString());
+
+        // 3. Verificar que se usó el ObjectMapper para la primera fase (extracción del JSON limpio)
+        verify(objectMapperMock, times(1)).readValue(eq(respuestaGeminiJsonCompleta), eq(GeminiResponseDTO.class));
+
+        // 4. Verificar que se llamó al parser con el texto generado
+        verify(jsonParserMock, times(1)).parsearJsonIntereses(eq(jsonInteresesLimpio));
+
+        // 5. Verificar que se llamó al getter del mock para obtener el texto
+        verify(mockGeminiResponse, times(1)).getGeneratedText();
     }
 
 
