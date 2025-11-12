@@ -25,19 +25,20 @@ public class ControladorHome {
     private final ServicioFeed servicioFeed;
     //para no esperar 6 hs
     private final GeminiAnalysisService geminiAnalysisService;
+    private final ServicioAmistad servicioAmistad;
 
 
 
 
 
     public ControladorHome(ServicioUsuario servicioUsuario,
-                           BotPublisherService botPublisherService, ServicioFeed servicioFeed, GeminiAnalysisService geminiAnalysisService) {
+                           BotPublisherService botPublisherService, ServicioFeed servicioFeed, GeminiAnalysisService geminiAnalysisService, ServicioAmistad servicioAmistad) {
 
         this.servicioUsuario = servicioUsuario;
         this.botPublisherService = botPublisherService;
         this.servicioFeed = servicioFeed;
         this.geminiAnalysisService = geminiAnalysisService;
-
+        this.servicioAmistad = servicioAmistad;
 
 
         //this.servicioUsuario = servicioUsuario;
@@ -91,8 +92,20 @@ public ModelAndView home(HttpServletRequest request,
             ? servicioFeed.obtenerFeedRecomendado(usuarioReal, usuarioLogueado.getId())
             : servicioFeed.obtenerFeedPrincipal(usuarioLogueado.getId());
 
-    List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos().stream()
-            .map(u -> new DatosUsuariosNuevos(u.getNombre(), u.getApellido(), u.getId()))
+    List<Usuario> todosLosUsuarios = servicioUsuario.mostrarTodos(); // devuelve DatosUsuario con isEsBot()
+    long idLogueado = usuarioLogueado.getId();
+
+    Set<Long> idsAmigos = servicioAmistad.obtenerIdsAmigosDe(idLogueado);
+
+    List<DatosUsuariosNuevos> usuariosDTO = todosLosUsuarios.stream()
+            .filter(u -> u.getId() != idLogueado)           // no mostrarme a mí mismo
+            .filter(u -> !u.isEsBot())                      // excluir bots
+            .filter(u -> !idsAmigos.contains(u.getId()))    // excluir ya amigos
+            .map(u -> new DatosUsuariosNuevos(
+                    u.getNombre(),
+                    u.getApellido(),
+                    u.getId()
+            ))
             .collect(Collectors.toList());
 
     model.addAttribute("usuario", usuarioLogueado);

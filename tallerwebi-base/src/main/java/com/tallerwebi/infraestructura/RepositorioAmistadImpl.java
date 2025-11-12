@@ -66,8 +66,6 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
         return query.uniqueResult();
     }
 
-    // RepositorioAmistadImpl.java
-
     @Override
     public List<Usuario> obtenerAmigosDeUsuario(long idUsuario) {
         final Session session = sessionFactory.getCurrentSession();
@@ -93,6 +91,27 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
 
         // Devolver la lista final de amigos.
         return new ArrayList<>(amigosUnidos);
+    }
+
+    @Override
+    public List<Amistad> obtenerAmistadesAceptadasDe(long usuarioId) {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Amistad a WHERE (a.solicitante.id = :id OR a.solicitado.id = :id)", Amistad.class)
+                .setParameter("id", usuarioId)
+                .getResultList();
+    }
+
+
+    @Override
+    public boolean existeAmistadAceptadaEntre(long usuarioAId, long usuarioBId) {
+        Long count = sessionFactory.getCurrentSession()
+                .createQuery(
+                        "SELECT count(a) FROM Amistad a WHERE ((a.solicitante.id = :a AND a.solicitado.id = :b) OR (a.solicitante.id = :b AND a.solicitado.id = :a))",
+                        Long.class)
+                .setParameter("a", usuarioAId)
+                .setParameter("b", usuarioBId)
+                .uniqueResult();
+        return count != null && count > 0L;
     }
 
 

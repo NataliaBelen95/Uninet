@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.tallerwebi.dominio.SolicitudAmistad;
 @Service
 @Transactional
@@ -20,6 +23,32 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     public ServicioAmistadImpl(RepositorioSolicitudAmistad repo, RepositorioAmistad repoAmistad) {
         this.repo = repo;
         this.repoAmistad = repoAmistad;
+    }
+    @Override
+    public Set<Long> obtenerIdsAmigosDe(long usuarioId) {
+        // Se asume que el repositorio devuelve relaciones de amistad ya aceptadas
+        return repoAmistad.obtenerAmistadesAceptadasDe(usuarioId)
+                .stream()
+                .map(a -> {
+                    // cada Amistad debe exponer los dos participantes; devolvemos el id del otro
+                    return a.getSolicitante().getId() == usuarioId ? a.getSolicitado().getId() : a.getSolicitante().getId();
+                })
+                .collect(Collectors.toSet());
+    }
+    @Override
+    public List<Usuario> obtenerAmigosDeUsuario(long l) {
+        return repoAmistad.obtenerAmigosDeUsuario(l);
+    }
+
+    // NUEVOS MÉTODOS para exponer la info necesaria al controlador (filtrado en home)
+    @Override
+    public List<Amistad> obtenerAmistadesAceptadasDe(long usuarioId) {
+        return repoAmistad.obtenerAmistadesAceptadasDe(usuarioId);
+    }
+
+    @Override
+    public boolean existeAmistadAceptadaEntre(long usuarioAId, long usuarioBId) {
+        return repoAmistad.existeAmistadAceptadaEntre(usuarioAId, usuarioBId);
     }
 
     @Override
