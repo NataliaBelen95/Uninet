@@ -27,7 +27,7 @@ public class ControladorAmistad {
     private final UsuarioMapper usuarioMapper;
 
     @Autowired
-    public ControladorAmistad(ServicioAmistad servicioAmistad,ServicioNotificacion servicioNotificacion , RepositorioUsuario repositorioUsuario, ServicioUsuario servicioUsuario, UsuarioMapper usuarioMapper) {
+    public ControladorAmistad(ServicioAmistad servicioAmistad, ServicioNotificacion servicioNotificacion, RepositorioUsuario repositorioUsuario, ServicioUsuario servicioUsuario, UsuarioMapper usuarioMapper) {
         this.servicioAmistad = servicioAmistad;
         this.usuarioMapper = usuarioMapper;
         this.repositorioUsuario = repositorioUsuario;
@@ -144,8 +144,25 @@ public class ControladorAmistad {
     }
 
     @PostMapping("/aceptar/{idSolicitud}")
-    public ResponseEntity<Void> aceptarSolicitud(@PathVariable Long idSolicitud) {
-        servicioAmistad.aceptarSolicitud(idSolicitud);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> aceptarSolicitud(@PathVariable Long idSolicitud) {
+
+        try {
+            // 1. Llamar al servicio, que ahora devuelve TRUE si la aceptación fue exitosa y FALSE si no lo fue
+            // (porque la solicitud no existía o no estaba pendiente).
+            boolean exito = servicioAmistad.aceptarSolicitud(idSolicitud);
+
+            if (exito) {
+                // 2. Devolver 200 OK si el servicio confirmó la aceptación.
+                return ResponseEntity.ok("Amistad aceptada con éxito.");
+            } else {
+                // 3. Devolver 404 NOT FOUND si la solicitud no era válida o no estaba pendiente.
+                return ResponseEntity.status(404).body("Solicitud no encontrada o ya ha sido procesada.");
+            }
+
+        } catch (Exception e) {
+            // Capturar cualquier error inesperado del servidor (ej. error de base de datos).
+            System.err.println("Error al aceptar solicitud: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error interno al procesar la amistad.");
+        }
     }
 }

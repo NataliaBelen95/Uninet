@@ -83,14 +83,17 @@ public class ServicioNotificacion {
 
         // generar URL base (por ejemplo el perfil del emisor) y anexar emisorId/receptorId/solicitudId
         String url = generarUrlAmistad(tipo, emisor, receptor); // mantén la lógica existente que apunta a perfil
+
         // añadir parámetros para que el frontend o controlador puedan leer los ids
         StringBuilder sb = new StringBuilder(url != null ? url : "/notificaciones");
         if (!sb.toString().contains("?")) sb.append("?");
         else if (!sb.toString().endsWith("&") && !sb.toString().endsWith("?")) sb.append("&");
 
-        // anexar emisorId y receptorId siempre (si existen)
-        if (emisor != null && emisor.getId() != null) sb.append("emisorId=").append(emisor.getId()).append("&");
-        if (receptor != null && receptor.getId() != null) sb.append("receptorId=").append(receptor.getId()).append("&");
+        // anexar emisorId y receptorId siempre (si existen y tienen un ID válido > 0)
+        // Se usa emisor.getId() != 0 para comprobar el ID si es primitivo 'long' (o Long si es objeto)
+        if (emisor != null && emisor.getId() >0) sb.append("emisorId=").append(emisor.getId()).append("&");
+        if (receptor != null && receptor.getId() > 0) sb.append("receptorId=").append(receptor.getId()).append("&");
+
         // anexar solicitudId si la tuvieras (opcional)
         if (solicitudId != null) sb.append("solicitudId=").append(solicitudId).append("&");
 
@@ -163,9 +166,7 @@ public class ServicioNotificacion {
                     return "/perfil/" + publicacion.getUsuario().getSlug() + "#publicacion-" + publicacion.getId();
                 }
 
-            case SOLICITUD_AMISTAD:
-                // al hacer click en una solicitud: ir a notificaciones y abrir la pestaña 'solicitudes'
-                return "/notificaciones?tab=solicitudes";
+//
 
             default:
                 return "/notificaciones";

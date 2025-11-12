@@ -102,7 +102,9 @@ public class ControladorNotificacion {
                                 n.getFechaCreacion(),
                                 n.getUsuarioEmisor() != null ? n.getUsuarioEmisor().getNombre() : "Uninet",
                                 n.getUrl(),
-                                amistadId
+                                amistadId,
+                                emisorId,
+                                n.getTipo()
                         );
                     })
                     .collect(Collectors.toList());

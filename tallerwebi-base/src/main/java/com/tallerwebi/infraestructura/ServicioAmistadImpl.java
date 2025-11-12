@@ -31,17 +31,23 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     }
 
     @Override
-    public void aceptarSolicitud(Long idSolicitud) {
+    public boolean aceptarSolicitud(Long idSolicitud) {
         SolicitudAmistad solicitud = repo.buscarPorId(idSolicitud);
-        if (solicitud == null) return;
+
+        if (solicitud == null || solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
+            return false; // Falla si no existe o ya está procesada
+        }
+
         solicitud.setEstado(EstadoSolicitud.ACEPTADA);
         repo.actualizar(solicitud);
 
-        // crear entidad de amistad si tu modelo la requiere
+        // Crear la entidad Amistad
         Amistad amistad = new Amistad();
         amistad.setSolicitante(solicitud.getSolicitante());
         amistad.setSolicitado(solicitud.getReceptor());
         repoAmistad.guardar(amistad);
+
+        return true;
     }
 
     @Override
@@ -66,4 +72,10 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     public List<Usuario> obtenerAmigosDeUsuario(long l) {
         return repoAmistad.obtenerAmigosDeUsuario(l);
     }
+
+    @Override
+    public List<SolicitudAmistad> buscarSolicitudPendientePorUsuarios(Usuario usuario, Usuario emisor) {
+        return repo.buscarSolicitudPendientePorUsuarios(usuario, emisor);
+    }
+
 }

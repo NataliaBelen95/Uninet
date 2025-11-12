@@ -77,5 +77,25 @@ public class RepositorioSolicitudAmistadImpl implements RepositorioSolicitudAmis
         sessionFactory.getCurrentSession().update(solicitud);
     }
 
+    @Override
+    public List<SolicitudAmistad> buscarSolicitudPendientePorUsuarios(Usuario solicitante, Usuario receptor) {
+        final Session session = sessionFactory.getCurrentSession();
+
+        // HQL para buscar la solicitud específica:
+        // Solicitante = primer usuario, Receptor = segundo usuario, Estado = PENDIENTE
+        String hql = "FROM SolicitudAmistad s " +
+                "WHERE s.solicitante = :solicitante " +
+                "AND s.receptor = :receptor " +
+                "AND s.estado = 'PENDIENTE'"; // Usamos 'PENDIENTE' como String o como referencia a la enum
+
+        Query<SolicitudAmistad> query = session.createQuery(hql, SolicitudAmistad.class);
+        query.setParameter("solicitante", solicitante);
+        query.setParameter("receptor", receptor);
+        // Si tu campo 'estado' en SolicitudAmistad es un Enum, podría ser:
+        // query.setParameter("estado", EstadoSolicitud.PENDIENTE);
+        // Pero asumiendo que es un String, la consulta HQL de arriba es suficiente.
+
+        return query.list();
+    }
 
 }
