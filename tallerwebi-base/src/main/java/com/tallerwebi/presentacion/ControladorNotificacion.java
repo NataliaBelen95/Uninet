@@ -1,3 +1,4 @@
+// Modificado: ahora el DTO que devolvemos incluye usuarioEmisorId y usuarioReceptorId
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
@@ -9,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,9 +42,6 @@ public class ControladorNotificacion {
         //dtoUsuario
         modelo.addAttribute("usuario", usuario);
 
-
-
-
         List<DatosUsuariosNuevos> usuariosDTO = servicioUsuario.mostrarTodos()
                 .stream()
                 .map(u -> new DatosUsuariosNuevos(
@@ -54,12 +51,10 @@ public class ControladorNotificacion {
                 ))
                 .collect(Collectors.toList());
 
-        // 4. Pasar datos al modelo
         modelo.addAttribute("usuariosNuevos", usuariosDTO);
         modelo.addAttribute("esPropio", true);
-        return new ModelAndView("notificaciones", modelo); // explícito, como login
+        return new ModelAndView("notificaciones", modelo);
     }
-
 
     @PostMapping("/marcar-leida/{id}")
     @ResponseBody
@@ -82,7 +77,7 @@ public class ControladorNotificacion {
                     .stream()
                     .filter(n -> !n.isLeida())
                     .map(n -> {
-                        // extraer solicitudId de la URL si existe
+                        // extraer amistadId si está en la URL (opcional)
                         Long amistadId = null;
                         try {
                             String url = n.getUrl();
@@ -102,7 +97,9 @@ public class ControladorNotificacion {
                                 n.getFechaCreacion(),
                                 n.getUsuarioEmisor() != null ? n.getUsuarioEmisor().getNombre() : "Uninet",
                                 n.getUrl(),
-                                amistadId
+                                amistadId,
+                                emisorId,
+                                receptorId
                         );
                     })
                     .collect(Collectors.toList());

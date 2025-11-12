@@ -13,14 +13,19 @@ public class DatosNotificacion {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fecha;
 
-    // nuevo campo
+    // nuevo campo: ids de usuario (emisor y receptor)
+    private Long usuarioEmisorId;
+    private Long usuarioReceptorId;
+
+    // campo antiguo para compatibilidad (amistadId / solicitudId)
     private Long amistadId;
 
-    // Constructor vacío (necesario para Jackson)
     public DatosNotificacion() {}
 
-    // Constructor (añadí solicitudId al final)
-    public DatosNotificacion(Long id, String mensaje, boolean leida, LocalDateTime fecha, String usuarioEmisor, String url, Long amistadId) {
+    // nuevo constructor con campos extra
+    public DatosNotificacion(Long id, String mensaje, boolean leida, LocalDateTime fecha,
+                             String usuarioEmisor, String url, Long amistadId,
+                             Long usuarioEmisorId, Long usuarioReceptorId) {
         this.id = id;
         this.mensaje = mensaje;
         this.leida = leida;
@@ -28,23 +33,33 @@ public class DatosNotificacion {
         this.usuarioEmisor = usuarioEmisor;
         this.url = url;
         this.amistadId = amistadId;
+        this.usuarioEmisorId = usuarioEmisorId;
+        this.usuarioReceptorId = usuarioReceptorId;
     }
 
-    // Getters y setters (añadir getter/setter para solicitudId)
+    // Getters / setters
     public Long getId() { return id; }
     public String getMensaje() { return mensaje; }
     public boolean isLeida() { return leida; }
     public LocalDateTime getFecha() { return fecha; }
+    public String getUsuarioEmisor() { return usuarioEmisor; }
+    public String getUrl() { return url; }
+
     public void setId(Long id) { this.id = id; }
     public void setMensaje(String mensaje) { this.mensaje = mensaje; }
     public void setLeida(boolean leida) { this.leida = leida; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
-    public String getUsuarioEmisor() { return usuarioEmisor; }
     public void setUsuarioEmisor(String usuarioEmisor) { this.usuarioEmisor = usuarioEmisor; }
-    public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
 
-    // nuevo getter/setter
+    // campos nuevos
+    public Long getUsuarioEmisorId() { return usuarioEmisorId; }
+    public void setUsuarioEmisorId(Long usuarioEmisorId) { this.usuarioEmisorId = usuarioEmisorId; }
+
+    public Long getUsuarioReceptorId() { return usuarioReceptorId; }
+    public void setUsuarioReceptorId(Long usuarioReceptorId) { this.usuarioReceptorId = usuarioReceptorId; }
+
+    // compatibilidad con nombre antiguo
     public Long getSolicitudId() { return amistadId; }
     public void setSolicitudId(Long solicitudId) { this.amistadId = solicitudId; }
 }

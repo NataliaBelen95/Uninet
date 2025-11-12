@@ -1,20 +1,15 @@
+// Reemplaza los métodos enviar existentes por este método que acepta JSON y form-urlencoded
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.ui.Model;
-import java.util.List;
-import java.util.Objects;
-import java.util.Comparator;
+
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/amistad")
@@ -22,130 +17,95 @@ public class ControladorAmistad {
 
     private final ServicioAmistad servicioAmistad;
     private final ServicioNotificacion servicioNotificacion;
-    private final RepositorioUsuario repositorioUsuario;
     private final ServicioUsuario servicioUsuario;
     private final UsuarioMapper usuarioMapper;
+    private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ControladorAmistad(ServicioAmistad servicioAmistad,ServicioNotificacion servicioNotificacion , RepositorioUsuario repositorioUsuario, ServicioUsuario servicioUsuario, UsuarioMapper usuarioMapper) {
+    public ControladorAmistad(ServicioAmistad servicioAmistad,
+                              ServicioNotificacion servicioNotificacion,
+                              RepositorioUsuario repositorioUsuario,
+                              ServicioUsuario servicioUsuario,
+                              UsuarioMapper usuarioMapper) {
         this.servicioAmistad = servicioAmistad;
-        this.usuarioMapper = usuarioMapper;
+        this.servicioNotificacion = servicioNotificacion;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioUsuario = servicioUsuario;
-        this.servicioNotificacion = servicioNotificacion;
+        this.usuarioMapper = usuarioMapper;
     }
 
+    /**
+     * Endpoint unificado para enviar una solicitud de amistad.
+     * Soporta:
+     *  - Form POST (application/x-www-form-urlencoded) con param receptorId
+     *  - JSON POST (application/json) con body { "receptorId": 123 }
+     *
+     * Si la llamada viene de un submit tradicional (form) devuelve redirect a /usuarios o /home.
+     * Si la llamada viene por AJAX (fetch JSON) devuelve ResponseEntity OK/errores.
+     */
+    @PostMapping(value = "/enviar")
+    public ResponseEntity<?> enviarSolicitudUnificado(
+            @RequestParam(name = "receptorId", required = false) Long receptorIdParam,
+            @RequestBody(required = false) Map<String, Object> payload,
+            HttpServletRequest request) {
 
-    @PostMapping("/rechazar/{idSolicitud}")
-    public String rechazarSolicitud(@PathVariable Long idSolicitud) {
-        servicioAmistad.rechazarSolicitud(idSolicitud);
-        return "redirect:/amistad/solicitudes";
-    }
-
-    @GetMapping("/solicitudes")
-    public String listarSolicitudesPendientes(HttpServletRequest request, ModelMap model) {
-        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        Usuario usuario = servicioUsuario.buscarPorId(datos.getId());
-
-        model.put("solicitudes", servicioAmistad.listarSolicitudesPendientes(usuario));
-        return "solicitudes-amistad";
-    }
-
-    @GetMapping("/amigos")
-    public String listarAmigos(HttpServletRequest request, ModelMap model) {
-        // 1. Obtener el DTO de sesión
-        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if (datos == null) {
-            return "redirect:/login";
+        // Extraer receptorId priorizando JSON body si existe
+        Long receptorId = receptorIdParam;
+        if (payload != null && payload.containsKey("receptorId")) {
+            try {
+                Object v = payload.get("receptorId");
+                if (v instanceof Number) receptorId = ((Number) v).longValue();
+                else receptorId = Long.parseLong(String.valueOf(v));
+            } catch (Exception ignored) {}
         }
 
-        // 2. Obtener entidad para la lógica de negocio
-        Usuario usuario = repositorioUsuario.buscarPorId(datos.getId());
-
-        // 3. Lógica de amigos
-        List<Usuario> amigos = servicioAmistad.listarAmigos(usuario);
-        List<DatosAmigos> amigosDTO = amigos.stream()
-                .map(a -> new DatosAmigos(a.getId(), a.getNombre(), a.getApellido(), a.getFotoPerfil()))
-                .collect(Collectors.toList());
-
-
-        // 5. Guardar DTO actualizado en sesión
-        request.getSession().setAttribute("usuarioLogueado", datos);
-
-        // 6. Pasar todo a la vista
-        model.put("usuario", datos); //para seguir con los datos de la logica del nav
-        model.put("amigos", amigosDTO);
-        model.put("esPropio", true);
-
-        return "lista-amigos";
-    }
-
-
-    @PostMapping("/enviar/{idReceptor}")
-    public String enviarSolicitud(@PathVariable Long idReceptor, HttpServletRequest request) {
+        // Validar sesión
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
         if (datos == null) {
-            return "redirect:/login";
+            // Si es AJAX (JSON) respondemos 401, si es form redirigimos a login
+            if (isAjax(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/login").build();
+        }
+
+        if (receptorId == null) {
+            if (isAjax(request)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("receptorId requerido");
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/usuarios").build();
         }
 
         Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
-        Usuario receptor = servicioUsuario.buscarPorId(idReceptor);
+        Usuario receptor = servicioUsuario.buscarPorId(receptorId);
         if (solicitante == null || receptor == null) {
-            return "redirect:/usuarios";
+            if (isAjax(request)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuarios inválidos");
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/usuarios").build();
         }
 
-        // persistir la solicitud como antes
-        servicioAmistad.enviarSolicitud(solicitante, receptor);
-
-        // buscar la solicitud recién creada entre pendientes para obtener su id sin cambiar firmas:
-        Long solicitudId = null;
-        List<SolicitudAmistad> pendientes = servicioAmistad.listarSolicitudesPendientes(receptor);
-        if (pendientes != null && !pendientes.isEmpty()) {
-            solicitudId = pendientes.stream()
-                    .filter(s -> s.getSolicitante() != null
-                            && Objects.equals(s.getSolicitante().getId(), solicitante.getId()))
-                    // ordenar por fecha de solicitud descendente (más reciente primero), tolerando nulls
-                    .sorted(Comparator.comparing(SolicitudAmistad::getFechaSolicitud,
-                            Comparator.nullsLast(Comparator.naturalOrder())).reversed())
-                    .map(SolicitudAmistad::getId)
-                    .findFirst()
-                    .orElse(null);
-        }
-
+        // Crear la solicitud y notificar (servicio devuelve la entidad)
+        SolicitudAmistad solicitud = servicioAmistad.enviarSolicitud(solicitante, receptor);
+        Long solicitudId = solicitud != null ? solicitud.getId() : null;
         try {
             servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitudId);
         } catch (Exception e) {
             System.err.println("Error al notificar solicitud de amistad: " + e.getMessage());
         }
-        return "redirect:/usuarios";
+
+        // Respuesta: si es AJAX devolvemos 200 OK, si es form redirigimos
+        if (isAjax(request)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/usuarios").build();
+        }
     }
 
-    @PostMapping("/enviar")
-    public String enviarSolicitudForm(@RequestParam("receptorId") Long receptorId, HttpServletRequest request) {
-        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
-        if (datos == null) {
-            return "redirect:/login";
-        }
-        Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
-        Usuario receptor = servicioUsuario.buscarPorId(receptorId);
-        if (solicitante == null || receptor == null) {
-            return "redirect:/usuarios";
-        }
-
-        // Llamada como antes
-        servicioAmistad.enviarSolicitud(solicitante, receptor);
-        try {
-            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitante.getId());
-        } catch (Exception e) {
-            System.err.println("Error al notificar solicitud de amistad: " + e.getMessage());
-        }
-
-        return "redirect:/home";
+    // Helper simple para detectar llamadas AJAX/JSON
+    private boolean isAjax(HttpServletRequest request) {
+        String accept = request.getHeader("Accept");
+        String contentType = request.getContentType();
+        String xrh = request.getHeader("X-Requested-With");
+        if (xrh != null && xrh.equalsIgnoreCase("XMLHttpRequest")) return true;
+        if (accept != null && accept.contains("application/json")) return true;
+        if (contentType != null && contentType.contains("application/json")) return true;
+        return false;
     }
 
-    @PostMapping("/aceptar/{idSolicitud}")
-    public ResponseEntity<Void> aceptarSolicitud(@PathVariable Long idSolicitud) {
-        servicioAmistad.aceptarSolicitud(idSolicitud);
-        return ResponseEntity.ok().build();
-    }
+    // ... deja los demás mappings (aceptar/rechazar por ids, etc.) tal como los tenías ...
 }

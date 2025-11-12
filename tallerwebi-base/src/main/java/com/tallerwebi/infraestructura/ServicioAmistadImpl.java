@@ -1,3 +1,4 @@
+// Ajuste en aceptarSolicitud: crear Amistad con estado correcto (ACEPTADA) usando constructor
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.*;
@@ -26,7 +27,6 @@ public class ServicioAmistadImpl implements ServicioAmistad {
         solicitud.setSolicitante(solicitante);
         solicitud.setReceptor(receptor);
         repo.guardar(solicitud);
-        // si repo.guardar usa session.save(solicitud) con IDENTITY, solicitud.getId() ya estará poblado
         return solicitud;
     }
 
@@ -37,10 +37,8 @@ public class ServicioAmistadImpl implements ServicioAmistad {
         solicitud.setEstado(EstadoSolicitud.ACEPTADA);
         repo.actualizar(solicitud);
 
-        // crear entidad de amistad si tu modelo la requiere
-        Amistad amistad = new Amistad();
-        amistad.setSolicitante(solicitud.getSolicitante());
-        amistad.setSolicitado(solicitud.getReceptor());
+        // crear entidad de amistad con estado ACEPTADA
+        Amistad amistad = new Amistad(solicitud.getSolicitante(), solicitud.getReceptor(), EstadoAmistad.ACEPTADA);
         repoAmistad.guardar(amistad);
     }
 
