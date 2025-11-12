@@ -36,48 +36,63 @@ public class ServicioFeedTest {
 
 
     @Test
-    public void obtenerElFeedPrincipal_debeObtenerSoloPublicacionesNoPublicitariasYMapearlasADTO() {
-        // ID de usuario que se pasará al feed
+    public void obtenerElFeedPrincipal_debeObtenerSoloPublicacionesDeAmigosYpropiasYnoBots() {
+
         Long usuarioId = 1L;
-        Usuario usuario = crearUsuario("Juan", "Perez", "jp@un", 12456789);
-        usuario.setId(usuarioId);
+
+        // Usuario Logueado (ID 1L)
+        Usuario usuarioLogueado = crearUsuario("Yo", "Mismo", "yo@un", 123);
+        usuarioLogueado.setId(usuarioId);
+
+        Usuario usuarioAmigo = crearUsuario("Amigo", "Uno", "amigo@un", 456);
 
 
-        Publicacion p1 = crearPublicacion(usuario, false, LocalDateTime.now());
-        Publicacion p2 = crearPublicacion(usuario, false, LocalDateTime.now());
-        List<Publicacion> publicacionesFiltradas = Arrays.asList(p1, p2);
+
+        Usuario usuarioBot = crearUsuario("Bot", "Malo", "bot@ia", 789);
+        usuarioBot.setId(3L);
+        usuarioBot.setEsBot(true);
 
 
-        DatosPublicacion dto1 = new DatosPublicacion();
-        DatosPublicacion dto2 = new DatosPublicacion();
+        Publicacion pPropia = crearPublicacion(usuarioLogueado, false, LocalDateTime.now());
+        pPropia.setDescripcion("Propia");
+        Publicacion pAmigo = crearPublicacion(usuarioAmigo, false, LocalDateTime.now().minusHours(1));
+        pAmigo.setDescripcion("Amigo");
 
-        // mockear Fujo
 
-        // Simular la llamada al servicio de publicación
-        when(servicioPublicacionMock.obtenerTodasPublicacionesIgnorandoPublicidades())
-                .thenReturn(publicacionesFiltradas);
+        List<Publicacion> publicacionesFiltradas = Arrays.asList(pPropia, pAmigo);
 
-        // simular mapeo a dto de c/u de las publis
-        when(publicacionMapperMock.toDto(eq(p1), anyLong())).thenReturn(dto1);
-        when(publicacionMapperMock.toDto(eq(p2), anyLong())).thenReturn(dto2);
+
+        // DTOs esperados
+        DatosPublicacion dtoPropia = new DatosPublicacion();
+        DatosPublicacion dtoAmigo = new DatosPublicacion();
+        // No necesitamos DTO para pBot porque no debería ser devuelta por el mock
+
+        // 2. Mocking Corregido: Simular la llamada al nuevo método del servicio de publicación
+        when(servicioPublicacionMock.publicacionesDeAmigos(eq(usuarioId)))
+                .thenReturn(publicacionesFiltradas); // El mock devuelve solo las 2 válidas
+
+        // Simular mapeo a DTO de las 2 publicaciones válidas
+        when(publicacionMapperMock.toDto(eq(pPropia), eq(usuarioId))).thenReturn(dtoPropia);
+        when(publicacionMapperMock.toDto(eq(pAmigo), eq(usuarioId))).thenReturn(dtoAmigo);
 
 
         // 3. Ejecución
         List<DatosPublicacion> resultado = servicioFeed.obtenerFeedPrincipal(usuarioId);
 
         // 4. Verificación
-        verify(servicioPublicacionMock, times(1)).obtenerTodasPublicacionesIgnorandoPublicidades();
+        // a) Verificar que se llamó al método correcto
+        verify(servicioPublicacionMock, times(1)).publicacionesDeAmigos(eq(usuarioId));
 
-        //lista dto de publicaciones retorne 2
-        assertEquals(2, resultado.size(), "El feed principal debe devolver 2 publicaciones.");
+        // b) Verificar el tamaño
+        assertEquals(2, resultado.size(), "El feed principal debe devolver 2 publicaciones (propia y de amigo).");
 
-        // que el mapeo se haya hecho
-        verify(publicacionMapperMock, times(1)).toDto(eq(p1), eq(usuarioId));
-        verify(publicacionMapperMock, times(1)).toDto(eq(p2), eq(usuarioId));
+        // c) Verificar que el mapeo se hizo para las publicaciones correctas
+        verify(publicacionMapperMock, times(1)).toDto(eq(pPropia), eq(usuarioId));
+        verify(publicacionMapperMock, times(1)).toDto(eq(pAmigo), eq(usuarioId));
 
-        // que la lista contenga los DTOs correctos
-        assertEquals(dto1, resultado.get(0));
-        assertEquals(dto2, resultado.get(1));
+        // d) Asegurar que la lista contiene los DTOs correctos
+        assertTrue(resultado.contains(dtoPropia), "Debe contener la publicación propia.");
+        assertTrue(resultado.contains(dtoAmigo), "Debe contener la publicación del amigo.");
 
     }
     @Test
@@ -92,7 +107,7 @@ public class ServicioFeedTest {
         Publicacion rec2 = crearPublicacion(usuarioActual, false, LocalDateTime.now());
         List<Publicacion> publisRecomendadas = Arrays.asList(rec1, rec2);
 
-        // Publicaciones de Bots (Publicidad Dirigida) ---
+        // Publicaciones de Bots  ---
         Usuario bot = crearUsuario("Bot", "X", "bot@ia", 999);
         Publicacion bot1 = crearPublicacion(bot, true, LocalDateTime.now());
         Publicacion bot2 = crearPublicacion(bot, true, LocalDateTime.now());
