@@ -48,14 +48,12 @@
             <a th:href="@{/mis-likes.html}" class="btn-mis-likes">Mis Likes</a>
             <hr>
             <a th:href="@{/editar-informacion}">Editar Información</a>
-            <!-- popup cambiar foto ... (lo dejé igual) -->
         </div>
     </aside>
 
     <section class="estructura">
         <h1>Notificaciones</h1>
 
-        <!-- TAB-BAR (opcional, si querés pestañas) -->
         <nav class="notificaciones-tabs">
             <button class="notificaciones-tab-button" data-tab="todas">Todas</button>
             <button class="notificaciones-tab-button" data-tab="solicitudes">Solicitudes</button>
@@ -63,7 +61,6 @@
         </nav>
 
         <div class="notificaciones">
-            <!-- Pestaña 'todas' -->
             <section class="notificaciones-tab-content" data-tab-content="todas">
                 <ul>
                     <li th:each="n : ${notificaciones}"
@@ -75,21 +72,14 @@
                         <div th:if="${n.publicacion == null}">
                             <span th:text="${n.mensaje}"></span>
                         </div>
-                        <!-- Reemplazar el contenido dentro del <li th:each="n : ${notificaciones}"> -->
-                        <div th:if="${n.publicacion != null}">
-                            <a th:href="@{/publicacion/{id}(id=${n.publicacion.id})}" th:text="${n.mensaje}"></a>
-                        </div>
-                        <div th:if="${n.publicacion == null}">
-                            <span th:text="${n.mensaje}"></span>
-                        </div>
 
-                        <!-- Si es solicitud de amistad mostrar botones -->
                         <div th:if="${n.tipo.name() == 'SOLICITUD_AMISTAD'}" class="acciones-solicitud">
                             <button type="button" class="btn-aceptar"
                                     th:attr="data-url=${n.url}, data-notificacion-id=${n.id}">Aceptar</button>
                             <button type="button" class="btn-rechazar"
                                     th:attr="data-url=${n.url}, data-notificacion-id=${n.id}">Rechazar</button>
-                        </div>                    </li>
+                        </div>
+                    </li>
                 </ul>
             </section>
 
