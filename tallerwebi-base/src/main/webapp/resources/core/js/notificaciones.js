@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Función Helper (necesaria para la lógica de la vista principal)
     function extraerSolicitudId(url) {
         try {
-            // Se usa new URL() para parsear la URL completa si tiene la base /spring
             const urlObj = new URL(url.startsWith('http') ? url : window.location.origin + url);
             const params = new URLSearchParams(urlObj.search);
             return params.get('solicitudId');
@@ -18,15 +17,35 @@ document.addEventListener("DOMContentLoaded", function() {
     const dropdown = document.getElementById('dropdown-notificaciones');
     const lista = document.getElementById('listaNotificaciones');
 
-    // 🛑 VERIFICACIÓN DE ELEMENTOS CLAVE
+    // VERIFICACIÓN DE ELEMENTOS CLAVE
     if (!btnNotificaciones || !dropdown || !lista) {
         console.error("Faltan elementos HTML del dropdown (btn-notificaciones, dropdown-notificaciones, o listaNotificaciones).");
         return;
     }
 
+    // --- BLOQUE AÑADIDO: MANEJO DE ERRORES DE REDIRECCIÓN (para /usuarios?error=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMessage = urlParams.get('error');
+
+   if (errorMessage) {
+       // 1. Reemplazar '+' por espacios PRIMERO (formato estándar de Query String)
+       let tempMessage = errorMessage.replace(/\+/g, ' ');
+
+       // 2. Decodificar los caracteres especiales (tildes, ñ, etc. - asume UTF-8)
+       const decodedMessage = decodeURIComponent(tempMessage);
+
+       // 3. Mostrar el error (Puedes añadir un icono explícito)
+       alert(` Error de Validación: ${decodedMessage}`);
+
+       // 4. Limpiar la URL (Lógica correcta, sin cambios)
+       const cleanUrl = window.location.pathname + window.location.search.replace(/([?&])error=[^&]*(&|$)/, '$1').replace(/[?&]$/, '');
+       history.replaceState(null, null, cleanUrl);
+   }
+    // --- FIN DEL BLOQUE DE MANEJO DE ERRORES DE URL ---
+
     const userId = btnNotificaciones.dataset.userId || 0;
 
-    // 🔌 Conexión WebSocket
+    //Conexión WebSocket
     const socket = new SockJS('/spring/ws');
     const stompClient = Stomp.over(socket);
 
@@ -77,10 +96,9 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(data => {
                 lista.innerHTML = '';
 
-                // 🛑 FILTRO ROBUSTO: Excluir por Tipo de Notificación
-                const datosFiltrados = data.filter(n =>
-                    n.tipo !== "INACTIVIDAD"
-                );
+                // La variable debe inicializarse aquí para evitar ReferenceError
+                // Incluimos todos los datos, el borrado se maneja en el listener del click.
+                const datosFiltrados = data;
 
                 if (!datosFiltrados || datosFiltrados.length === 0) {
                     const li = document.createElement('li');
@@ -93,7 +111,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     datosFiltrados.forEach(n => {
                         const li = document.createElement('li');
 
-                        // Detección de amistad
                         const esSolicitudAmistad = n.tipo === "SOLICITUD_AMISTAD" || n.amistadId != null;
                         const emisor = n.usuarioEmisor || 'Sistema';
                         const fechaStr = n.fecha ? n.fecha.split('.')[0] : '';
@@ -222,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
                         } else {
-                            // 🔗 CASO: General
+                            // 🔗 CASO: General (Incluye Inactividad y otros tipos que no son Solicitudes)
                             li.addEventListener('click', () => {
                                 fetch(`/spring/marcar-leida/${n.id}`, { method: 'POST' })
                                     .then(res => {
@@ -237,7 +254,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                             else badge.textContent = c;
                                         }
 
-                                        // Redirigir
+                                        // BORRAR Y NO REDIRIGIR)
+                                        if (n.tipo === "INACTIVIDAD") {
+                                            li.remove(); // Borrar el LI del DOM
+                                            return; // Detiene la ejecución aquí, EVITANDO la redirección
+                                        }
+
+                                        // Redirigir (para otros tipos generales)
                                         const urlFinal = n.url.startsWith('/spring') ? n.url : '/spring' + n.url;
                                         if (window.location.pathname !== urlFinal) {
                                             window.location.href = urlFinal;

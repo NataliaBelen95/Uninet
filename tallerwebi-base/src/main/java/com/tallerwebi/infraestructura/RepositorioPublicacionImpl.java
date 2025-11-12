@@ -4,7 +4,9 @@ import com.tallerwebi.dominio.Publicacion;
 import com.tallerwebi.dominio.RepositorioPublicacion;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -116,18 +118,30 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
                 .setParameter("usuarioId", usuarioId)
                 .getResultList();
     }
+    @Override
+    public List<Publicacion> obtenerPublicacionesDeIdsDeUsuario(List<Long> idsAmigosYPropios) {
+        if (idsAmigosYPropios == null || idsAmigosYPropios.isEmpty()) {
+            return List.of();
+        }
 
-    //NO SE USA, chequear
-//    @Override
-//    public boolean existeHashResumen(String hash, Long usuarioId) {
-//        Long count = sessionFactory.getCurrentSession()
-//                .createQuery("SELECT COUNT(p) FROM Publicacion p WHERE p.hashResumen = :hash AND p.usuario.id = :usuarioId", Long.class)
-//                .setParameter("hash", hash)
-//                .setParameter("usuarioId", usuarioId)
-//                .uniqueResult();
-//
-//        return count != null && count > 0;
-//    }
+        Session session = sessionFactory.getCurrentSession();
+
+
+        String hql = "SELECT DISTINCT p FROM Publicacion p " +
+                "LEFT JOIN FETCH p.usuario u " +
+                "LEFT JOIN FETCH p.comentarios c " +
+                "LEFT JOIN FETCH p.likesDePublicacion l " +
+                "LEFT JOIN FETCH p.archivo a " +
+                "WHERE p.usuario.id IN (:ids) AND p.esPublicidad = false " +
+                "ORDER BY p.fechaPublicacion DESC";
+
+        Query<Publicacion> query = session.createQuery(hql, Publicacion.class);
+
+        query.setParameterList("ids", idsAmigosYPropios);
+
+        return query.getResultList();
+    }
+
 
 
 

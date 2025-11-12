@@ -12,12 +12,12 @@ public class ServicioAmigoTest {
 
     private RepositorioAmistad repositorioAmigoMock;
     private ServicioAmistadImpl servicioAmigo;
-    private RepositorioSolicitudAmistad repositorioSolicitudAmistadMock;
+    private RepositorioSolicitudAmistadImpl repositorioSolicitudAmistadMock;
 
     @BeforeEach
     public void init() {
         repositorioAmigoMock = mock(RepositorioAmistad.class);
-        repositorioSolicitudAmistadMock = mock(RepositorioSolicitudAmistad.class);
+        repositorioSolicitudAmistadMock = mock(RepositorioSolicitudAmistadImpl.class);
         servicioAmigo = new ServicioAmistadImpl(repositorioSolicitudAmistadMock, repositorioAmigoMock);
     }
 
@@ -30,7 +30,7 @@ public class ServicioAmigoTest {
 
         when(repositorioAmigoMock.obtenerAmigosDeUsuario(1L)).thenReturn(List.of(amigo1, amigo2));
 
-        List<Usuario> resultado = servicioAmigo.obtenerAmigosDeUsuario(1L);
+        List<Usuario> resultado = servicioAmigo.listarAmigos(1L);
 
         assertNotNull(resultado);
         assertEquals(2, resultado.size());

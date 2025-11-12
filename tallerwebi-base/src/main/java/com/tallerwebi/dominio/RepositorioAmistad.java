@@ -6,13 +6,11 @@ import java.util.List;
 
 public interface RepositorioAmistad {
     void guardar(Amistad amistad);
-    Amistad buscarPorUsuarios(Usuario solicitante, Usuario solicitado);
-    List<Amistad> listarSolicitudesPendientes(Usuario usuario);
-    List<Amistad> listarAmigos(Usuario usuario);
+
     void actualizar(Amistad amistad);
-
-    List<Usuario> listarAmigosPorUsuario(long l);
-
-    List<Usuario> obtenerAmigosDeUsuario(long l);
     boolean sonAmigos(Usuario u1, Usuario u2);
+    Amistad buscarPorUsuarios(Usuario solicitante, Usuario solicitado);
+    List<Usuario>  obtenerAmigosDeUsuario(long idUsuario);
+
+
 }

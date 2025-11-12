@@ -18,6 +18,7 @@ public class ServicioPublicacionTest {
     private RepositorioPublicacion repositorioPublicacionMock;
     private RepositorioComentario repositorioComentarioMock;
     private RepositorioUsuario repositorioUsuarioMock;
+    private RepositorioAmistad repositorioAmistadMock;
     private File tempFile;
 
     @BeforeEach
@@ -25,7 +26,8 @@ public class ServicioPublicacionTest {
         repositorioPublicacionMock = mock(RepositorioPublicacion.class);
         repositorioComentarioMock = mock(RepositorioComentario.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
-        servicioPublicacion = new ServicioPublicacionImpl(repositorioPublicacionMock, repositorioComentarioMock, repositorioUsuarioMock);
+        repositorioAmistadMock = mock(RepositorioAmistad.class);
+        servicioPublicacion = new ServicioPublicacionImpl(repositorioPublicacionMock, repositorioComentarioMock, repositorioUsuarioMock,repositorioAmistadMock);
 
     }
 

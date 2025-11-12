@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service("servicioPublicado")
 @Transactional
@@ -26,16 +27,16 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
 
     private final RepositorioPublicacion repositorio;
     private final RepositorioComentario repositorioComentario;
-
     private final RepositorioUsuario repositorioUsuario;
+    private final RepositorioAmistad repositorioAmistad;
 
     @Autowired
     public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario,
-                                   RepositorioUsuario repositorioUsuario) {
+                                   RepositorioUsuario repositorioUsuario, RepositorioAmistad repositorioAmistad) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
-
         this.repositorioUsuario = repositorioUsuario;
+        this.repositorioAmistad = repositorioAmistad;
     }
 
     // ----------------- PUBLICACIÓN CON MULTIPARTFILE (USUARIOS) -----------------
@@ -178,6 +179,8 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         return repositorio.obtenerPublicacionesDeUsuario(usuId);
     }
 
+
+
     @Override
     public List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario) {
         return repositorio.obtenerPublicacionesDirigidasA(usuario);
@@ -220,6 +223,25 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         usuario.setUltimaPublicacion(LocalDate.now());
         repositorioUsuario.actualizar(usuario);
         repositorio.guardar(publicacion);
+    }
+
+    @Override
+    public List<Publicacion> publicacionesDeAmigos(long idUsuario) {
+        // 1. Obtener la lista de Usuarios que son amigos del usuarioId
+        // Nota: El servicio de amistad obtiene las entidades Usuario de los amigos.
+        List<Usuario> amigos = repositorioAmistad.obtenerAmigosDeUsuario(idUsuario);
+
+        // 2. Extraer los IDs de los amigos y el propio usuario para incluir sus publicaciones
+        List<Long> idsAmigosYPropios = amigos.stream()
+                .map(Usuario::getId)
+                .collect(Collectors.toList());
+
+        // Incluir el ID del propio usuario para mostrar sus publicaciones en el feed
+        idsAmigosYPropios.add(idUsuario);
+
+        // 3. Obtener las publicaciones de esos IDs (Asumo un método en RepositorioPublicacion)
+        // El repositorio debe filtrar también que no sean publicidades.
+        return repositorio.obtenerPublicacionesDeIdsDeUsuario(idsAmigosYPropios);
     }
 
 

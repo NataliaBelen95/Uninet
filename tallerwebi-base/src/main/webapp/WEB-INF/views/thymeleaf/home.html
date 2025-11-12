@@ -63,7 +63,7 @@
             <form id="filtroPublicaciones" th:action="@{/home}" method="get">
                 <label for="ordenar">Mostrar: </label>
                 <select name="filtro" id="ordenar" onchange="this.form.submit()">
-                    <option value="p" th:selected="${filtro == 'p'}">Principal</option>
+                    <option value="p" th:selected="${filtro == 'p'}">Amigos</option>
                     <option value="r" th:selected="${filtro == 'r'}">Para ti</option>
                 </select>
             </form>

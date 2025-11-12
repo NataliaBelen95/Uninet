@@ -92,10 +92,13 @@
         </div>
     </aside>
 
-    <section class="estructura">  <h2>Mis amigos</h2>
+    <section class="estructura">
+        <h2>Mis amigos</h2>
         <ul>
-            <li th:each="amistad : ${amigos}">
-                <span th:text="${amistad.solicitante.nombre} + ' y ' + ${amistad.solicitado.nombre}"></span>
+            <li th:each="amigoDTO : ${amigos}">
+                <a th:href="@{/perfil/id/{id}(id=${amigoDTO.id})}">
+                    <span th:text="${amigoDTO.nombre} + ' ' + ${amigoDTO.apellido}"></span>
+                </a>
             </li>
         </ul>
     </section>

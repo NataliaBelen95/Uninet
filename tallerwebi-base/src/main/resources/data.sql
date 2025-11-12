@@ -118,7 +118,10 @@ VALUES ('La economía del comportamiento: sesgos cognitivos en el mercado financ
 INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
 VALUES ('Estrategias para la optimización de código y mejora del rendimiento de aplicaciones.', NOW(), 1, false);
 
-
+INSERT INTO SolicitudAmistad (solicitante_id, receptor_id, estado, fechaSolicitud)
+VALUES (2, 3, 'ACEPTADA', NOW());
+INSERT INTO Amistad (solicitante_id, solicitado_id)
+VALUES (2, 3);
 
 -- 6️Generar slug para los nuevos usuarios
 UPDATE Usuario

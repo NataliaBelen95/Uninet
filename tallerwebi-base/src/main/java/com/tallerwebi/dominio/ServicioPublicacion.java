@@ -19,6 +19,7 @@ public interface ServicioPublicacion {
     Publicacion obtenerPublicacion(long id);
     List <Publicacion> obtenerPorLikeDeUsuario(long id);
     List <Publicacion> obtenerPublicacionesDeUsuario(long usuId);
+    List<Publicacion> publicacionesDeAmigos(long idUsuario);
 
 
     // 2. 🔑 NUEVO MÉTODO PARA EL BOT (URL de la Imagen)

@@ -280,4 +280,22 @@ public class ControladorMiPerfil {
 
         return new ModelAndView("miPerfil", model);
     }
+
+    @GetMapping("/perfil/id/{id}")
+    public ModelAndView perfilPorId(@PathVariable Long id, HttpServletRequest request) {
+
+        Usuario usuarioPerfil = servicioUsuario.buscarPorId(id);
+
+        // 1. Validación de nulidad (Si no existe)
+        if (usuarioPerfil == null) {
+            return new ModelAndView("redirect:/usuarios?error=Usuario no encontrado");
+        }
+
+        // 2. Obtener el SLUG de la entidad (asegurando que el mapper lo genere)
+        DatosUsuario dtoPerfil = usuarioMapper.toDtoPublico(usuarioPerfil);
+        String slug = dtoPerfil.getSlug();
+
+
+        return new ModelAndView("redirect:/perfil/" + slug);
+    }
 }

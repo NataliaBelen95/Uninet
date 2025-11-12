@@ -12,6 +12,7 @@ import com.tallerwebi.dominio.SolicitudAmistad;
 @Transactional
 public class ServicioAmistadImpl implements ServicioAmistad {
 
+    // Cambiado de RepositorioSolicitudAmistadImpl a la interfaz para inyección de dependencia
     private final RepositorioSolicitudAmistad repo;
     private final RepositorioAmistad repoAmistad;
 
@@ -24,22 +25,18 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     @Override
     public SolicitudAmistad enviarSolicitud(Usuario solicitante, Usuario receptor) {
 
-        //  PRIMERA VERIFICACIÓN: ¿Ya son amigos? (Revisar la tabla Amistad)
-
         if (repoAmistad.sonAmigos(solicitante, receptor)) {
             throw new IllegalStateException("El usuario " + receptor.getNombre() + " ya es tu amigo.");
         }
 
-        //SEGUNDA VERIFICACIÓN: ¿Hay solicitud PENDIENTE o ACEPTADA en curso?
-
+        // SEGUNDA VERIFICACIÓN: ¿Hay solicitud PENDIENTE o ACEPTADA en curso?
         SolicitudAmistad activa = repo.buscarSolicitudActiva(solicitante, receptor);
 
         if (activa != null) {
-            // Devuelve la solicitud existente (PENDIENTE o ACEPTADA) para evitar duplicación.
             return activa;
         }
 
-        // 3. Crear nueva solicitud (solo si las verificaciones pasaron)
+        // 3. Crear nueva solicitud
         SolicitudAmistad solicitud = new SolicitudAmistad();
         solicitud.setSolicitante(solicitante);
         solicitud.setReceptor(receptor);
@@ -78,30 +75,34 @@ public class ServicioAmistadImpl implements ServicioAmistad {
 
     @Override
     public List<Usuario> listarAmigos(Usuario usuario) {
+        // Esto debería llamar a un método en RepositorioAmistad (la tabla final) para un diseño limpio.
+        // Pero siguiendo tu estructura actual, se deja aquí.
         return repo.buscarAmigos(usuario);
     }
 
     @Override
     public List<SolicitudAmistad> listarSolicitudesPendientes(Usuario usuario) {
-        return repo.buscarPendientes(usuario);
+
+        return repo.listarSolicitudesPendientes(usuario);
     }
 
     @Override
-    public List<Usuario> obtenerAmigosDeUsuario(long l) {
+    public List<Usuario> listarAmigos(long l) {
         return repoAmistad.obtenerAmigosDeUsuario(l);
     }
 
     @Override
     public SolicitudAmistad buscarSolicitudPendientePorUsuarios(Usuario usuario, Usuario emisor) {
-        // Renombramos los parámetros para reflejar la lógica del repositorio:
-        // Buscamos la solicitud donde 'emisor' (quien envió) es el solicitante
-        // y 'usuario' (el logueado) es el receptor.
-        List<SolicitudAmistad> solicitudes = repo.buscarSolicitudPendientePorUsuarios(emisor, usuario);
 
+        // 1. Llama al repositorio (que debería devolver List<SolicitudAmistad>)
+        List<SolicitudAmistad> solicitudes = repo.buscarSolicitudPendientePorUsuarios(emisor, usuario); // Corregido: La variable de retorno del repo debe ser List<SolicitudAmistad>
+
+        // 2. Verifica si la lista está vacía
         if (solicitudes.isEmpty()) {
-            return null;
+            return null; // Devuelve null si no se encuentra
         }
-        // Devolvemos el primer (y único esperado) resultado.
+
+        // 3. Devuelve el primer (y único) elemento
         return solicitudes.get(0);
     }
 }

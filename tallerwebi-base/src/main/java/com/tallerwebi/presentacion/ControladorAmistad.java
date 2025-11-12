@@ -1,12 +1,16 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.presentacion.DTO.DatosAmigos;
+import com.tallerwebi.presentacion.DTO.DatosUsuario;
+import com.tallerwebi.presentacion.DTO.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -64,28 +68,27 @@ public class ControladorAmistad {
 
     @PostMapping("/enviar")
     public String enviarSolicitudForm(@RequestParam("receptorId") Long receptorId, HttpServletRequest request) {
-        // ... (Verificaciones de sesión y usuario) ...
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return "redirect:/login";
+        }
         Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
         Usuario receptor = servicioUsuario.buscarPorId(receptorId);
 
-        // ... (Lógica de envío) ...
-        try {
-            servicioAmistad.enviarSolicitud(solicitante, receptor);
+        // Asumiendo que el resto de las verificaciones de nullidad ya pasaron
 
-            // Si el envío fue exitoso, notificar y redirigir
-            Long solicitudId = solicitante.getId(); // Asumo que esta línea sigue siendo incorrecta y debería usar el ID del objeto devuelto
+        try {
+
+            SolicitudAmistad solicitudCreada = servicioAmistad.enviarSolicitud(solicitante, receptor);
+            Long solicitudId = solicitudCreada.getId();
+
             servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitudId);
 
         } catch (IllegalStateException e) {
-
-
-            // Añadir el mensaje de error al modelo/sesión (dependiendo de tu configuración de Spring)
-            // Ejemplo simple usando un parámetro de URL (aunque Flash Attributes es mejor):
-            String mensajeError = "Error: " + e.getMessage(); // Obtiene "El usuario Nat ya es tu amigo."
-            System.err.println(mensajeError);
-
-            // Redirigir a una página que muestre el error (aquí se usa /usuarios como ejemplo)
-            return "redirect:/usuarios?error=" + java.net.URLEncoder.encode(e.getMessage(), java.nio.charset.StandardCharsets.UTF_8);
+            //  CAPTURAR LA VALIDACIÓN DE NEGOCIO Y REDIRIGIR AMIGABLEMENTE
+            String mensajeCodificado = java.net.URLEncoder.encode(e.getMessage(), java.nio.charset.StandardCharsets.UTF_8);
+            System.err.println("Error de validación de amistad: " + e.getMessage());
+            return "redirect:/home?error=" + mensajeCodificado;
 
         } catch (Exception e) {
             // Capturar otros errores como fallo de notificación o DB.
@@ -93,6 +96,7 @@ public class ControladorAmistad {
             return "redirect:/usuarios?error=Error desconocido al enviar solicitud.";
         }
 
+        // Redirección de éxito
         return "redirect:/home";
     }
 
@@ -102,12 +106,33 @@ public class ControladorAmistad {
         boolean exito = servicioAmistad.aceptarSolicitud(idSolicitud);
 
         if (exito) {
-            // ✅ ÉXITO: Redirige de vuelta a la lista de solicitudes (actualizando la tabla)
+
             return "redirect:/notificaciones?tab=solicitudes";
         } else {
-            // 🛑 FALLO: Redirige de vuelta con un mensaje de error (opcional)
+
             // Podrías redirigir a una página de error o simplemente de vuelta a la lista:
             return "redirect:/notificaciones?tab=solicitudes&error=solicitudInvalida";
         }
+    }
+    @GetMapping("/amigos")
+    public String listarAmigos(HttpServletRequest request, ModelMap model) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return "redirect:/login";
+        }
+        Usuario usuario = repositorioUsuario.buscarPorId(datos.getId());
+
+        List<Usuario> amigos = servicioAmistad.listarAmigos(usuario);
+        List<DatosAmigos> amigosDTO = amigos.stream()
+                .map(a -> new DatosAmigos(a.getId(), a.getNombre(), a.getApellido(), a.getFotoPerfil()))
+                .collect(Collectors.toList());
+
+        request.getSession().setAttribute("usuarioLogueado", datos);
+
+        model.put("usuario", datos);
+        model.put("amigos", amigosDTO);
+        model.put("esPropio", true);
+
+        return "lista-amigos";
     }
 }

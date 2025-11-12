@@ -8,23 +8,23 @@ import java.util.List;
 public interface RepositorioPublicacion {
 
     void guardar(Publicacion publicacion);
+
     Publicacion buscarPorId(Long id);
+
     List<Publicacion> listarTodas();
 
     List<Publicacion> listarNoPublicitarias();
 
     void eliminarPubli(Publicacion publicacion);
+
     Publicacion obtenerPublicacionCompleta(long id);
+
     List<Publicacion> obtenerPublicacionesConLikeDeUsuario(Long usuarioId);
+
     List<Publicacion> obtenerPublicacionesDeUsuario(Long usuarioId);
+
     List<Publicacion> obtenerPublicacionesDirigidasA(Usuario usuario);
 
+    List<Publicacion> obtenerPublicacionesDeIdsDeUsuario(List<Long> idsAmigosYPropios);
 
-
-//    /***********************************************************************/
-//    //CHEQUEAR QUEDARON SIN USO
-//    //boolean existeHashResumen(String hash, Long usuarioId);
-//    //List<Publicacion> obtenerPublisBotsParaUsuario(Usuario usuario);
-//    //boolean existeIgual(Publicacion publicacion);
-//    /***********************************************************************/
 }

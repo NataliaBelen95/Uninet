@@ -16,6 +16,7 @@ public class DatosAmigos {
         this.foto = foto;
         this.nombre = nombre;
         this.apellido = apellido;
+
     }
 
 

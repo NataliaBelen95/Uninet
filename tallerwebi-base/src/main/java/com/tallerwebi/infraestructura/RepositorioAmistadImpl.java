@@ -1,7 +1,12 @@
 package com.tallerwebi.infraestructura;
+// ... (imports) ...
+
+import com.tallerwebi.dominio.Amistad;
+import com.tallerwebi.dominio.RepositorioAmistad;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,43 +15,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.tallerwebi.dominio.*;
-import org.hibernate.query.Query;
-
-
 @Repository
 public class RepositorioAmistadImpl implements RepositorioAmistad {
 
-    @Override
-    public List<Usuario> listarAmigosPorUsuario(long usuarioId) {
-        String hql = "SELECT a.solicitado FROM Amistad a WHERE a.solicitante.id = :id";
-        List<Usuario> resultado = sessionFactory.getCurrentSession()
-                .createQuery(hql, Usuario.class)
-                .setParameter("id", usuarioId)
-                .getResultList();
-        return resultado;
-    }
-
-    @Override
-    public List<Usuario> obtenerAmigosDeUsuario(long id) {
-        List<Usuario> amigosComoSolicitante = sessionFactory.getCurrentSession()
-                .createQuery("SELECT sa.receptor FROM SolicitudAmistad sa WHERE sa.solicitante.id = :id AND sa.estado = 'ACEPTADA'", Usuario.class)
-                .setParameter("id", id)
-                .getResultList();
-
-        List<Usuario> amigosComoDestinatario = sessionFactory.getCurrentSession()
-                .createQuery("SELECT sa.solicitante FROM SolicitudAmistad sa WHERE sa.receptor.id = :id AND sa.estado = 'ACEPTADA'", Usuario.class)
-                .setParameter("id", id)
-                .getResultList();
-
-        Set<Usuario> unidos = new LinkedHashSet<>();
-        if (amigosComoSolicitante != null) unidos.addAll(amigosComoSolicitante);
-        if (amigosComoDestinatario != null) unidos.addAll(amigosComoDestinatario);
-
-        return new ArrayList<>(unidos);
-    }
-
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     @Autowired
     public RepositorioAmistadImpl(SessionFactory sessionFactory) {
@@ -56,6 +28,31 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
     @Override
     public void guardar(Amistad amistad) {
         sessionFactory.getCurrentSession().save(amistad);
+    }
+
+    @Override
+    public void actualizar(Amistad amistad) {
+        sessionFactory.getCurrentSession().update(amistad);
+    }
+
+    // --- MÉTODOS DE AMISTAD FINAL ---
+
+    @Override
+    public boolean sonAmigos(Usuario u1, Usuario u2) {
+        // ✅ CORRECCIÓN DE ESTILO Y LÓGICA: Busca si existe una fila A-B o B-A en la tabla Amistad
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "FROM Amistad a WHERE " +
+                " (a.solicitante = :usuario1 AND a.solicitado = :usuario2) " +
+                " OR " +
+                " (a.solicitante = :usuario2 AND a.solicitado = :usuario1)";
+
+        Query<Amistad> query = session.createQuery(hql, Amistad.class);
+        query.setParameter("usuario1", u1);
+        query.setParameter("usuario2", u2);
+        query.setMaxResults(1); // Optimización
+
+        // Si la lista no está vacía, son amigos.
+        return !query.list().isEmpty();
     }
 
     @Override
@@ -69,52 +66,34 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
         return query.uniqueResult();
     }
 
-    @Override
-    public List<Amistad> listarSolicitudesPendientes(Usuario usuario) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Amistad WHERE solicitado = :usuario AND estado = 'PENDIENTE'", Amistad.class)
-                .setParameter("usuario", usuario)
-                .list();
-    }
-
-    @Override
-    public List<Amistad> listarAmigos(Usuario usuario) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Amistad WHERE (solicitante = :usuario OR solicitado = :usuario) AND estado = 'ACEPTADA'", Amistad.class)
-                .setParameter("usuario", usuario)
-                .list();
-    }
-
-    @Override
-    public void actualizar(Amistad amistad) {
-        sessionFactory.getCurrentSession().update(amistad);
-    }
-
     // RepositorioAmistadImpl.java
 
     @Override
-    public boolean sonAmigos(Usuario u1, Usuario u2) {
-        // Es crucial que la transacción ya esté abierta (gracias a @Transactional en el servicio)
+    public List<Usuario> obtenerAmigosDeUsuario(long idUsuario) {
         final Session session = sessionFactory.getCurrentSession();
 
-        String hql = "SELECT 1 FROM Amistad a WHERE " +
-                // Opción 1: u1 es solicitante y u2 es solicitado
-                " (a.solicitante = :usuario1 AND a.solicitado = :usuario2) " +
-                " OR " +
-                // Opción 2: u2 es solicitante y u1 es solicitado
-                " (a.solicitante = :usuario2 AND a.solicitado = :usuario1)";
+        // 1. Consulta A: Buscar usuarios donde el usuario actual es el solicitante.
+        // (Obtenemos el 'solicitado' donde 'solicitante.id' coincide con el ID del usuario actual)
+        String hqlSolicitante = "SELECT a.solicitado FROM Amistad a WHERE a.solicitante.id = :idUsuario";
+        List<Usuario> amigosComoSolicitante = session.createQuery(hqlSolicitante, Usuario.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
 
-        // Usamos Query<Long> o Query<Integer> si solo queremos verificar existencia (SELECT 1)
-        Query<Integer> query = session.createQuery(hql, Integer.class);
+        // 2. Consulta B: Buscar usuarios donde el usuario actual es el solicitado.
+        // (Obtenemos el 'solicitante' donde 'solicitado.id' coincide con el ID del usuario actual)
+        String hqlSolicitado = "SELECT a.solicitante FROM Amistad a WHERE a.solicitado.id = :idUsuario";
+        List<Usuario> amigosComoSolicitado = session.createQuery(hqlSolicitado, Usuario.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
 
-        query.setParameter("usuario1", u1);
-        query.setParameter("usuario2", u2);
+        // 3. Unir y Eliminar Duplicados (LinkedHashSet mantiene el orden y asegura unicidad)
+        Set<Usuario> amigosUnidos = new LinkedHashSet<>();
+        if (amigosComoSolicitante != null) amigosUnidos.addAll(amigosComoSolicitante);
+        if (amigosComoSolicitado != null) amigosUnidos.addAll(amigosComoSolicitado);
 
-        // Solo necesitamos verificar si existe un resultado, no cargar la entidad completa.
-        query.setMaxResults(1);
-
-        // Si getSingleResult() encuentra una fila, devuelve el 1. Si no encuentra nada, lanza NoResultException.
-        // Usamos list() para evitar NoResultException y es más limpio para booleans.
-        return !query.list().isEmpty();
+        // Devolver la lista final de amigos.
+        return new ArrayList<>(amigosUnidos);
     }
+
+
 }

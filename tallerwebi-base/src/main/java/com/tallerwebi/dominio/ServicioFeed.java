@@ -26,9 +26,11 @@ public class ServicioFeed {
     }
 
     public List<DatosPublicacion> obtenerFeedPrincipal(long usuarioId) {
-        List<Publicacion> publicacionesOrganicas = servicioPublicacion.obtenerTodasPublicacionesIgnorandoPublicidades();
-        return publicacionesOrganicas.stream()
-                .map(p -> publicacionMapper.toDto(p, usuarioId)) // Usa el mapper y el ID
+        List<Publicacion> publicacionesDeAmigos = servicioPublicacion.publicacionesDeAmigos(usuarioId);
+
+        // 2. Mapear y devolver
+        return publicacionesDeAmigos.stream()
+                .map(p -> publicacionMapper.toDto(p, usuarioId))
                 .collect(Collectors.toList());
     }
 

@@ -9,7 +9,7 @@ public interface ServicioAmistad {
     void rechazarSolicitud(Long idSolicitud);
     List<Usuario> listarAmigos(Usuario usuario);
     List<SolicitudAmistad> listarSolicitudesPendientes(Usuario usuario);
-    List<Usuario> obtenerAmigosDeUsuario(long l);
+    List<Usuario> listarAmigos(long l);
 
     // 🛑 CAMBIO CLAVE: De List<SolicitudAmistad> a SolicitudAmistad
     SolicitudAmistad buscarSolicitudPendientePorUsuarios (Usuario solicitante, Usuario receptor);
