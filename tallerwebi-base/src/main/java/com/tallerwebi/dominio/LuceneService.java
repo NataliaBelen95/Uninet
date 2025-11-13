@@ -71,7 +71,7 @@ public class LuceneService {
                 resultados.add(searcher.doc(sd.doc).get("id"));
             }
             return resultados;
-        }
+        } //agregar catch.
     }
 
     // --- Implementación del IndexWriter por Defecto (Usada en el constructor) ---
