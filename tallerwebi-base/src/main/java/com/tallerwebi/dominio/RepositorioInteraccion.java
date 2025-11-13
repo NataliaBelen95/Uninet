@@ -24,4 +24,6 @@ public interface RepositorioInteraccion {
     String consolidarTextoInteraccionesRecientes(Usuario usuario, int limite);
 
     Interaccion encontrarInteraccionPorId(long interaccionId);
+
+    List<Publicacion> obtenerPublicacionesRecientesPorInteraccion(Usuario usuario, int limite);
 }

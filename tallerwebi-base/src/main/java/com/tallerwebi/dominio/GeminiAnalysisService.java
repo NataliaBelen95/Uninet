@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tallerwebi.dominio.excepcion.ExtraccionTextoFallida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -21,19 +23,21 @@ public class GeminiAnalysisService {
     private final ConcurrentMap<Long, Boolean> enAnalisis = new ConcurrentHashMap<>();
     private final ServicioIntegracionIA servicioIntegracionIA;
     private final GeminiJsonParser geminiJsonParser;
+    private final ServicioArchivoUtils  servicioArchivosUtils;
 
     @Autowired
     public GeminiAnalysisService(
             RepositorioInteraccion repositorioInteraccion,
 
             ServicioGustoPersonal servicioGustoPersonal,  @Qualifier("objectMapperGemini") ObjectMapper objectMapper,
-            ServicioIntegracionIA servicioIntegracionIA, GeminiJsonParser geminiJsonParser  ) {
+            ServicioIntegracionIA servicioIntegracionIA, GeminiJsonParser geminiJsonParser, ServicioArchivoUtils servicioArchivoutils  ) {
 
         this.repositorioInteraccion = repositorioInteraccion;
         this.servicioGustoPersonal = servicioGustoPersonal;
         this.objectMapper  = objectMapper;
         this.servicioIntegracionIA = servicioIntegracionIA;
         this.geminiJsonParser = geminiJsonParser;
+        this.servicioArchivosUtils = servicioArchivoutils;
     }
 
 
@@ -120,9 +124,36 @@ public class GeminiAnalysisService {
 
     private String obtenerTextoInteracciones(Usuario usuario) {
         final int LIMITE_INTERACCIONES = 50;
-        //Devuelvo true si el último análisis fue hace más de 6 horas,
-        //y false si fue hace menos de 6 horas
-        return repositorioInteraccion.consolidarTextoInteraccionesRecientes(usuario, LIMITE_INTERACCIONES);
+
+        // 1. Obtiene el texto consolidado de interacciones estándar (ej: comentarios)
+        String textoBase = repositorioInteraccion.consolidarTextoInteraccionesRecientes(usuario, LIMITE_INTERACCIONES);
+
+        // 2. Obtiene las publicaciones recientes a partir de las interacciones
+        List<Publicacion> publicacionesRecientes =
+                repositorioInteraccion.obtenerPublicacionesRecientesPorInteraccion(usuario, LIMITE_INTERACCIONES);
+
+        StringBuilder textoCompleto = new StringBuilder(textoBase);
+
+        // 3. Itera y extrae texto de los PDFs
+        for (Publicacion p : publicacionesRecientes) {
+            ArchivoPublicacion archivo = p.getArchivo();
+
+            // Verifica si tiene archivo y es un PDF
+            if (archivo != null && "application/pdf".equals(archivo.getTipoContenido())) {
+                try {
+                    // Llama al servicio de utilidad para extraer el texto del disco
+                    String textoPdf = servicioArchivosUtils.extraerTextoDePdf(archivo.getRutaArchivo());
+
+                    // Agrega el texto del PDF al contenido que analizará Gemini
+                    textoCompleto.append("\n\n--- Contenido PDF Analizado ---\n").append(textoPdf);
+                } catch (ExtraccionTextoFallida e) {
+                    System.err.println("Error al extraer texto del PDF en la ruta " + archivo.getRutaArchivo() + ": " + e.getMessage());
+                    // El análisis puede continuar sin el texto de este PDF
+                }
+            }
+        }
+
+        return textoCompleto.toString();
     }
 
     private GustosPersonal guardarOActualizarGustosDeUsuario(Usuario usuario, InteresesGeneradosDTO data) {

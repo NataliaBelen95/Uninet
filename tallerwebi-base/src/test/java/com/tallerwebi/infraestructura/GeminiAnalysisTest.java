@@ -23,6 +23,7 @@ public class GeminiAnalysisTest {
     private ObjectMapper objectMapperMock;
     private GeminiJsonParser jsonParserMock;
     private ServicioIntegracionIA servicioIntegracionIAMock;
+    private ServicioArchivoUtils servicioArchivoUtilsMock;
 
     @BeforeEach
     public void init() {
@@ -32,7 +33,7 @@ public class GeminiAnalysisTest {
         objectMapperMock = mock(ObjectMapper.class);
         jsonParserMock = mock(GeminiJsonParser.class);
         geminiAnalysisService = new GeminiAnalysisService(repositorioInteraccionMock, servicioGustoPersonalMock,
-                objectMapperMock, servicioIntegracionIAMock, jsonParserMock);
+                objectMapperMock, servicioIntegracionIAMock, jsonParserMock, servicioArchivoUtilsMock);
 
     }
 

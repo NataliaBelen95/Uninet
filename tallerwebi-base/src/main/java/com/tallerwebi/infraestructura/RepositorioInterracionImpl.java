@@ -102,5 +102,22 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
     public Interaccion encontrarInteraccionPorId(long interaccionId) {
         return sessionFactory.getCurrentSession().get(Interaccion.class, interaccionId);
     }
+    @Override
+    public List<Publicacion> obtenerPublicacionesRecientesPorInteraccion(Usuario usuario, int limite) {
+        Session session = sessionFactory.getCurrentSession();
+
+        // 1. Obtiene las publicaciones únicas (DISTINCT) a partir de las interacciones
+        // 2. Hace un FETCH de la Publicacion y su ArchivoPublicacion
+        String hql = "SELECT DISTINCT p FROM Interaccion i " +
+                "JOIN FETCH i.publicacion p " +
+                "LEFT JOIN FETCH p.archivo a " + // Carga el archivo si existe
+                "WHERE i.usuario = :usuario " +
+                "ORDER BY i.fecha DESC";
+
+        return session.createQuery(hql, Publicacion.class)
+                .setParameter("usuario", usuario)
+                .setMaxResults(limite)
+                .getResultList();
+    }
 
 }
