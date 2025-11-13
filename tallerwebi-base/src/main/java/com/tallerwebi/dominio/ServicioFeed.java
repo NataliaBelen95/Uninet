@@ -37,6 +37,7 @@ public class ServicioFeed {
     public List<DatosPublicacion> obtenerFeedRecomendado(Usuario usuario, Long idUsuario) throws Exception {
         List<Publicacion> publisRecomendadas = servicioRecomendaciones.recomendarParaUsuario(usuario, 5);
         List<Publicacion> publisBots = servicioPublicacion.obtenerPublisBotsParaUsuario(usuario);
+        List<Publicacion> publicacionesUsuario = servicioPublicacion.obtenerPublicacionesDeUsuario(idUsuario);
 
         List<DatosPublicacion> resultado = new ArrayList<>();
         resultado.addAll(
@@ -50,6 +51,13 @@ public class ServicioFeed {
                         .map(p -> publicacionMapper.toDto(p, idUsuario))
                         .collect(Collectors.toList())
         );
+
+        resultado.addAll(
+                publicacionesUsuario.stream()
+                        .map(p -> publicacionMapper.toDto(p, idUsuario))
+                        .collect(Collectors.toList())
+        );
+
         System.out.println("[FeedRecomendado] Total publicaciones combinadas: " + resultado.size());
 
         return resultado;

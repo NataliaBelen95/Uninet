@@ -6,10 +6,14 @@
 </head>
 <body>
 
-<form th:fragment="form-publi(publicacion)" class="box_comentario" method="POST" action="/spring/publicaciones" enctype="multipart/form-data">
+<form   th:fragment="form-publi(publicacion)"
+        id="form-publicar-feed"
+        class="box_comentario"
+        method="POST"
+        action="/spring/publicaciones"
+        enctype="multipart/form-data">
     <textarea name="descripcion" id="publicacion" placeholder="¿Qué estas pensando?"></textarea>
-    <!-- Input oculto que se completa si venís de una vista como 'subir-resumen' -->
-    <input type="hidden" name="archivoNombre" th:value="${archivoPdfPath}" />
+    <input type="hidden" name="origin" th:value="${origen}" />
     <input class="input-oculto" type="file" id="inputArchivo"  name="archivo" accept=".jpg,.jpeg,.png,.pdf" multiple />
     <p th:if="${errorPubli != null}" th:text="${errorPubli}" class="error"></p>
 

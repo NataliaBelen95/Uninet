@@ -23,6 +23,13 @@ services:
     networks:
       - tallerwebi-network
     restart: unless-stopped
+    # 🌟 PASO 1: AGREGAMOS EL HEALTHCHECK (Comprobación de Salud)
+    healthcheck:
+      # Comprueba que la base de datos esté lista para aceptar conexiones
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 5s       # Ejecuta la prueba cada 5 segundos
+      timeout: 10s       # Espera 10 segundos por cada prueba
+      retries: 10        # Intenta 10 veces antes de fallar
 
   jetty-app:
     build:
@@ -31,8 +38,10 @@ services:
     container_name: tallerwebi-jetty
     ports:
       - "8080:8080"
+    # 🌟 PASO 2: MODIFICAMOS depends_on PARA ESPERAR LA CONDICIÓN DE SALUD
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy # ¡Jetty espera hasta que MySQL esté sano!
     networks:
       - tallerwebi-network
     restart: unless-stopped
@@ -49,4 +58,4 @@ volumes:
 
 networks:
   tallerwebi-network:
-    driver: bridge 
+    driver: bridge

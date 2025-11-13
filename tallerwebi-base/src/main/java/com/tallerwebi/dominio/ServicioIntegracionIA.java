@@ -84,7 +84,8 @@ public class ServicioIntegracionIA {
     }
 
     /**
-     * Envía un prompt a la API de texto de Gemini (gemini-2.5-flash) y devuelve
+     * Envía un prompt y el texto a analizar con la especificacion a la API en formato texto a Gemini
+     * y devuelve
      * la respuesta JSON completa (String). Es utilizado por GeminiAnalysisService.
      */
     public String enviarPromptYObtenerJson(String prompt) {

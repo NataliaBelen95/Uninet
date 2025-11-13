@@ -90,9 +90,11 @@ public class RepositorioPublicacionImpl implements RepositorioPublicacion {
     public List<Publicacion> obtenerPublicacionesDeUsuario(Long usuarioId) {
         return sessionFactory.getCurrentSession()
                 .createQuery(
-                        "SELECT p FROM Publicacion p WHERE p.usuario.id = :usuarioId",
-                        Publicacion.class
-                )
+                        "SELECT p FROM Publicacion p " +
+                                "LEFT JOIN FETCH p.usuario " +       // Carga el usuario de la publicación
+                                "LEFT JOIN FETCH p.comentarios " +   // Carga los comentarios
+                                "LEFT JOIN FETCH p.archivo " +       // Carga el archivo adjunto
+                                "WHERE p.usuario.id = :usuarioId", Publicacion.class)
                 .setParameter("usuarioId", usuarioId)
                 .getResultList();
     }
