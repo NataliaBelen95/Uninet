@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ServicioPublicacionTest {
 
@@ -185,6 +186,49 @@ public class ServicioPublicacionTest {
         assertEquals(true, publicacion.getEsPublicidad());
         assertEquals(urlImagen, publicacion.getUrlImagen());
     }
+    @Test
+    public void queAlPedirPublicacionesDeAmigosYPropiasPorIdUsuarioYPropiasSeIncluyaElPropioUsuario() {
+        // 1. Datos
+        final long ID_USUARIO = 1L;
+        final long ID_AMIGO = 2L;
+
+        // Crear usuarios simulados (solo necesitamos los IDs)
+        Usuario usuario = crearUsuario("Propio", "Usuario", "yo@un", 4545545);
+        usuario.setId(ID_USUARIO);
+
+        Usuario amigo = crearUsuario("Amigo", "Uno", "a1@un", 412555 );
+        amigo.setId(ID_AMIGO);
+
+        List<Usuario> amigos = List.of(amigo);
+
+        // Crear publicaciones simuladas para el resultado
+        Publicacion p1 = crearPublicacion(usuario, false, LocalDateTime.now());
+        Publicacion p2 = crearPublicacion(amigo, false, LocalDateTime.now().minusHours(1));
+        List<Publicacion> publicacionesEsperadas = List.of(p1, p2);
+
+
+        // mockeo obtencion  de  amigos:  1 amigo
+        when(repositorioAmistadMock.obtenerAmigosDeUsuario(ID_USUARIO)).thenReturn(amigos);
+
+        // mockear lo que obtengo de publis. (1 propia, 1 de amigo)
+        when(repositorioPublicacionMock.obtenerPublicacionesDeIdsDeUsuario(anyList()))
+                .thenReturn(publicacionesEsperadas);
+
+
+        List<Publicacion> resultado = servicioPublicacion.publicacionesDeAmigos(ID_USUARIO);
+
+        verify(repositorioAmistadMock, times(1)).obtenerAmigosDeUsuario(ID_USUARIO);
+
+
+        verify(repositorioPublicacionMock, times(1)).obtenerPublicacionesDeIdsDeUsuario(argThat(ids -> ids.contains(ID_USUARIO) &&
+                ids.contains(ID_AMIGO) &&
+                ids.size() == 2));
+
+        // verificacion
+        assertEquals(2, resultado.size(), "Debe devolver 2 publicaciones (propia + amigo).");
+        assertEquals(publicacionesEsperadas, resultado, "Las publicaciones devueltas deben ser las mockeadas.");
+    }
+
 
 
     private Usuario crearUsuario(String nombre, String apellido, String email, int dni) {
