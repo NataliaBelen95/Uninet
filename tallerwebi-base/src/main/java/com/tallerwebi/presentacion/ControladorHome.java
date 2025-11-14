@@ -120,7 +120,7 @@ public ModelAndView home(HttpServletRequest request,
 
     @GetMapping("/admin/publicar-anuncios")
     public ModelAndView dispararBot() {
-        botPublisherService.ejecutarCampañaPublicitariaDirigida();
+        botPublisherService.ejecutarCampaniaPublicitariaDirigida();
         // Simplemente devuelve una página de confirmación.
         return new ModelAndView("redirect:/home");
     }

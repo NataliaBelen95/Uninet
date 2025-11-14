@@ -131,5 +131,27 @@ public class LuceneService {
         directoryManager.clearDirectory();
         indexado = false;
     }
+    public void indexarPublicacion(Publicacion publicacion) throws IOException {
+        if (publicacion.getEsPublicidad()) {
+            // No indexar publicaciones de bots/publicidad en el índice de búsqueda orgánica
+            return;
+        }
+
+        try (IndexWriter writer = indexWriterFactory.create()) {
+            // Lucene usa Term para identificar el documento a actualizar.
+            // Aquí usamos el ID del documento ('id' con el valor del ID de la publicación).
+            Term publicacionTerm = new Term("id", String.valueOf(publicacion.getId()));
+
+            // updateDocument reemplaza el documento que coincide con el término, o lo añade si no existe.
+            writer.updateDocument(publicacionTerm, crearDocumentoDesdePublicacion(publicacion));
+
+            // Marcamos como indexado una vez que se realiza la primera operación de escritura.
+            indexado = true;
+        } catch (IOException e) {
+            System.err.println("Error al indexar una publicación: " + publicacion.getId() + " - " + e.getMessage());
+            throw e; // Relanza la excepción para que sea manejada por el servicio.
+        }
+    }
+
 
 }

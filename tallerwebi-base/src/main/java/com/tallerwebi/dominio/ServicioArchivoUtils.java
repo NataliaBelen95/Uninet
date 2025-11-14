@@ -3,10 +3,12 @@ package com.tallerwebi.dominio;
 import com.tallerwebi.dominio.excepcion.ExtraccionTextoFallida;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 
+@Service
 public class ServicioArchivoUtils {
     private static final String RUTA_BASE_ARCHIVOS = System.getProperty("user.dir");
 

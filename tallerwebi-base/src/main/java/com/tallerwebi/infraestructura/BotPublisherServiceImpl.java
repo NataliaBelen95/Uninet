@@ -116,7 +116,7 @@ public class BotPublisherServiceImpl implements BotPublisherService {
 
 
     @Override
-    public void ejecutarCampañaPublicitariaDirigida() {
+    public void ejecutarCampaniaPublicitariaDirigida() {
         System.out.println("INICIANDO TAREA DE PUBLICACIÓN MASIVA DE BOTS...");
 
         //  Paso 1: Obtener la lista de IDs de todos los usuarios que tienen un perfil de gustos

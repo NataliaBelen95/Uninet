@@ -21,14 +21,15 @@ public class ServicioPublicacionTest {
     private RepositorioUsuario repositorioUsuarioMock;
     private RepositorioAmistad repositorioAmistadMock;
     private File tempFile;
-
+    private LuceneService luceneServiceMock;
     @BeforeEach
     public void init() {
         repositorioPublicacionMock = mock(RepositorioPublicacion.class);
         repositorioComentarioMock = mock(RepositorioComentario.class);
         repositorioUsuarioMock = mock(RepositorioUsuario.class);
         repositorioAmistadMock = mock(RepositorioAmistad.class);
-        servicioPublicacion = new ServicioPublicacionImpl(repositorioPublicacionMock, repositorioComentarioMock, repositorioUsuarioMock,repositorioAmistadMock);
+        luceneServiceMock = mock(LuceneService.class);
+        servicioPublicacion = new ServicioPublicacionImpl(repositorioPublicacionMock, repositorioComentarioMock, repositorioUsuarioMock,repositorioAmistadMock, luceneServiceMock);
 
     }
 

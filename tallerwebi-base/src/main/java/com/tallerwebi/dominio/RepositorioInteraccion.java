@@ -25,5 +25,7 @@ public interface RepositorioInteraccion {
 
     Interaccion encontrarInteraccionPorId(long interaccionId);
 
-    List<Publicacion> obtenerPublicacionesRecientesPorInteraccion(Usuario usuario, int limite);
+
+    // RepositorioInterracionImpl.java (Método MODIFICADO)
+    List<Interaccion> obtenerPublicacionesRecientesConArchivo(Usuario usuario, int limite);
 }

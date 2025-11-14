@@ -102,19 +102,22 @@ public class RepositorioInterracionImpl implements RepositorioInteraccion {
     public Interaccion encontrarInteraccionPorId(long interaccionId) {
         return sessionFactory.getCurrentSession().get(Interaccion.class, interaccionId);
     }
+    // RepositorioInterracionImpl.java (Método MODIFICADO)
     @Override
-    public List<Publicacion> obtenerPublicacionesRecientesPorInteraccion(Usuario usuario, int limite) {
+    public List<Interaccion> obtenerPublicacionesRecientesConArchivo(Usuario usuario, int limite) {
         Session session = sessionFactory.getCurrentSession();
 
-        // 1. Obtiene las publicaciones únicas (DISTINCT) a partir de las interacciones
-        // 2. Hace un FETCH de la Publicacion y su ArchivoPublicacion
-        String hql = "SELECT DISTINCT p FROM Interaccion i " +
+        // HQL para obtener las Publicaciones ÚNICAS con las que el usuario interactuó.
+        // JOIN FETCH p.archivo (a) asegura que la ruta del PDF venga en la consulta.
+        String hql = "SELECT DISTINCT i FROM Interaccion i " +
                 "JOIN FETCH i.publicacion p " +
-                "LEFT JOIN FETCH p.archivo a " + // Carga el archivo si existe
+                "LEFT JOIN FETCH p.archivo a " +
                 "WHERE i.usuario = :usuario " +
                 "ORDER BY i.fecha DESC";
 
-        return session.createQuery(hql, Publicacion.class)
+        // Nota: Devolvemos la lista de Interacciones, no el String final.
+        // El Servicio se encargará de concatenar el texto y el PDF.
+        return session.createQuery(hql, Interaccion.class)
                 .setParameter("usuario", usuario)
                 .setMaxResults(limite)
                 .getResultList();

@@ -57,7 +57,7 @@ public class GeminiAnalysisService {
                 return resultadoFinal; // Retorno temprano
             }
 
-            String texto = obtenerTextoInteracciones(usuario);
+            String texto = obtenerTextoCompletoParaAnalisis(usuario);
             if (texto.isEmpty()) {
                 System.out.println("No hay interacciones para analizar.");
                 resultadoFinal = servicioGustoPersonal.buscarPorUsuario(usuario);
@@ -121,39 +121,37 @@ public class GeminiAnalysisService {
         final int HORAS_PARA_REANALIZAR = 6;
         return gustos.getFechaUltimoAnalisis().isBefore(LocalDateTime.now().minusHours(HORAS_PARA_REANALIZAR));
     }
+// GeminiAnalysisService.java (NUEVO MÉTODO DE CONSOLIDACIÓN)
 
-    private String obtenerTextoInteracciones(Usuario usuario) {
+    private String obtenerTextoCompletoParaAnalisis(Usuario usuario) {
         final int LIMITE_INTERACCIONES = 50;
 
-        // 1. Obtiene el texto consolidado de interacciones estándar (ej: comentarios)
-        String textoBase = repositorioInteraccion.consolidarTextoInteraccionesRecientes(usuario, LIMITE_INTERACCIONES);
+        // Obtener la lista de interacciones COMPLETAS (con Publicación y Archivo)
+        List<Interaccion> interacciones = repositorioInteraccion.obtenerPublicacionesRecientesConArchivo(usuario, LIMITE_INTERACCIONES); // Asumiendo este nuevo nombre
 
-        // 2. Obtiene las publicaciones recientes a partir de las interacciones
-        List<Publicacion> publicacionesRecientes =
-                repositorioInteraccion.obtenerPublicacionesRecientesPorInteraccion(usuario, LIMITE_INTERACCIONES);
+        StringBuilder textoConsolidado = new StringBuilder();
 
-        StringBuilder textoCompleto = new StringBuilder(textoBase);
+        for (Interaccion i : interacciones) {
+            // 1. Añadir el contenido del comentario/interacción si existe
+            if (i.getContenido() != null && !i.getContenido().isEmpty()) {
+                textoConsolidado.append(i.getContenido()).append(". ");
+            }
 
-        // 3. Itera y extrae texto de los PDFs
-        for (Publicacion p : publicacionesRecientes) {
-            ArchivoPublicacion archivo = p.getArchivo();
+            // 2. Revisar si la Publicación asociada tiene un PDF y extraer el texto
+            Publicacion p = i.getPublicacion();
+            ArchivoPublicacion archivo = p != null ? p.getArchivo() : null;
 
-            // Verifica si tiene archivo y es un PDF
             if (archivo != null && "application/pdf".equals(archivo.getTipoContenido())) {
                 try {
-                    // Llama al servicio de utilidad para extraer el texto del disco
                     String textoPdf = servicioArchivosUtils.extraerTextoDePdf(archivo.getRutaArchivo());
-
-                    // Agrega el texto del PDF al contenido que analizará Gemini
-                    textoCompleto.append("\n\n--- Contenido PDF Analizado ---\n").append(textoPdf);
+                    textoConsolidado.append("\n\n [CONTENIDO PDF] ").append(textoPdf);
                 } catch (ExtraccionTextoFallida e) {
-                    System.err.println("Error al extraer texto del PDF en la ruta " + archivo.getRutaArchivo() + ": " + e.getMessage());
-                    // El análisis puede continuar sin el texto de este PDF
+                    System.err.println("Error al extraer texto del PDF: " + e.getMessage());
                 }
             }
         }
 
-        return textoCompleto.toString();
+        return textoConsolidado.toString().trim();
     }
 
     private GustosPersonal guardarOActualizarGustosDeUsuario(Usuario usuario, InteresesGeneradosDTO data) {

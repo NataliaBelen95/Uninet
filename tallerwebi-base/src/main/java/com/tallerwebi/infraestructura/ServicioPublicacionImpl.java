@@ -29,14 +29,16 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
     private final RepositorioComentario repositorioComentario;
     private final RepositorioUsuario repositorioUsuario;
     private final RepositorioAmistad repositorioAmistad;
+    private final LuceneService luceneService;
 
     @Autowired
     public ServicioPublicacionImpl(RepositorioPublicacion repositorio, RepositorioComentario repositorioComentario,
-                                   RepositorioUsuario repositorioUsuario, RepositorioAmistad repositorioAmistad) {
+                                   RepositorioUsuario repositorioUsuario, RepositorioAmistad repositorioAmistad, LuceneService luceneService) {
         this.repositorio = repositorio;
         this.repositorioComentario = repositorioComentario;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioAmistad = repositorioAmistad;
+        this.luceneService = luceneService;
     }
 
     // ----------------- PUBLICACIÓN CON MULTIPARTFILE (USUARIOS) -----------------
@@ -223,6 +225,13 @@ public class ServicioPublicacionImpl implements ServicioPublicacion {
         usuario.setUltimaPublicacion(LocalDate.now());
         repositorioUsuario.actualizar(usuario);
         repositorio.guardar(publicacion);
+        try {
+            luceneService.indexarPublicacion(publicacion);
+        } catch (Exception e) {
+            // MUY IMPORTANTE: Loguear el error, pero no fallar la transacción
+            // principal (persistencia). La indexación es secundaria.
+            System.err.println("Error al indexar la publicación " + publicacion.getId() + ": " + e.getMessage());
+        }
     }
 
     @Override

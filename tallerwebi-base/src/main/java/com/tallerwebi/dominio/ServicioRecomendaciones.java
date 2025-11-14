@@ -41,9 +41,9 @@ public class ServicioRecomendaciones {
             return null;
         }
 
-        // Indexa todas las publicaciones (LuceneService ya maneja duplicados internamente)
-        List<Publicacion> todas = repositorioPublicacion.listarTodas();
-        luceneService.indexarPublicaciones(todas);
+//         Indexa todas las publicaciones (LuceneService ya maneja duplicados internamente)
+//        List<Publicacion> todas = repositorioPublicacion.listarTodas();
+//        luceneService.indexarPublicaciones(todas);
 
         return gustos.getTagsIntereses();
     }
