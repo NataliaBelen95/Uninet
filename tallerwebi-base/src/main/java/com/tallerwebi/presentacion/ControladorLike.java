@@ -1,10 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
-import com.tallerwebi.presentacion.DTO.DatosPublicacion;
-import com.tallerwebi.presentacion.DTO.DatosUsuario;
-import com.tallerwebi.presentacion.DTO.PublicacionMapper;
-import com.tallerwebi.presentacion.DTO.UsuarioMapper;
+import com.tallerwebi.presentacion.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,11 +49,16 @@ public class ControladorLike {
         DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
 
         if (datos != null) {
-            try {                          //usuarioid, publiid
+            try {
                 servicioLike.toggleLike(datos.getId(), id);
 
                 int cantLikes = servicioLike.contarLikes(id);
-                notificacionService.enviarMensaje("/topic/publicacion/" + id, String.valueOf(cantLikes));
+
+                // 🚨 CAMBIO CLAVE AQUÍ: Usar el DTO para el envío por WebSocket
+                notificacionService.enviarMensaje(
+                        "/topic/publicacion/" + id,
+                        new DatosLikeNotificacion("like_updated", cantLikes) // <-- ¡ENVÍA OBJETO JAVA!
+                );
 
                 Publicacion publicacion = servicioPublicacion.obtenerPublicacion(id);
 
@@ -76,6 +78,7 @@ public class ControladorLike {
 
                     );
                 }
+
 
 
                 model.addAttribute("dtopubli", dto);

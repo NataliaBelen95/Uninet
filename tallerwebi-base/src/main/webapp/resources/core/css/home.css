@@ -5,7 +5,7 @@ a {
 
 .titulo{
     font-style: italic;
-    font-size: 1.4rem;
+    font-size: 1rem;
 }
     /*Main*/
 .contenedor_general{
@@ -16,14 +16,14 @@ a {
     min-height: 100vh;
     overflow-y: auto;
 }
-.estructura{
+/*.estructura{
     border-radius: 1rem;
     padding: 2rem;
-    position:relative;
+
     margin-bottom:1rem;
-}
+}*/
 .palabra{
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
  /*Columna izquierda*/
 .user{
@@ -133,25 +133,7 @@ a {
     margin-right: 3rem;
     margin-top: 1rem;
 }
-.botones_acciones {
-    all: unset; /* borra todos los estilos nativos del navegador */
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-.botones_acciones img {
-    width: 2rem;
-    height: 2rem;
-    cursor: pointer;
-}
-.btns_interaccion_publicacion{
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-top: 10px;
 
-}
 
  /*Columna derecha*/
 .columnaTres{
@@ -176,96 +158,55 @@ a {
         cursor: pointer; /* Cursor de mano */
         font-size: 16px; /* Tamaño de fuente */
 }
-
-
-/*agrego contendror ver comentarios separado de mg y comentar*/
-.contenedor_verComentarios {
-    display: flex;
-    align-items: center; /* centra verticalmente */
-    margin-top: 10px;
-}
-/****like sin accion, muestra cantidad)******/
-.like-container img {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.like-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.like-container img {
-    width:25px;
-}
-/*****final like que muestra cantidad**/
-.ver-comentariosBtn {
-    margin-left: auto; /* empuja el botón al final */
-}
-/* Estilos para los comentarios */
- /* Estilo por defecto del contenedor de comentarios */
- .contenedor_comentarios {
-     display: none; /* Ocultos inicialmente */
-     flex-direction: column;
-     gap: 10px;
-     margin-top: 15px;
- }
-
- /* Cuando se añade la clase 'mostrar', hacemos visible el contenedor */
- .contenedor_comentarios.mostrar {
-     display: flex; /* Muestra el contenedor */
- }
-
- /* Los comentarios estarán ocultos por defecto (solo visibles cuando se añada la clase 'mostrar') */
- .contenedor_comentarios .comentario {
-     display: block; /* Los comentarios estarán visibles dentro del contenedor */
- }
-.btn-like img {
-  transition: filter 0.3s ease, opacity 0.3s ease;
-}
-
-.btn-like.liked img {
-  filter: grayscale(100%);
-  opacity: 0.6;
-}
-.botonera-publicacion {
-   display: flex;
-   justify-content: flex-start;
-   align-items: flex-start;
-}
-
-.formComentario {
-   margin-top: 10px;
-   width: 100%;
-}
-.btns_interaccion_publicacion {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-
-
-.linea-divisora {
-    border: none;
-    border-bottom: 1px solid #ccc;
-    margin: 10px 0;
-}
-.delete-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
+.submenu-herramientas {
+    list-style: none;
+    margin: 5px 0 0 30px;
     padding: 0;
-    cursor: pointer;
+}
+.submenu-herramientas li a {
+.submenu-herramientas li a {
+    display: block;
+    padding: 5px 0;
+    color: var(--texto);
+    font-size: 0.95rem;
+}
+}
+.oculto {
+    display: none;
+}
+.btn_herramientas {
+
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+
+      /* 2. Estilos Visuales (Forzados para anular user agent) */
+      background: transparent !important; /* CLAVE: Forzar fondo transparente */
+      color: var(--texto);
+      padding: 8px 10px;
+      border: none !important; /* CLAVE: Eliminar cualquier borde predeterminado */
+      border-radius: var(--radius);
+      font-size: 15px;
+      transition: background-color 0.2s ease;
 }
 
-.delete-logo {
-    width: 24px;
-    height: 24px;
+.btn_herramientas:hover {
+    background-color: var(--background-input); /* Un fondo sutil al pasar el ratón */
+    color: var(--verde); /* Opcional: Resalta el texto al pasar el ratón */
 }
+
+.btn_herramientas img {
+    /* Ajustes del ícono */
+    width: 25px;
+    height: 22px;
+}
+
+
+
+
 
 /*********** notificaciones dropdown */
 

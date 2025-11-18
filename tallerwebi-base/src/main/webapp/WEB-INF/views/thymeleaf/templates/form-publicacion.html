@@ -17,15 +17,16 @@
     <input class="input-oculto" type="file" id="inputArchivo"  name="archivo" accept=".jpg,.jpeg,.png,.pdf" multiple />
     <p th:if="${errorPubli != null}" th:text="${errorPubli}" class="error"></p>
 
-    <div class="box_botones_acciones">
-        <button id="botonAdjuntar" name="archivo" class="botones_acciones" type="button">
-            <img th:src="@{/imagenes/adjuntar.png}" alt="Adjuntar" />
+    <div class="box_botones_acciones-publicacion">
+        <button id="botonAdjuntar" name="archivo" class="botones_acciones-form" type="button">
+            Adjuntar
+<!--            <img th:src="@{/imagenes/adjuntar.png}" alt="Adjuntar" />-->
         </button>
-        <button type="button" class="botones_acciones">
-            <img th:src="@{/imagenes/vercomentario.png}" alt="Visibilidad" />
-        </button>
-        <button type="submit" name="nueva-publicacion" class="botones_acciones">
-            <img th:src="@{/imagenes/publicar.png}" alt="Publicar" />
+<!--        <button type="button" class="botones_acciones">-->
+<!--            <img th:src="@{/imagenes/vercomentario.png}" alt="Visibilidad" />-->
+<!--        </button>-->
+        <button type="submit" name="nueva-publicacion" class="botones_acciones-form">
+           Publicar
         </button>
     </div>
     <input type="hidden" name="origin" th:value="${origen}" />

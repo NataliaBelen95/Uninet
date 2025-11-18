@@ -88,7 +88,7 @@ public class ControladorComentario {
         int cantidadLikes = servicioLike.contarLikes(publicacion.getId());
         int cantidadComentarios = servicioComentario.contarComentarios(publicacion.getId());
 
-        notificacionService.enviarMensaje("/topic/publicacion/" + publicacion.getId(), "comentarioNuevo");
+        notificacionService.enviarMensaje("/topic/publicacion/" + publicacion.getId(), "{\"action\": \"comment_added\"}");
 
         Map<String, Object> response = new HashMap<>();
         response.put("comentario", comentarioDTO);

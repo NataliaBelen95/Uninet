@@ -1,6 +1,6 @@
 <article th:if="${dtopubli != null}"
          th:fragment="tarjetaPublicacion(dtopubli, usuario)"
-         class="estructura"
+         class="contenedor-publicaciones"
          th:id="'publicacion-' + ${dtopubli.id}"
          xmlns:th="http://www.w3.org/1999/xhtml">
 
@@ -60,19 +60,19 @@
                         ? dtopubli.fechaPublicacion.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm'))
                         : 'Sin fecha'}"></span>
 
-    <div class="contenedor_verComentarios">
-        <div th:unless="${dtopubli.esPublicidad}">
-            <div class="like-container">
-                <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
-                <span th:text="${dtopubli.cantLikes !=null ? dtopubli.cantLikes : 0}" th:id="'likes-' + ${dtopubli.id}"></span>
-            </div>
 
-            <button class="botones_acciones ver-comentariosBtn"
-                    type="button"
-                    th:data-id="${dtopubli.id}"
-                    th:text="${dtopubli.cantComentarios != null && dtopubli.cantComentarios > 0 ? dtopubli.cantComentarios + ' Comentarios' : 'No hay Comentarios'}">
-            </button>
+
+    <div class="contenedor_verComentarios" th:unless="${dtopubli.esPublicidad}">
+        <div class="like-container">
+            <img th:src="@{/imagenes/like.png}" alt="Like" style="width:20px;" />
+            <span th:text="${dtopubli.cantLikes !=null ? dtopubli.cantLikes : 0}" th:id="'likes-' + ${dtopubli.id}"></span>
         </div>
+
+        <button class="botones_acciones ver-comentariosBtn"
+                type="button"
+                th:data-id="${dtopubli.id}"
+                th:text="${dtopubli.cantComentarios != null && dtopubli.cantComentarios > 0 ? dtopubli.cantComentarios + ' Comentarios' : 'No hay Comentarios'}">
+        </button>
     </div>
 
     <hr class="linea-divisora"/>

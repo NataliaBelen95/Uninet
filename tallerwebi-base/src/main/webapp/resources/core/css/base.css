@@ -8,7 +8,7 @@ body{
   background-color: var(--background);
   color: var(--texto);
   box-sizing: border-box;
-  width: 95%;
+ width: 100%;
   margin: 0 auto;
 }
 
@@ -78,6 +78,30 @@ select option:hover {
     height: 2rem;
     cursor: pointer;
 }
+
+.botones_acciones-form {
+ cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+width: auto;
+    background: var(--verde);
+    color: var(--texto);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;}
+
+.btns_interaccion_publicacion{
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+
+}
+
 /* Botón base */
 .btn {
   background: var(--verde);
@@ -211,3 +235,155 @@ select option:hover {
 }
 
 
+
+.submenu {
+    list-style: none;
+    margin: 5px 0 0 30px;
+    padding: 0;
+}
+
+.submenu li a {
+    display: block;
+    padding: 5px 0;
+    color: var(--texto);
+    font-size: 0.95rem;
+}
+
+.oculto {
+    display: none;
+}
+
+
+/*publicaciones*/
+
+
+.contenedor-publicaciones {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem 0;
+    position:relative;
+}
+.delete-button {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.delete-logo {
+    width: 24px;
+    height: 24px;
+}
+.contenedor_verComentarios {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content:space-between;
+
+}
+/*****final like que muestra cantidad**/
+.ver-comentariosBtn {
+    /* ELIMINAR: margin-left: auto; */
+
+    /* Limpiar o definir el estilo de fondo deseado */
+    background: transparent; /* Fondo transparente o el color que desees */
+    color: var(--texto); /* Asegura que el texto sea visible */
+    border: none;
+    padding: 5px 8px; /* Pequeño padding para el área de click */
+    font-size:15px;
+    width: auto;
+    max-width: 150px;
+}
+.ver-comentariosBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+/* Estilos para los comentarios */
+ /* Estilo por defecto del contenedor de comentarios */
+ .contenedor_comentarios {
+     display: none; /* Ocultos inicialmente */
+     flex-direction: column;
+     gap: 10px;
+     margin-top: 15px;
+ }
+
+ /* Cuando se añade la clase 'mostrar', hacemos visible el contenedor */
+ .contenedor_comentarios.mostrar {
+     display: flex; /* Muestra el contenedor */
+ }
+
+ /* Los comentarios estarán ocultos por defecto (solo visibles cuando se añada la clase 'mostrar') */
+ .contenedor_comentarios .comentario {
+     display: block; /* Los comentarios estarán visibles dentro del contenedor */
+ }
+.btn-like img {
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.btn-like.liked img {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+.botonera-publicacion {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+}
+
+.formComentario {
+   margin-top: 10px;
+   width: 100%;
+}
+
+
+
+.btns_interaccion_publicacion {
+    display: flex;
+    flex-direction: row;
+
+    justify-content:flex-end;
+}
+
+
+
+.linea-divisora {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+/*agrego contendror ver comentarios separado de mg y comentar*/
+.contenedor_verComentarios {
+    display: flex;
+    align-items: center; /* centra verticalmente */
+    margin-top: 10px;
+}
+/****like sin accion, muestra cantidad)******/
+.like-container img {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.like-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.like-container img {
+    width:25px;
+}
+
+
+.box_botones_acciones-publicacion {
+    display: flex;
+    justify-content: flex-end; /* 🔥 LLEVA LOS BOTONES AL LADO DERECHO */
+    align-items: center;       /* 🔥 Centra verticalmente */
+    gap: 1rem;                 /* Espacio entre botones */
+    margin-top: 1rem;
+}
