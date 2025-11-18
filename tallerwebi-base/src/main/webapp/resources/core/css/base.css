@@ -20,6 +20,11 @@ a { color: var(--verde);
 a:hover {
     color: var(--texto);
 }
+li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
 
 /* Reglas base para inputs y botones (podés adaptar por vista) */
 input, textarea, select {
@@ -165,10 +170,11 @@ width: auto;
 /* Submenú */
 .menu-perfil {
     position: relative;
+
 }
 .submenu {
     position: absolute;
-    top: 100%;
+    top: 75%;
     right: 0;
     background-color: var(--background);
     list-style: none;

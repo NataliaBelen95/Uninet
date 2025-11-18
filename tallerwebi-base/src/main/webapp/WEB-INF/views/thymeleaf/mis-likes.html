@@ -15,11 +15,29 @@
 <header>
     <nav th:replace="templates/nav :: nav"></nav>
 </header>
-<main>
-     <h2>Mis MG</h2>
+<div class="contenedor_general">
+    <aside class="columnaUno">
+        <div class="estructura">
+            <img class="user"
+                 th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
+                 alt="Foto de perfil">
+            <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
+            <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
+            <ul>
+                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+            </ul>
+        </div>
+
+    </aside>
+    <main class="columnaDre">
+     <h2>Mis Likes</h2>
+
     <div th:each="pub : ${publicaciones}" xmlns:th="http://www.w3.org/1999/xhtml">
         <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(dtopubli=${pub}, usuario=${usuario})"></div>
     </div>
+
+</div>
+
 </main>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
