@@ -69,7 +69,7 @@ public class BotPublisherServiceImpl implements BotPublisherService {
 
         // 2. Crear el Prompt Avanzado para Generación de Contenido
         String promptGeneracion = String.format(
-                "Eres un bot publicitario. Genera un ANUNCIO de una sola frase (máximo 200 caracteres, sin hashtags) " +
+                "Eres un bot publicitario. Genera un ANUNCIO de una sola frase (máximo 400 caracteres, sin hashtags) " +
                         "sobre un evento o especialización relacionada con '%s' y '%s'. El tono debe ser dirigido a un perfil: '%s'. " +
                         "Devuelve SÓLO el texto del anuncio.",
                 temaPrincipal, tags, resumen

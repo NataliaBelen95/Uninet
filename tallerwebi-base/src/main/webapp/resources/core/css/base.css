@@ -388,8 +388,11 @@ width: auto;
 
 .box_botones_acciones-publicacion {
     display: flex;
-    justify-content: flex-end; /* 🔥 LLEVA LOS BOTONES AL LADO DERECHO */
-    align-items: center;       /* 🔥 Centra verticalmente */
-    gap: 1rem;                 /* Espacio entre botones */
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
     margin-top: 1rem;
 }
+
+.img-publicidad{
+width:250px}
