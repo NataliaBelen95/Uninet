@@ -1,8 +1,10 @@
 :root{ /*el nivel más alto del documento*/
   --verde: #27AE60;
   --verde-2: #1F5133; /* opcional */
-  --background:  #343639;
-  --background-contenedor: #404345;
+    --background:  #1B1C1D;
+    --background-contenedor: #333537;
+  /*--background:  #343639; */
+  /*--background-contenedor: #404345;*/
   --background-input: #616466;
   --texto: #F5F5F5;
   --texto-sec: #BDBDBD;

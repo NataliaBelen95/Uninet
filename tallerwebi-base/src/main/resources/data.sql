@@ -5,7 +5,7 @@
 -- Esto ayuda a prevenir errores de orden en los scripts de inicialización
 SET FOREIGN_KEY_CHECKS = 0;
 
--- 1️⃣ DEPARTAMENTOS Y CARRERAS
+--  DEPARTAMENTOS Y CARRERAS
 INSERT INTO Departamento(nombre) VALUES
 ('Ingeniería'), -- ID 1
 ('Matemática'), -- ID 2
@@ -19,25 +19,25 @@ INSERT INTO Carrera(nombre,departamento_id) VALUES
 ('Tecnicatura en Gestión de Empresas',4),
 ('Licenciatura en Economía',3);
 
--- 2️⃣ MATERIAS
+-- 2⃣MATERIAS
 INSERT INTO Materia(nombre) VALUES
 ('Programación I'),
 ('Programación II'),
 ('Matemática I'),
 ('Economía General');
 
--- 3️⃣ VINCULAR MATERIAS CON CARRERAS
+-- 3⃣VINCULAR MATERIAS CON CARRERAS
 INSERT INTO carrera_materia(carrera_id, materia_id) VALUES
 (1, 1), (1, 2), (2, 1), (2, 2), (3, 3), (4, 4);
 
 -- 4️ CREAR USUARIOS (Incluye departamento_id y esBot=FALSE)
 INSERT INTO Usuario (email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot) VALUES
-('test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez',38065944, 1, 1, '1990-01-01', true, FALSE),
+('test@unlam.edu.ar', 'test', 'ADMIN', true, 'Juan', 'Perez',38065944, 1, 2, '1990-01-01', true, FALSE),
 ('fran@unlam.edu.ar', '123', 'ADMIN', true, 'Franco', 'Vargas',41062869, 1, 1, '1998-04-24', true, FALSE),
 ('nat@unlam.edu.ar', '123', 'ADMIN', true, 'Nat', 'alia',41123869, 1, 1, '1998-08-29', true, FALSE),
 ('ro@unlam.edu.ar', '1234', 'ADMIN', true, 'Ro', 'Campa',37659747, 1, 1, '1993-06-18', true, FALSE);
 
--- 🤖 USUARIOS BOT (ASIGNADOS A IDs SUPERIORES)
+-- USUARIOS BOT (ASIGNADOS A IDs SUPERIORES)
 -- Asumiremos que los IDs 1-5 son humanos. Los bots serán 6, 7, 8.
 
 -- Bot 1: Publicidad General (Carrera 2: Sistemas)
@@ -55,9 +55,9 @@ VALUES ('ingenieriabot@unlam.edu.ar', 'botpass', 'BOT', true, 'Ingeniería', 'Te
 INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot)
 VALUES ('admin@unlam.edu.ar', 'admin', 'USER', true, 'Admin', 'Unlam', 32912293, 3, 2, '1990-01-01', true, FALSE);
 
--- 🤖 USUARIO BOT DE PRUEBA
+-- USUARIO BOT DE PRUEBA
 INSERT INTO Usuario(email, password, rol, activo, nombre, apellido, dni, carrera_id, departamento_id, fechaNacimiento, confirmado, esBot)
-VALUES ('bot@unlam.edu.ar', 'botpass', 'BOT', true, 'Uni', 'Bot', 99999999, 2, 1, '2025-01-01', true, TRUE); -- ⬅️ ¡BOT DEFINIDO!
+VALUES ('bot@unlam.edu.ar', 'botpass', 'BOT', true, 'Uni', 'Bot', 99999999, 2, 1, '2025-01-01', true, TRUE); -- ⬅¡BOT DEFINIDO!
 
 -- 5️ Validar que no haya usuarios duplicados
 SELECT email, COUNT(*) FROM Usuario GROUP BY email HAVING COUNT(*) > 1;
@@ -70,53 +70,49 @@ ALTER TABLE Publicacion
 CONVERT TO CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
 
--- ID 1
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Publicación vieja de prueba', '2025-09-27 10:00:00', 3, false);
-UPDATE Usuario
-SET ultima_publicacion = '2025-09-27'
-WHERE id = 3;
+-- ULTIMA PUBLICACION DE PRUEBA SCHEDUle NOTIFICACION
+--INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
+--VALUES ('Publicación vieja de prueba', '2025-09-27 10:00:00', 3, false);
+--UPDATE Usuario
+--SET ultima_publicacion = '2025-09-27'
+--WHERE id = 3;
+-- ULTIMA PUBLICACION DE PRUEBA SCHEDule NOTIFICACION
 
--- IDs 2 a 8 (Sentencias separadas para evitar errores)
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Explorando la programación avanzada', '2025-10-01 09:00:00', 1, false);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Mis apuntes de matemática I', '2025-10-02 14:30:00', 2, false);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Economía general: conceptos clave', '2025-10-03 11:15:00', 4, false);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Proyecto final de desarrollo web', '2025-10-04 16:45:00', 1, false);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Inteligencia artificial aplicada a la cocina', '2025-10-08 09:00:00', 1,  false);
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('Cómo diseñar experiencias gastronómicas inmersivas', '2025-10-08 17:20:00', 2, false);
 
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES ('El futuro de la sostenibilidad alimentaria', '2025-10-09 13:15:00', 4, false);
--- ID 9
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Análisis profundo de estructuras de datos y algoritmos avanzados en Java.', NOW(), 1, false);
+-- Contenido para Lucene (ID 1-16)
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES
+( 'Publicación vieja de prueba', '2025-09-27 10:00:00', 3, FALSE), -- ID 1
+('Explorando la programación avanzada, me encanta Java y Spring.', NOW(), 1, FALSE), -- ID 2
+('Mis apuntes de matemática I', '2025-10-02 14:30:00', 2, FALSE), -- ID 3
+('Economía general: conceptos clave de la demanda agregada.', NOW(), 4, FALSE), -- ID 4
+('Proyecto final de desarrollo web', '2025-10-04 16:45:00', 1, FALSE), -- ID 5
+('Inteligencia artificial aplicada a la cocina, IA y gastronomía.', NOW(), 1, FALSE), -- ID 6
+('Cómo diseñar experiencias gastronómicas inmersivas', '2025-10-08 17:20:00', 2, FALSE), -- ID 7
+('El futuro de la sostenibilidad alimentaria', '2025-10-09 13:15:00', 4, FALSE), -- ID 8
+('Análisis profundo de estructuras de datos y algoritmos avanzados en Java.', NOW(), 1, FALSE), -- ID 9
+('El impacto de la inflación en la toma de decisiones de inversión personal.', NOW(), 4, FALSE), -- ID 10
+('Introducción a la criptografía aplicada y la seguridad de la información en redes.', NOW(), 2, FALSE), -- ID 11
+('Guía completa sobre el framework Spring Boot y su arquitectura de microservicios.', NOW(), 1, FALSE), -- ID 12
+('Conceptos clave de cálculo multivariable para el análisis de sistemas dinámicos.', NOW(), 2, FALSE), -- ID 13
+('Diseño de bases de datos NoSQL y su aplicación en proyectos de gran escala.', NOW(), 4, FALSE), -- ID 14
+('La economía del comportamiento: sesgos cognitivos en el mercado financiero.', NOW(), 4, FALSE), -- ID 15
+('Estrategias para la optimización de código y mejora del rendimiento de aplicaciones.', NOW(), 1, FALSE); -- ID 16
 
--- ID 10
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('El impacto de la inflación en la toma de decisiones de inversión personal.', NOW(), 4, false);
 
--- ID 11
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Introducción a la criptografía aplicada y la seguridad de la información en redes.', NOW(), 2, false);
+-- 9️ PUBLICACIONES DETALLADAS PARA JUAN PEREZ (ID 1)
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES
+('Primeros pasos con Docker para el deploy de mi app web. ¡Mucho que aprender!', NOW(), 1, FALSE), -- ID 17
+('Mi café matutino y el roadmap para terminar el TP de Programación II. ', NOW(), 1, FALSE), -- ID 18
+('¿Vale la pena aprender Angular ahora? Escucho opiniones sobre frameworks frontend.', NOW(), 1, FALSE), -- ID 19
+('Diseñando la UX de mi proyecto web. La simplicidad es clave.', NOW(), 1, FALSE); -- ID 20
 
--- ID 12
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Guía completa sobre el framework Spring Boot y su arquitectura de microservicios.', NOW(), 1, false);
-
--- ID 13
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Conceptos clave de cálculo multivariable para el análisis de sistemas dinámicos.', NOW(), 2, false);
-
--- ID 14
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Diseño de bases de datos NoSQL y su aplicación en proyectos de gran escala.', NOW(), 4, false);
-
--- ID 15
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('La economía del comportamiento: sesgos cognitivos en el mercado financiero.', NOW(), 4, false);
-
--- ID 16
-INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad)
-VALUES ('Estrategias para la optimización de código y mejora del rendimiento de aplicaciones.', NOW(), 1, false);
+-- 10️ PUBLICACIONES DETALLADAS PARA NATALIA (ID 3)
+INSERT INTO Publicacion(descripcion, fechaPublicacion, usuario_id, esPublicidad) VALUES
+('Necesito consejos para optimizar la performance de mi código Java. ¿Algún truco?', NOW(), 3, FALSE), -- ID 23
+('Leyendo sobre la ética de la IA en el desarrollo de software. Tema importante.', NOW(), 3, FALSE), -- ID 24
+('Mi resumen para el final de Sistemas Operativos. ¡Espero aprobar!', NOW(), 3, FALSE), -- ID 25
+('El dilema de elegir entre Python y Javascript para scripting. ¿Cuál prefieren?', NOW(), 3, FALSE), -- ID 26
+('Probando nuevos temas oscuros para mi IDE. Visual Studio Code tiene los mejores.', NOW(), 3, FALSE); -- ID 27
 
 INSERT INTO SolicitudAmistad (solicitante_id, receptor_id, estado, fechaSolicitud)
 VALUES (2, 3, 'ACEPTADA', NOW());

@@ -39,18 +39,25 @@
             <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
             <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
             <ul>
+                <h5>Cursando: </h5>
                 <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
         </div>
         <div class="estructura box_columnaUno">
-<!--            <a href=""><img th:src="@{/imagenes/grupos.png}"> Grupos</a>-->
-            <!--se lo agrego aca... despues vemos bien donde lo ubicamos-->
-            <a th:href="@{/herramientas-IA.html}" class="btn_subir_archivos">
-                <img th:src="@{/imagenes/pdf-icon.png}" alt="icono-pdf">Herramientas de IA
-            </a>
-            <!--<a href=""><img src="../../../resources/core/imagenes/grupos.png"> Grupos</a>
-            <a href=""><img src="../../../resources/core/imagenes/guardados.png"> Elementos guardados</a>-->
+            <div class="menu-herramientas">
+        <button class="btn_herramientas" onclick="toggleSubmenu()">
+            <img th:src="@{/imagenes/icono-herramienta.png}" alt="icono-herramienta">
+            Herramientas
+        </button>
+
+                <ul id="submenu-herramientas" class="submenu-herramientas oculto">
+            <li>
+                <a th:href="@{/herramientas-IA.html}">Herramienta IA</a>
+            </li>
+
+            </ul>
+        </div>
         </div>
     </aside>
 
@@ -110,6 +117,7 @@
 <script th:src="@{/js/publicaciones.js}"></script>
 <script th:src="@{/js/notificaciones.js}"></script>
 <script th:src="@{/js/buscarPersona.js}"></script>
+<script th:src="@{/js/home.js}"></script>
 <script type="module" th:src="@{js/tema.js}"></script>
 
 </body>

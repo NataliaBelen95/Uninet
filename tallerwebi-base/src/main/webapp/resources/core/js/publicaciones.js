@@ -112,21 +112,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // ----------------------
     // Funciones de interacción
     // ----------------------
-    function darLike(publicacionId) {
-        fetch(`/spring/publicacion/darLike/${publicacionId}`, {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const nuevoLikeSpan = doc.querySelector('.likes-count');
-            if (nuevoLikeSpan) actualizarLikes(publicacionId, nuevoLikeSpan.innerText);
-        })
-        .catch(err => console.error("Error dar like:", err));
-    }
+  // CÓDIGO JS - Función darLike Mejorada (Consume el cuerpo para cerrar la conexión)
+  function darLike(publicacionId) {
+      fetch(`/spring/publicacion/darLike/${publicacionId}`, {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(res => {
+          if (!res.ok) {
+              throw new Error('La acción de like falló en el servidor.');
+          }
 
+          // 🚨 CAMBIO CLAVE: Consumir el cuerpo de la respuesta (el HTML fragment)
+          // Esto cierra la conexión y libera recursos.
+          res.text();
+
+          // La actualización visual del contador es manejada por el WebSocket.
+      })
+      .catch(err => console.error("Error dar like:", err));
+  }
     function toggleContenedor(id) {
         const cont = document.getElementById(id);
         if (cont) cont.style.display = (cont.style.display === "block") ? "none" : "block";
@@ -200,24 +204,37 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(err => console.error("Error actualizar publicación:", err));
     }
+// CÓDIGO JS - Función suscribirAActualizaciones (Corregida y Finalizada)
+function suscribirAActualizaciones(publicacionId) {
+    if (suscripcionesPublicacion.has(publicacionId)) return;
 
-    function suscribirAActualizaciones(publicacionId) {
-        if (suscripcionesPublicacion.has(publicacionId)) return;
+    stompClient.subscribe(`/topic/publicacion/${publicacionId}`, function (message) {
 
-        stompClient.subscribe(`/topic/publicacion/${publicacionId}`, function (message) {
-            if (message.body === "comentarioNuevo") {
+        try {
+            const payload = JSON.parse(message.body);
+
+            // 1. Manejo de Comentario (Recarga la tarjeta)
+            if (payload.action === "comment_added") {
                 actualizarPublicacion(publicacionId);
-            } else {
-                try {
-                    const nuevosLikes = JSON.parse(message.body);
-                    actualizarLikes(publicacionId, nuevosLikes);
-                } catch {}
+                return;
             }
-        });
 
-        suscripcionesPublicacion.add(publicacionId);
-    }
+            // 2. Manejo de Like (Actualiza solo el contador)
+            if (payload.action === "like_updated") {
+                const nuevosLikes = parseInt(payload.count);
+                if (!isNaN(nuevosLikes)) {
+                    actualizarLikes(publicacionId, nuevosLikes);
+                }
+                return;
+            }
 
+        } catch (error) {
+            console.error("Mensaje WebSocket ignorado (no es JSON válido):", message.body);
+        }
+    });
+
+    suscripcionesPublicacion.add(publicacionId);
+}
     // Inicializar eventos de inicio
     inicializarEventos();
 });
