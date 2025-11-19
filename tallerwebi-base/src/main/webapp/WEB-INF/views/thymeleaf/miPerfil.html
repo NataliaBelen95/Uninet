@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/variables.css}"/>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
-    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+   <!-- <link rel="stylesheet" th:href="@{/css/home.css}"/>-->
 
     <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
     <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
@@ -30,19 +30,23 @@
 
 <main class="contenedor_box_general">
     <aside class="contenedor_usuario">
+
         <div class="estructura">
 
-            <img id="perfilFoto" class="user"
+            <img id="perfilFoto" class="user"-
                  th:src="@{${#strings.isEmpty(usuario.fotoPerfil) ? '/imagenes/user.png' : '/' + usuario.fotoPerfil}}"
                  alt="Foto de perfil">
             <!--<img id="perfilFoto" class="user"
                  th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
                  alt="Foto de perfil">-->
-            <h2 class="palabra" th:text="${usuario.nombre}"></h2>
-            <h2 class="palabra" th:text="${usuario.apellido}"></h2>
+            <h2 class="nombre-perfil" th:text="${usuario.nombre}"></h2>
+            <h2 class="apellido-perfil" th:text="${usuario.apellido}"></h2>
             <ul>
-                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
-
+                <li class="carrera-perfil" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+                <li class="carrera-perfil"
+                    th:if="${!#strings.isEmpty(usuario.localidad)}"
+                    th:text="'Localidad: ' + ${usuario.localidad}">
+                </li>
             </ul>
 
         </div>
@@ -93,9 +97,12 @@
                 </div>
             </div>
         </div>
-        </div>
-    </aside>
 
+    </aside>
+    <section class="columnaDos">
+    <article th:if="${esPropio}" class="estructura form-publi-perfil">
+        <div th:replace="templates/form-publicacion :: form-publi(${publicacion})"></div>
+    </article>
 
 
         <div id="contenedor-publicaciones">
@@ -103,6 +110,7 @@
                 <div th:replace="templates/divTarjetaPublicacion :: tarjetaPublicacion(${dtopubli}, ${usuario})"></div>
             </th:block>
         </div>
+    </section>
 
 
 

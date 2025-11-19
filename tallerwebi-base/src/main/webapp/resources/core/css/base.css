@@ -70,6 +70,10 @@ select option:hover {
   border-radius: var(--radius);
   color: var(--texto-sec);
   padding: 1.25rem;
+  text-align:center;
+
+
+
 }
 .botones_acciones {
     all: unset; /* borra todos los estilos nativos del navegador */
@@ -89,15 +93,22 @@ select option:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-width: auto;
+    width: auto;
     background: var(--verde);
     color: var(--texto);
-    border: none;
+    border: 1px solid transparent; /* evita que cambie el tamaño */
     border-radius: var(--radius);
     padding: 0.6rem 1rem;
     font-size: 1rem;
     font-weight: 600;
-    transition: background-color 0.2s ease;}
+    transition: background-color 0.2s ease, border-color 0.2s ease;}
+
+.botones_acciones-form:hover {
+    background-color: #1e8a4b; /* verde ligeramente más oscuro */
+    border: 1px solid #1c7d45; /* borde sobrio académico */
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15); /* sombra suave institucional */
+}
+
 
 .btns_interaccion_publicacion{
     display: flex;
@@ -397,3 +408,33 @@ width: auto;
 
 .img-publicidad{
 width:250px}
+
+
+/*perfil*/
+
+
+
+/* Nombre */
+.estructura .nombre-perfil {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--texto);
+}
+
+/* Apellido */
+.estructura .apellido-perfil {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 0.2rem;
+    color: var(--texto);
+}
+
+/* Carrera estilo subtítulo académico */
+.estructura .carrera-perfil {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--texto-sec);
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
