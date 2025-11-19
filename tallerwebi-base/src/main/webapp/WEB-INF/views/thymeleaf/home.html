@@ -38,8 +38,7 @@
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
             <h2 class="nombre-perfil" th:text= "${usuario.nombre}"></h2>
             <h2 class="apellido-perfil" th:text= "${usuario.apellido}"></h2>
-            <ul>
-
+            <ul style="padding: 0px;">
                 <li class="carrera-perfil" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
@@ -100,7 +99,7 @@
 <!--                <img class="user2" th:src="@{/imagenes/user2.png}">-->
 <!--            </div>-->
             <h2>Quizás conozcas...</h2>
-            <ul>
+            <ul style="padding: 0px;">
                 <li th:each="usuario : ${usuariosNuevos}">
                     <span th:text="${usuario.nombreUsuario}"></span>
                     <span th:text="${usuario.apellidoUsuario}"></span>

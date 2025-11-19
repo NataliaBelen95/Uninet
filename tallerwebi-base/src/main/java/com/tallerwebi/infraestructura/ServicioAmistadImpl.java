@@ -25,6 +25,10 @@ public class ServicioAmistadImpl implements ServicioAmistad {
         this.repoAmistad = repoAmistad;
     }
     @Override
+    public boolean sonAmigos(long usuarioAId, long usuarioBId) {
+        return existeAmistadAceptadaEntre(usuarioAId, usuarioBId);
+    }
+    @Override
     public Set<Long> obtenerIdsAmigosDe(long usuarioId) {
         // Se asume que el repositorio devuelve relaciones de amistad ya aceptadas
         return repoAmistad.obtenerAmistadesAceptadasDe(usuarioId)

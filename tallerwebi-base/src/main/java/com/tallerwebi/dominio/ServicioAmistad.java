@@ -22,6 +22,7 @@ public interface ServicioAmistad {
 
     Set<Long> obtenerIdsAmigosDe(long usuarioId);
 
+    boolean sonAmigos(long usuarioAId, long usuarioBId);
 
     // 🛑 CAMBIO CLAVE: De List<SolicitudAmistad> a SolicitudAmistad
     SolicitudAmistad buscarSolicitudPendientePorUsuarios (Usuario solicitante, Usuario receptor);

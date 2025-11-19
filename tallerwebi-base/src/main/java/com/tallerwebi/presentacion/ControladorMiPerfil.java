@@ -29,12 +29,13 @@ public class ControladorMiPerfil {
     private final UsuarioMapper usuarioMapper;
     private final ServicioPublicacion servicioPublicacion;
     private final PublicacionMapper publicacionMapper;
+    private final ServicioAmistad servicioAmistad;
 
     // Inyección del repositorio a través del constructor
     @Autowired
     public ControladorMiPerfil(ServicioUsuario servicioUsuario, ServicioGenero servicioGenero, ServicioLogin servicioLogin,
                                ServicioNotificacion servicioNotificacion, UsuarioMapper usuarioMapper,
-                               ServicioPublicacion servicioPublicacion,  PublicacionMapper publicacionMapper) {
+                               ServicioPublicacion servicioPublicacion,  PublicacionMapper publicacionMapper, ServicioAmistad servicioAmistad) {
         this.servicioUsuario = servicioUsuario;
         this.servicioGenero = servicioGenero;
         this.servicioLogin = servicioLogin;
@@ -42,6 +43,7 @@ public class ControladorMiPerfil {
         this.usuarioMapper = usuarioMapper;
         this.servicioPublicacion = servicioPublicacion;
         this.publicacionMapper = publicacionMapper;
+        this.servicioAmistad = servicioAmistad;
     }
 
     /** --- Método privado para validar sesión --- */
@@ -297,5 +299,62 @@ public class ControladorMiPerfil {
 
 
         return new ModelAndView("redirect:/perfil/" + slug);
+    }
+    @PostMapping("/enviar/{idReceptor}")
+    public String enviarSolicitud(@PathVariable Long idReceptor, HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return "redirect:/login";
+        }
+
+        Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
+        Usuario receptor = servicioUsuario.buscarPorId(idReceptor);
+        if (solicitante == null || receptor == null) {
+            return "redirect:/usuarios";
+        }
+        SolicitudAmistad solicitudCreada = servicioAmistad.enviarSolicitud(solicitante, receptor);
+        Long solicitudId = solicitudCreada.getId();
+
+        try {
+            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitudId);
+        } catch (Exception e) {
+            System.err.println("Error al notificar solicitud de amistad: " + e.getMessage());
+        }
+        return "redirect:/usuarios";
+    }
+
+
+    @PostMapping("/enviar")
+    public String enviarSolicitudForm(@RequestParam("receptorId") Long receptorId, HttpServletRequest request) {
+        DatosUsuario datos = (DatosUsuario) request.getSession().getAttribute("usuarioLogueado");
+        if (datos == null) {
+            return "redirect:/login";
+        }
+        Usuario solicitante = servicioUsuario.buscarPorId(datos.getId());
+        Usuario receptor = servicioUsuario.buscarPorId(receptorId);
+
+        // Asumiendo que el resto de las verificaciones de nullidad ya pasaron
+
+        try {
+
+            SolicitudAmistad solicitudCreada = servicioAmistad.enviarSolicitud(solicitante, receptor);
+            Long solicitudId = solicitudCreada.getId();
+
+            servicioNotificacion.crearAmistad(receptor, solicitante, TipoNotificacion.SOLICITUD_AMISTAD, solicitudId);
+
+        } catch (IllegalStateException e) {
+            //  CAPTURAR LA VALIDACIÓN DE NEGOCIO Y REDIRIGIR AMIGABLEMENTE
+            String mensajeCodificado = java.net.URLEncoder.encode(e.getMessage(), java.nio.charset.StandardCharsets.UTF_8);
+            System.err.println("Error de validación de amistad: " + e.getMessage());
+            return "redirect:/home?error=" + mensajeCodificado;
+
+        } catch (Exception e) {
+            // Capturar otros errores como fallo de notificación o DB.
+            System.err.println("Error general al enviar solicitud: " + e.getMessage());
+            return "redirect:/usuarios?error=Error desconocido al enviar solicitud.";
+        }
+
+        // Redirección de éxito
+        return "redirect:/home";
     }
 }

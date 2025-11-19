@@ -26,6 +26,10 @@ li {
   padding: 0;
 }
 
+ul{
+    padding: 0px;
+}
+
 /* Reglas base para inputs y botones (podés adaptar por vista) */
 input, textarea, select {
   background: var(--background-input);

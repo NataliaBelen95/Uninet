@@ -35,6 +35,7 @@ public class ControladorMiPerfilTest {
     private PublicacionMapper publicacionMapperMock;
     private ServicioNotificacion servicioNotificacionMock;
     private MockMvc mockMvc;
+    private ServicioAmistad servicioAmistadMock;
 
     @BeforeEach
     public void init() {
@@ -51,6 +52,7 @@ public class ControladorMiPerfilTest {
         publicacionMapperMock = mock(PublicacionMapper.class);
         servicioNotificacionMock = mock(ServicioNotificacion.class);
         usuarioMapperMock = mock(UsuarioMapper.class);
+        servicioAmistadMock = mock(ServicioAmistad.class);
 
         //Para cargr fotos
         fotoMock = mock(MultipartFile.class);
@@ -59,7 +61,7 @@ public class ControladorMiPerfilTest {
         controladorMiPerfil = new ControladorMiPerfil(servicioUsuarioMock, servicioGeneroMock,
                                                       servicioLoginMock, servicioNotificacionMock,
                                                       usuarioMapperMock, servicioPublicacionMock,
-                                                      publicacionMapperMock
+                                                      publicacionMapperMock, servicioAmistadMock
 
         );
         // Usar una vista dummy para que no intente renderizar

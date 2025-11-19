@@ -49,6 +49,13 @@
                 </li>
             </ul>
 
+            <div th:if="${esAmigo == false}">
+                <form th:action="@{/amistad/enviar}" method="post">
+                    <input type="hidden" name="receptorId" th:value="${usuario.id}" />
+                    <button class="solicitud" type="submit">Enviar Solicitud de Amistad</button>
+                </form>
+            </div>
+
         </div>
         <!-- Mostrar solo si es el propio usuario -->
         <div th:if="${esPropio}">
@@ -99,6 +106,7 @@
         </div>
 
     </aside>
+
     <section class="columnaDos">
     <article th:if="${esPropio}" class="estructura form-publi-perfil">
         <div th:replace="templates/form-publicacion :: form-publi(${publicacion})"></div>
@@ -121,6 +129,7 @@
 <script type="module" th:src="@{js/login.js}"></script>
 <script type="module" th:src="@{js/nav.js}"></script>
 <script type="module" th:src="@{/js/notificaciones.js}"></script>
+<script type="module" th:src="@{/js/buscarPersona.js}"></script>
 <script th:src="@{/js/publicaciones.js}"></script>
 </body>
 </html>
