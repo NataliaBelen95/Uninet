@@ -36,11 +36,11 @@
                  th:src="@{${usuario.fotoPerfil != null ? '/' + usuario.fotoPerfil : '/imagenes/user.png'}}"
                  alt="Foto de perfil">
             <!--<img class="user" src="../../../resources/core/imagenes/user.png">-->
-            <h2 class="palabra" th:text= "${usuario.nombre}"></h2>
-            <h2 class="palabra" th:text= "${usuario.apellido}"></h2>
+            <h2 class="nombre-perfil" th:text= "${usuario.nombre}"></h2>
+            <h2 class="apellido-perfil" th:text= "${usuario.apellido}"></h2>
             <ul>
-                <h5>Cursando: </h5>
-                <li class="titulo" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
+
+                <li class="carrera-perfil" th:text="${usuario.carrera != null ? usuario.carrera.nombre : 'Sin carrera'}">Carrera</li>
             </ul>
         </div>
         </div>
