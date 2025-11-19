@@ -112,7 +112,7 @@ a {
 }
 .box_comentario textarea{
       height: 5rem;
-      padding: 0 0.8rem;
+      padding: 3px 0.8rem;
       color: var(--texto-sec);
       font-size: 15px;
       outline: none;
@@ -152,7 +152,7 @@ a {
 .solicitud{
         background-color: #4CAF50; /* Color de fondo */
         color: white; /* Color del texto */
-        padding: 10px 20px; /* Espacio interno (arriba/abajo, izquierda/derecha) */
+        padding: 5px 20px; /* Espacio interno (arriba/abajo, izquierda/derecha) */
         border: none; /* Sin borde */
         border-radius: 5px; /* Bordes redondeados */
         cursor: pointer; /* Cursor de mano */
