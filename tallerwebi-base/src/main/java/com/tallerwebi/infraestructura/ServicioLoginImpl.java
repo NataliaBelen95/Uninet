@@ -29,6 +29,7 @@ public class ServicioLoginImpl implements ServicioLogin {
     @Override
     public void registrar(Usuario usuario) throws UsuarioExistente, EmailNoInstitucional {
 
+        
 
         /*String email = usuario.getEmail();
 

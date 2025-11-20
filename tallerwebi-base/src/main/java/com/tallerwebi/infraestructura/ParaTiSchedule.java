@@ -28,7 +28,7 @@ public class ParaTiSchedule {
      * Se configura para ejecutarse cada 6 horas (21,600,000 milisegundos).
      * Esto asegura que solo uses la cuota de Gemini cuatro veces al día.
      */
-    @Scheduled(fixedDelay = 21600000)// ⬅️ Se ejecuta cada 6 horas (en milisegundos)
+    @Scheduled(fixedDelay = 60000)// ⬅️ Se ejecuta cada 6 horas (en milisegundos)
     public void ejecutarPublicacionMasiva() {
         System.out.println("---  SCHEDULER: Iniciando ciclo de publicación dirigida ---");
         // Llama al método que se encarga de recorrer la lista de usuarios y publicar

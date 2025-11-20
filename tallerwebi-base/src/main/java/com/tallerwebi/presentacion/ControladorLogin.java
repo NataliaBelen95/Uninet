@@ -32,15 +32,17 @@ public class ControladorLogin {
     private RepositorioUsuario repositorioUsuario;
     private ServicioCarrera servicioCarrera;
     private ServicioDepartamento servicioDepartamento;
+    private ServicioUsuario servicioUsuario;
     /* hacer un controlador Home y ordenar Luego ***/
 
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario, ServicioCarrera servicioCarrera,ServicioDepartamento servicioDepartamento) {
+    public ControladorLogin(ServicioLogin servicioLogin, RepositorioUsuario repositorioUsuario, ServicioCarrera servicioCarrera,ServicioDepartamento servicioDepartamento, ServicioUsuario servicioUsuario) {
         this.servicioLogin = servicioLogin;
         this.repositorioUsuario = repositorioUsuario;
         this.servicioCarrera = servicioCarrera;
         this.servicioDepartamento = servicioDepartamento;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @RequestMapping("/login")
@@ -100,7 +102,7 @@ public class ControladorLogin {
             usuario.setConfirmado(false);
 
             // Guardar usuario en DB
-            servicioLogin.registrar(usuario);
+            servicioUsuario.registrarUsuario(usuario);
 
             // Enviar mail con código
             String asunto = "Confirma tu registro";
@@ -111,9 +113,6 @@ public class ControladorLogin {
             model.put("email", usuario.getEmail());
             return new ModelAndView("validar-codigo", model);
 
-        } catch (UsuarioExistente e) {
-            model.put("error", "El usuario ya existe");
-            return new ModelAndView("nuevo-usuario", model);
         } catch (Exception e) {
             model.put("error", "Error al registrar el nuevo usuario");
             return new ModelAndView("nuevo-usuario", model);
