@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/variables.css}"/>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
     <link rel="stylesheet" th:href="@{/css/perfil.css}"/>
-   <!-- <link rel="stylesheet" th:href="@{/css/home.css}"/>-->
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
 
     <!--<link rel="stylesheet" href="../../../resources/core/css/variables.css"/>
     <link rel="stylesheet" href="../../../resources/core/css/base.css"/>
@@ -49,14 +49,22 @@
                 </li>
             </ul>
 
-            <div th:if="${esAmigo == false}">
+            <div th:if="${!esPropio and relacionExistente == false}">
                 <form th:action="@{/amistad/enviar}" method="post">
                     <input type="hidden" name="receptorId" th:value="${usuario.id}" />
                     <button class="solicitud" type="submit">Enviar Solicitud de Amistad</button>
                 </form>
             </div>
 
+            <!-- OPCIONAL: Indicador de estado de la relación (para retroalimentación) -->
+            <!-- Usamos un 'th:if' y 'th:elif' para garantizar que solo se muestre UN estado -->
+            <div th:if="${esAmigo}">
+                <p class="exito">Amigo</p>
+            </div>
+
+
         </div>
+
         <!-- Mostrar solo si es el propio usuario -->
         <div th:if="${esPropio}">
             <a th:href="@{/mis-likes.html}" class="btn-mis-likes">

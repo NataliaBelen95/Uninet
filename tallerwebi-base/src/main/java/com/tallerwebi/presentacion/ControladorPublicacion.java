@@ -81,18 +81,10 @@ public class ControladorPublicacion {
             notificacionService.enviarMensajePubli("/topic/publicaciones", dto);
 
             String referer = request.getHeader("Referer");
-            if (referer != null) {
-
-                // Si estabas en tu perfil
-                if (referer.contains("/miPerfil")) {
-                    return new ModelAndView("redirect:/miPerfil");
-                }
-
-                // Si estabas viendo el perfil de otro usuario
-                if (referer.contains("/perfil/")) {
-                    // Recorta la URL real a /perfil/xxxx
-                    return new ModelAndView("redirect:" + referer.substring(referer.indexOf("/perfil/")));
-                }
+            if (referer != null && referer.contains("/perfil/")) {
+                return new ModelAndView("redirect:/perfil/" + usuario.getId());
+            } else {
+                return new ModelAndView("redirect:/home");
             }
 
         } catch (PublicacionFallida e) {

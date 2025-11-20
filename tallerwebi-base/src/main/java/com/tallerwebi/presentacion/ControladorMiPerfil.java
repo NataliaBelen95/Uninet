@@ -280,6 +280,26 @@ public class ControladorMiPerfil {
         model.addAttribute("publicaciones", dtos);
         model.addAttribute("esPropio", esPropio);
 
+        // 🚨 AQUÍ AGREGAMOS LA LÓGICA DE AMISTAD 🚨
+        if (!esPropio && idLogueado != null) {
+            boolean sonAmigos = servicioAmistad.sonAmigos(idLogueado, usuarioPerfil.getId());
+            boolean solicitudPendiente = servicioAmistad.sonAmigos(idLogueado, usuarioPerfil.getId());
+
+            // Pasamos tres estados posibles:
+            // 1. esAmigo: true/false
+            // 2. tieneSolicitudPendiente: true/false (si el logueado envió una al perfil)
+
+            // Usaremos una sola variable, 'estadoAmistad', que será un booleano compuesto:
+            // true si ya son amigos O si ya hay una solicitud en curso (para ocultar el botón)
+            boolean relacionExistente = sonAmigos || solicitudPendiente;
+            model.addAttribute("relacionExistente", relacionExistente);
+            model.addAttribute("esAmigo", sonAmigos); // Opcional, para mostrar "Amigos" o "Solicitud enviada"
+            model.addAttribute("solicitudPendiente", solicitudPendiente); // Opcional
+        } else {
+            // Si es perfil propio, o no hay nadie logueado, estas variables son false
+            model.addAttribute("relacionExistente", true); // Ocultar botones en perfil propio/no logueado
+        }
+
         return new ModelAndView("miPerfil", model);
     }
 
